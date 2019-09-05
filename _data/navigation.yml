@@ -1,0 +1,25 @@
+main:
+  - title: "posts"
+    url: /posts/
+  - title: "tags"
+    url: /tags/
+  - title: "photos"
+    url: /photography/
+  - title: "resume"
+    url: /resume.pdf
+  - title: "about"
+    url: /about/
+
+wiki:
+  - title: wiki
+    children:
+      - title: "bash"
+        url: /bash/
+      - title: "docker"
+        url: /docker/
+      - title: "sed"
+        url: /sed/
+      - title: "sql"
+        url: /sql/
+      - title: "vim"
+        url: /vim/

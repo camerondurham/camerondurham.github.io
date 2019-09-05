@@ -1,0 +1,12 @@
+---
+layout: archive
+---
+
+{% for item in site.resume %}
+	<h2>
+		<a href="{{ resume.url }}">
+			{{ item.name }} - {{ item.date }}
+		</a>
+	</h2>
+	<p>{{ item.content | markdownify }}</p>
+{% endfor %}
