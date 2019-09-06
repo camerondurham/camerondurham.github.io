@@ -10,8 +10,8 @@ main:
   - title: "about"
     url: /about/
 
-wiki:
-  - title: wiki
+memos:
+  - title: memos
     children:
       - title: "bash"
         url: /bash/
