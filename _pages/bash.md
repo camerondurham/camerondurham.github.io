@@ -1,7 +1,8 @@
 ---
 title: bash
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /bash/
 ---
 

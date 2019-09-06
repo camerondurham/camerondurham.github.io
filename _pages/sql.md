@@ -1,7 +1,8 @@
 ---
 title: SQL
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /sql/
 ---
 

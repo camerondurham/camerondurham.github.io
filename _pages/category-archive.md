@@ -1,7 +1,8 @@
 ---
 title: "Posts by Category"
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 layout: categories
 permalink: /categories/
 author_profile: true

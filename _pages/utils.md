@@ -1,7 +1,8 @@
 ---
 title: utils
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /utils/
 ---
 

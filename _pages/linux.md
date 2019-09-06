@@ -1,7 +1,8 @@
 ---
 title: a simple guide to linux
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /linux/
 ---
 

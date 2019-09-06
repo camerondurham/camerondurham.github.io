@@ -1,7 +1,8 @@
 ---
-title: wiki
+title: memos
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /wiki/
 ---
 

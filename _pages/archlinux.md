@@ -1,7 +1,8 @@
 ---
 title: a brief guide to arch linux
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /arch/
 ---
 

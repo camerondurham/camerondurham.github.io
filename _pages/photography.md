@@ -1,7 +1,8 @@
 ---
 title: photography
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /photography/
 gallery1:
   - url: /assets/images/fashion-3.jpg

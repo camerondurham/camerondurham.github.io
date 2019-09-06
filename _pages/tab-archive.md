@@ -1,7 +1,8 @@
 ---
 title: "Posts by Tag"
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /tags/
 layout: tags
 author_profile: true

@@ -1,7 +1,8 @@
 ---
 title: vim
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /vim/
 ---
 

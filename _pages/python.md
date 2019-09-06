@@ -1,8 +1,11 @@
-# Python
-
+---
+title: python
+classes: wide
 sidebar:
-  nav: "wiki"
-# **Basics**:
+  nav: "memos"
+permalink: /python/
+---
+
 
 ## Strings
 

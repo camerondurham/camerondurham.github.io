@@ -1,7 +1,8 @@
 ---
 title: sed
+classes: wide
 sidebar:
-  nav: "wiki"
+  nav: "memos"
 permalink: /sed/
 ---
 
