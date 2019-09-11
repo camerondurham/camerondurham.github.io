@@ -6,8 +6,6 @@ sidebar:
 permalink: /vim/
 ---
 
-# Vim
-
 Vim is a text editor that is (IMHO) the ultimate programmer's tool. It's based
 off the 30 year old Unix and Linux standard editor, *vi*.
 

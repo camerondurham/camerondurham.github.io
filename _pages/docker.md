@@ -6,7 +6,7 @@ sidebar:
 permalink: /docker/
 ---
 
-[Commands start here](#Commands)
+[Commands start here](#commands)
 
 Compared to Virtual Machines, Docker images take up less disk space but are not as separate from the host OS as a VM. Containers spin up faster and run one process then shutdown, which helps improve their speed.
 

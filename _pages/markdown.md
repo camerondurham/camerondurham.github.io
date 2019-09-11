@@ -6,9 +6,23 @@ sidebar:
 permalink: /markdown/
 ---
 
+## The Basics
 
-# Basics
-## Headers
+### Headers
+
+To write levels header levels, use more hashmarks `#` to denote lower levels.
+
+For example:
+
+```
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6 (subtitles, sort of)
+```
+
 
 # H1
 ## H2
@@ -17,8 +31,7 @@ permalink: /markdown/
 ##### H5
 ###### H6 (subtitles, sort of)
 
-
-## Lists
+### Lists
 
 Making Lists:
 
@@ -32,6 +45,7 @@ Making Lists:
 4. Yet another item
     + Using a +
 ```
+
 Renders:
 
 1. First ordered list
@@ -42,12 +56,16 @@ Renders:
 4. Yet another item
     + Using a +
 
-## Images
+### Images
 
 Check out this stormtroopocat:
 
+<img src="https://octodex.github.com/images/stormtroopocat.jpg" alt="The Stormtroopcat" width="300"/>
 
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
+For further customization, such as image sizing, you can use HTML image tags to
+link a smaller image.
+
+
 ## Links
 
 Like links, Images also have a footnote style syntax:
@@ -55,9 +73,15 @@ Like links, Images also have a footnote style syntax:
 `![Label](URL link)`.
 
 
-For example, this is how we got the cat:
+For example, this is how could get the cat:
 
 `![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")`
+
+
+Below is how you'd use HTML to add the cat:
+
+
+`<img src="https://octodex.github.com/images/stormtroopocat.jpg" alt="The Stormtroopcat" width="300"/>`
 
 You can also use shortcut style links if you reuse a long url. For example:
 
@@ -72,9 +96,10 @@ To link within the same file (in **GFM**), add `-` separators for spaces, wrap t
 [link](#text-formatting)
 
 
-## Tables
+### Tables
 
 Markdown supports tables
+
 | Tables   | Organize      |
 | :------- | :----------:  |
 | Abdul    | Peanut Butter |
@@ -84,15 +109,19 @@ Markdown supports tables
 | Cameron  | Oatmeal       |
 
 You use colons for alignment.
+
 ```
 | Right | Center | Left |
 | ---:  | :---:  | :--- |
+| Right | Center | Left |
 ```
 
 Renders:
 
 | Right | Center | Left |
 | ---:  | :---:  | :--- |
+| Right | Center | Left |
+
 
 Note that you need **minimum of 3 dashes** to
 make a valid column.
@@ -114,13 +143,6 @@ Weird | ... still pretty | somehow
 
 ## Text Formatting
 
-Some plugins (such as my current MarkdownPreview) allow for Latex rendering.
-
-_Examples:_
-
-`$$ \sum_{i = 0}^{n}  \theta(1)$$`
-
-- $$ \sum_{i = 0}^{n}  \theta(1)$$
 
 
 You can have subscript and superscript with standard HTML syntax:
@@ -145,6 +167,7 @@ _Some more italic text_
 ```
 
 *Some italic text*
+
 _Some more italic text_
 
 ```
@@ -153,6 +176,7 @@ __Some more bold text__
 ```
 
 **Some bold text**
+
 __Some more bold text__
 
 ### Blockquotes
@@ -166,9 +190,8 @@ As Grace Hopper said:
 Markdown allows you to use backslash escapes that would otherwise have a special meaning in Markdown.
 
 ` \*literal asterisks \* `
- \*literal asterisks \*
 
-<++>
+\*literal asterisks \*
 
 
 ## Github Flavored Markdown
@@ -206,19 +229,37 @@ Github supports emojis!!
 - [ ] this is an incomplete task
 - [X] @mentions, #refs [links](), **formatting**, and <del>tags</tags> are supported
 - [X] list syntax is required (any unordered or ordered list supported)
-```
+
 
 - [X] this task is complete
 - [ ] this is an incomplete task
 - [x] @mentions, #refs [links](), **formatting**, and <del>tags</tags> are supported
 - [X] list syntax is required (any unordered or ordered list supported)
+```
 
 ### Fenced Code Blocks
 
 ```javascript
-
 function test() {
 	console.log("look ma', no spaces");
 }
 ```
 
+### Comments
+
+
+You can write comments in markdown using:
+
+```
+[//]: <> (This is a comment)
+
+[comment]: <> (This is another comment)
+```
+
+I've written some comments below but you can't see them since my blog uses
+markdown! :grin:
+
+
+[//]: <> (This is a comment)
+
+[comment]: <> (This is another comment)
