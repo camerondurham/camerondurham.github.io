@@ -9,6 +9,7 @@ permalink: /arch/
 # Arch Linux Notes
 
 ## Auto Mounting
+
 `autofs` provides automounting of removable media or network shares
 when they're inserted or accessed. The _package_ is ~3.5MB, so an alternative
 is preferable but that's a TODO!

@@ -1,46 +1,68 @@
 ---
-title: gcc
+title: g++ cheatsheet
 classes: wide
 sidebar:
   nav: "memos"
 permalink: /gcc/
 ---
 
+# gcc/g++ Cheatsheet
+
 ## Description
 
-[//]: <> (Change my sarcasm if needed)
+GCC (the GNU Compiler Collection) is used to build your C++ executables.
+It's a powerful tool and you kinda have to use it to test your programs.
+For a quick tldr to compile your program with maximum warnings,
+[look here](#compiling-homework)
 
-GCC (the GNU Compiler Collection) is used to build your C++ executables. It's a powerful tool and you kinda have to use it to test your programs.
+## Options
 
-## Details
+Here are a few of the more useful command options when using `g++`.
+These compiler flags may be used in any order you wish.
+However, by convention, we usually group the list of source files together and
+the list of options together.
 
-Here are a few of the more useful command options when using `gcc`. These compiler flags may be used in any order you wish. However, by convention, we usually group the list of source files together and the list of options together.
+### Most Common
 
-**NOTE:** The most important for normal use on your VM are `-Wall`, `-g`, `--std=c++11`, `-o`.
+These are generally most important options for normal use on your VM and in your
+assignment `Makefile`s.
 
-[//]: <> (Proposed format for commands)
+You'll probably end up knowing them by heart.
 
-| `flags` | description |
-| :---:      |:---         |
-| `-Wall`  | Show all warnings. Turns on all standard C++ warnings about code that might cause unexpected behavior.|
-|`-g`|Provide debugging feature for your program. You will need this when you want to use gdb or valgrind.|
-|`--std=c++<##>`|Use version `##` of C++ when compiling. This will allow you to use specific features of that C++ version.|
-|`-o <filename>`|Compile and link files into an executable named `filename`. The default filename is `a.out`|
-|`-c` | Compile and assemble files but don't link them. This is useful when building large projects to separate file compilation and minimize what is re-compiled.|
-|`--sys-root=<directory>`|use `<directory>` as root directory for headers and libraries|
-|`-I /<absolute-path>`|Add `absolute-path` to the compiler's search paths|
-| `-Wextra` | Enables some extra warnings not turned on by `-Wall`. These include: <br> Warnings for bad pointer to integer zero comparisons <br> Base class not initialized in copy constructor of derived class|
-|`-Wfatal-errors` | similar to `Wall` but treat an error as fatal and stop before <br> dumping a long list of errors into the terminal.
-|`-fmax-errors=n`|Tells compiler to stop after encountering `n` errors in your code. Usually you want to see all errors in your code some error messages may get too long for you to read.|
-|`--help=<class>`| Get help on specific options for the compiler|
+- `-Wall` show all warnings.
+  It turns on all standard C++ warnings about code that might cause unexpected behavior.
+- `-g` provides debugging feature for your program.
+  You will need this when you want to use gdb or valgrind.
+- `--std=c++<##>` uses version `<##>` of C++ when compiling.
+  This will allow you to use specific features of that C++ version.
+- `-o <filename>` compiles and links files into an executable named `<filename>`.
+  The default filename is `a.out`.
+- `-c` compiles and assembles files but doesn't link them.
+  This is useful when building large projects to separate file compilation and minimize what is re-compiled.
+
+### Bonus Round
+
+Here are a couple compiler flags that we don't as often use.
+They're still pretty handy to know.
+
+- `--sys-root=<directory>` uses `<directory>` as root directory for headers and libraries.
+- `-I /<absolute-path>` adds `<absolute-path>` to the compiler's search paths.
+  As written, the path must written from the root of the filesystem, `/`.
+- `-Werror` make all warnings into errors *do this before submitting your code to avoid getting points deducted!*
+- `-pedantic` issues all warnings demanded by strict [ISO C++](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) rules if you want to be *extra* safe
+- `-Wextra` enables some extra warnings not turned on by `-Wall`. These include warnings for bad pointer to integer zero comparisons, base class not initialized in copy constructor of derived class, etc.
+- `-Wfatal-errors` is similar to `-Wall` but treats an error as fatal and stops before  dumping a long list of errors into the terminal.
+- `-fmax-errors=n` tells the compiler to stop after encountering `n` errors in your code.
+  Usually you want to see all errors in your code some error messages may get too long for you to read.
+- `-Wshadow` warns whenever a local variable or type declaration shadows another variable, parameter, class member, etc.
+- `-Wsign-conversion` or `-Wconversion` warn if making unsafe, implicit conversions between signed and unsigned types (i.e. unsigned int + (constant expression) )
+- `--help` gets help on specific options for the compiler.
 
 ## Examples
 
-[//]: <> (A few brief practical examples of using the tool)
-
 ```shell
-# compile single program like we will compile your homework for grading
-g++ -Wall -g --std=c++11 test.cpp -o test
+# compile a single program
+g++ -Wall -g -std=c++11 test.cpp -o test
 
 # print all possible warning flags available to compile with
 g++ --help=warnings
@@ -51,6 +73,21 @@ g++ --help=warnings
 g++ -I /$(pwd)/libs -Wall -g -std=c++11 test.cpp -o test
 ```
 
+## Compiling Programs
+
+This was written for CS104, the most difficult required C++ course at USC.
+Homework assignments are compiled with a lot of extra flags to ensure programs
+run as expected. To follow the CS104 submission standards, compile your programs with
+the following flags.
+
+```shell
+# use the following warnings to compile your program
+-pedantic -Wall -Wextra -Werror -Wshadow -Wsign-conversion
+
+# example compilation
+g++ -g -std=c++11 -pedantic -Wall -Wextra -Werror -Wshadow -Wconversion -Wunreachable-code homework_program.cpp -o homework_program
+```
+
 ## Additional Resources
 
-You can read about all the options for using `gcc` [here](https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html).
+You can read about all the options for using `g++` [here](https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html).

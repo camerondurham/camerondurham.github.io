@@ -6,10 +6,14 @@ sidebar:
 permalink: /utils/
 ---
 
-Utilities in Unix/Linux Systems and how to use them
+
+## Unix/Linux Utilities
+
+Some handy commands are [over here](#useful-commands)
 
 - [7z](#7z): 7zip is the standard for compression at Oracle
 - [awk](#awk): AWK is a programming language tool used to manipulate text
+- [bc](#bc): arbitrary precision calculator on linux
 - chown: changes file or group ownership
 - cmp: compares files of any type and writes results to stdout
 - cpio: copies files into or out of a cpio or tar archive
@@ -21,6 +25,8 @@ Utilities in Unix/Linux Systems and how to use them
 - df: displays amount of disk space available on the file system containing
   each file name argument. Without a file name, df shows available space on all
   currently mounted file systems
+
+- [echo](#echo): displays text and handy for appending to files
 
 - ed: basic editor allowing commandline insertion of text
 
@@ -50,6 +56,7 @@ Utilities in Unix/Linux Systems and how to use them
 
 - [nslookup](#nslookup): user can enter host name and find corresponding IP address, can also help find host name
 - [ngrok](#ngrok): tunnel a local port to the internet for local development
+- [tr](#tr)
 - wc: count lines in a document
 
 ## Script Syntax
@@ -280,26 +287,31 @@ awk '{count[length]++}END{for(i in count){printf("%d: %d\n", count[i], i)}}' <FI
 ### Backup
 
 **Create a quick backup copy of a file**
+
 Uses shell expansion to create a back-up called `.vimrc.bak`
 
 `cp .vimrc{,.bak}`
 
 ### Execute a command at a given time
+
 `echo "ls -l" | at midnight`
 
 ### Combine PDFs
+
 *assuming that* `pdfunite` is installed with poppler:
 `pdfunite *.pdf out.pdf`
 
 
-**Random Text Generators**
+
+#### Random Text Generator
+
  Must be limited by another command or it will generate infinite text.
 ```sh
 tr -dc a-z1-4 </dev/urandom | tr 1-2 ' \n' | awk 'length==0 || length>50' | tr
 3-4 ' ' | sed 's/^ *//' | cat -s | fmt
 ```
 
-**Shell Script to Generate Random Text Block**
+#### Shell Script to Generate Random Text Block
 `tr` translates to input from `/dev/urandom` to printable ASCII characters. Other options include:
 `[:digits:]`, `[:alpha:]`, and `[:alnum:]`. Which are exactly what they sound like. See `man tr` for more.
 
@@ -317,23 +329,20 @@ Usage: `rand [number of lines] [file.output]`
 val=$(( $1  + 1 )) &&  head -$(( $1 * 2 )) /dev/urandom | tr -cd '[:alpha:]' | fold -w 80 > $2 | mod $2 "${val},$ d"
 ```
 
---------
 
-
-**Print folder names**
+#### Print Folder Names
 
 ```sh
 for filename in /home/cam/*; do
    echo $filename
 done
 ```
-   - `if`, `else` and conditionals:
-      - strings `[[STRING == STRING]]`
-      - numbers `[[NUM -eq NUM]]`
+`if`, `else` and conditionals:
+- strings `[[STRING == STRING]]`
+- numbers `[[NUM -eq NUM]]`
 
---------
 
-**Sort Part of a File**
+#### Sort Part of a File
 
 _Example: sorting lines 2 → EOF of file_ `index.md`
 
@@ -346,9 +355,6 @@ _sort lines from_ `begin` → `end` of file `filename`
 # begin = $1, end = $2, file = $3
 head -$(($1 - 1)) "$3">> temp_file && tail +"$1" "$3" | head -$(( $2 - $1+ 1)) | sort >> temp_file && tail +$(($2 + 1)) "$3">> temp_file && mv temp_file "$3"
 ```
-
---------
-
 
 
 ### wc
@@ -497,6 +503,14 @@ grep "text-pattern" /directory/to/search
 grep -c "pattern" /directory/to/search
 ```
 
+- print `n` lines after match
+
+```shell
+grep -An "unreachable" helloworld.c
+```
+
+
+
 - grep (**PDF**) pdfgrep:
 _Examples_
 `find /path -iname '*.pdf' -exec pdfgrep pattern {}`
@@ -511,35 +525,37 @@ _Examples_
 
 stty [options]  [modes] [Options: -a, --all -F dev, --device=dev -g, --save --help --version]
 
-Set terminal I/O options for the current standard input device. Without options, stty reports the terminal settings that differ from those set by running stty sane, where ^ indicates the Ctrl key and `^` indicates a null value. Most modes can be negated using an optional - (shown in brackets). The corresponding description is also shown in brackets. Some arguments use non-POSIX extensions; these are marked with *.
+Set terminal I/O options for the current standard input device. Without options, stty reports the terminal settings that differ from those set by running stty sane, where ^ indicates the Ctrl key and `^` indicates a null value. Most modes can be negated using an optional - (shown in brackets). The corresponding description is also shown in brackets. Some arguments use non-POSIX extensions; these are marked with "\*"
 
-   - Bash How To
-      - <http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html#toc>
+Download options for video:
 
+`youtube-dl -F <video-url>`
 
-- Download options for video
-` youtube-dl -F <video-url> `
-
-- Download video in format
+Download video in format
 ` youtube-dl -f <format code> <video-url>`
-- downloading a playlist with start and end index
-- `youtube-dl -i -f mp4 --yes-playlist --playlist-items <ITEMS>
-	- ITEMS: start-end **or** idx1, idx2, ...
 
-- `youtube-dl -i -f mp4 --yes-playlist --playlist-start <NUMBER>
+Downloading a playlist with start and end index
 
-- downloading a playlist `youtube-dl -i -f mp4 --yes-playlist
+`youtube-dl -i -f mp4 --yes-playlist --playlist-items <ITEMS>
+
+ITEMS: start-end **or** idx1, idx2, ...
+
+`youtube-dl -i -f mp4 --yes-playlist --playlist-start <NUMBER>
+
+
+Downloading a playlist `youtube-dl -i -f mp4 --yes-playlist
 'https://www.youtube.com/watch?v=7Vy8970q0Xc&list=PLwJ2VKmefmxpUJEGB1ff6yUZ5Zd7Gegn2'
 `
-## Display : xrandr
+
+### Display : xrandr
 run command for Apple Cinema display
 
 xrandr --output HDMI1 --mode 1680x1050 --scale 1.142857x1.0285714 --panning 1680x1050
 
-## File Rename: vidir
+### File Rename: vidir
 
 
-## File Rename : vimv
+### File Rename : vimv
 - (using the plugin: thameera/vimv.git)
 - $ git clone https://github.com/thameera/vimv.git
 - sudo cp vimv/vimv /usr/local/bin/ #Copy binary to the $PATH
@@ -737,9 +753,10 @@ filename -Tpdf filename >filename.pdf
 
 
 
-# Network Manager
+## Network Manager
 
-## Examples
+### Examples
+
 - List nearby wifi networks
 `nmcli device wifi list`
 - Connect to a hidden network
@@ -817,7 +834,6 @@ label=💻
 command=i3mem
 interval=30
 label=🧠
-
 ```
 
 script: `i3mem`
@@ -949,3 +965,38 @@ GET /                          200 OK
 
 View the ngrok console at: [http://127.0.0.1:4040/](http://127.0.0.1:4040/)
 
+
+### tr
+
+`tr` is a translator tool from one character set to another.
+
+It can convert one byte set to a specific character set you desire.
+
+For example, it can be used to translate the output of `/dev/urandom` into the alphabet:
+
+```sh
+# set character set to "don't care"
+export LC_CTYPE=C
+val=$(($1+1 ) &&  head -$(( $1 * 3 )) /dev/urandom | tr -cd '[:alpha:]' | fold -w 80 > $2 | mod $2 "${val},d" >/dev/null
+```
+
+Note: for macOS, you must set the character set to "don't care" so it doesn't complain about byte sets.
+
+### echo
+
+Handy command to print out binary operations on the commandline:
+
+```sh
+# prints 0
+echo $((0b011&0b00))
+
+```
+
+### bc
+
+Print numbers in binary using `bc`:
+
+```sh
+# output is 1111000
+echo "obase=2;$((0xF << 3))" | bc
+```

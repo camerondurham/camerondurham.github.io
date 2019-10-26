@@ -17,11 +17,16 @@ memos:
         url: /bash/
       - title: "docker"
         url: /docker/
+      - title: "gcc"
+        url: /gcc/
+      - title: "markdown"
+        url: /markdown/
       - title: "sed"
         url: /sed/
       - title: "sql"
         url: /sql/
+      - title: "utils"
+        url: /utils/
       - title: "vim"
         url: /vim/
-      - title: "markdown"
-        url: /markdown/
+
