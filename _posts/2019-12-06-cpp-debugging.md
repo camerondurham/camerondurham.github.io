@@ -76,8 +76,8 @@ You might pick it up after a quick glance in this context, but what if this is h
 The issue with this is you'll compile and run the program without crashing or producing errors. Why? The memory allocator for most Unix based systems will grant the program memory on
 the heap in 16-byte chunks, meaning the length 5 array from `allocfoo(5)` will actually be given space for six 4-byte int blocks. Thus, calling `foo[5] = 4` won't access "out of bounds".
 
-However, problems like these could potentially grow in to huge problems if you run it 
-on a different machine or different compiler. Fortunately, you can use tools such as `clang++` 
+However, problems like these could potentially grow in to huge problems if you run it
+on a different machine or different compiler. Fortunately, you can use tools such as `clang++`
 and `Valgrind` to help!
 
 When you compile with:
@@ -87,7 +87,7 @@ When you compile with:
 ```
 
 You recieve the following error when running the program:
-``` 
+```
 ==58598==
 ERROR: AddressSanitizer:
 heap-buffer-overflow on address 0x603000001734
@@ -98,10 +98,12 @@ WRITE of size 4 at 0x603000001734 thread T0
 Or with Valgrind:
 
 ```shell
+valgrind -leak-check=yes ./heap_overflow.o
+
 ==23== Invalid write of size 4
 ==23==    at 0x109237: setfoo(int, int) (in /home/work/heap_overflow.o)
 ==23==    by 0x109258: main (in /home/work/heap_overflow.o)
-==23==  Address 0x48ba464 is 0 bytes after a block of size 20 alloc'd
+==23==  Address 0x48ba464 is 0 bytes after a block of size 20 alloc d
 ==23==    at 0x489C344: operator new[](unsigned long) (vg_replace_malloc.c:433)
 ==23==    by 0x10920B: allocfoo(unsigned long) (in /home/work/heap_overflow.o)
 ==23==    by 0x109249: main (in /home/work/heap_overflow.o)
