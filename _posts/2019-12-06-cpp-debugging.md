@@ -3,7 +3,7 @@ layout: posts
 classes: wide
 title: Debugging weird c++ behavior
 date: 2019-12-06
-tags: c++ cs104 oop
+tags: c++ cs104 gcc
 ---
 
 
@@ -11,13 +11,16 @@ Sometimes you'll have a program that seems to work but will produce a
 ton of Valgrind errors. You'll get some fairly strange errors about invalid reads
 or confusing c++ library functions. Ever thought the compiler might be able to
 help solve these issues before you had to slog through pages of these debugger
-errors? Introducing the compiler flag `-O2` to the rescue! (that's an O as in
-Oreo, or Optimize) Normally, when you compile c++ programs, you'll ask for all
-warnings with the `-Wall` flag. After the compiler checks for these errors, it
-will build your program with a ton of fancy optimizations to make your code
-faster*. The problem with this is
-sometimes you'll miss a few potential errors by not including the optimization
-step. You can use the -O2 flag to optimize and error check at the same time.
+errors? Introducing the compiler flag `-Ox` to the rescue! (that's an O as in
+Oreo, or Optimize). There are three levels of optimization but from my reading,
+using `-O2` is best in practice. Normally, when you compile c++ programs, you'll
+ask for all warnings with the `-Wall` flag. After the compiler checks for these
+errors, it will build your program with a ton of fancy optimizations to make
+your code faster*. However, you can turn on more optimizations to check for
+extra errors.  Compiler optimizations will generally only improve your runtime
+if you really know how to write loops and switch statements so the compiler
+can "parallelize" blocks of code.
+
 
 \* you can learn about these more in a computer architecture class such as [USC's fantastic  CS356 course](https://usc-cs356.github.io)!
 
