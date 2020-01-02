@@ -58,7 +58,7 @@ plugins:
 author:
   name   : "Cameron Durham"
   avatar : "/assets/images/headshot.jpg"
-  bio              : "Finding the Linux alternative since 2015. "
+  bio              : "My two favorite things are running {code compiled w/o errors, on a nice day}"
   links:
     - label: "Website"
       icon: "fas fa-fw fa-link"
