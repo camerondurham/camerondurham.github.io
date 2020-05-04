@@ -8,13 +8,6 @@ even darker: #143D57
 lavendar-ish: #5C80BC
 
  */
-.navbar
-{
-    background-color: #90BEDE;
-    color: #90BEDE;
-    font-size: 15px;
-}
-
 
 .container
 {
@@ -31,8 +24,23 @@ lavendar-ish: #5C80BC
 
 body
 {
-    background-color: #E0E2DB;
-    color: #5C80BC;
+    /* background-color: #E0E2DB; */
+    /* color: #5C80BC; */
+    background-color: white;
+    color: black;
+    font-family: 'Playfair Display', serif;
+}
+
+
+#main-text p
+{
+    font-size: 12pt;
+    line-height: 200%;
+}
+
+#images p
+{
+    font-size: 14pt;
 }
 
 #picture
@@ -42,7 +50,6 @@ body
     width: 300px;
     background-color: #E0E2DB;
 }
-
 
 .card
 {
@@ -68,32 +75,12 @@ body
 }
 
 
-/* search results div */
-#search-results
-{
-    font-size: 25px;
-}
-
 /* COLOR STUFF */
-
-/* all buttons */
-button.btn, a.btn
-{
-    background: #2274A5;
-    border: #2274A5;
-    color: #DFFDFF;
-}
 
 /* search results */
 a, select.form-control, td
 {
     color: #2274A5;
-}
-
-/* navbar text */
-.navbar-light .navbar-nav .active>.nav-link
-{
-    color: #143D57;
 }
 
 th, table th.text-center
@@ -106,3 +93,29 @@ th, table th.text-center
     background: #90BEDE;
 }
 
+
+.vert
+{
+    max-width: 700px;
+}
+
+.horiz
+{
+    max-width: 1500px;
+}
+
+.square
+{
+    max-width: 700px;
+}
+
+.image-caption
+{
+    padding-top: 250px;
+    padding-bottom: 250px;
+}
+#images
+{
+    padding-left: 10%;
+    padding-right: 10%;
+}
