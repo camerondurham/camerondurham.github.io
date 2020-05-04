@@ -1,0 +1,108 @@
+/*
+Color scheme:
+light blue: #DFFDFF
+mid blue navbar: #90BEDE
+grey: #E0E2DB
+darker blue: #2274A5
+even darker: #143D57
+lavendar-ish: #5C80BC
+
+ */
+.navbar
+{
+    background-color: #90BEDE;
+    color: #90BEDE;
+    font-size: 15px;
+}
+
+
+.container
+{
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+
+.intro
+{
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+body
+{
+    background-color: #E0E2DB;
+    color: #5C80BC;
+}
+
+#picture
+{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    width: 300px;
+    background-color: #E0E2DB;
+}
+
+
+.card
+{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #5C80BC;
+}
+
+.card-title
+{
+    font-size: 20px;
+    margin-top: auto;
+}
+
+.card img
+{
+    max-height: 200px;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* search results div */
+#search-results
+{
+    font-size: 25px;
+}
+
+/* COLOR STUFF */
+
+/* all buttons */
+button.btn, a.btn
+{
+    background: #2274A5;
+    border: #2274A5;
+    color: #DFFDFF;
+}
+
+/* search results */
+a, select.form-control, td
+{
+    color: #2274A5;
+}
+
+/* navbar text */
+.navbar-light .navbar-nav .active>.nav-link
+{
+    color: #143D57;
+}
+
+th, table th.text-center
+{
+    color: #2274A5;
+}
+
+#search-results th
+{
+    background: #90BEDE;
+}
+
