@@ -1,0 +1,140 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Oxygen&display=swap'); */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap');
+
+body, html
+{
+    /* font-family: 'Oxygen', sans-serif; */
+    font-family: 'Quicksand', sans-serif;
+    text-rendering: optimizeLegibility;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+}
+
+
+a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
+.container
+{
+    background-color: transparent;
+    margin: auto;
+    max-width: 800px;
+}
+
+#about
+{
+    margin-top: 25em;
+}
+
+#projects
+{
+    max-width: 800px;
+}
+
+.item
+{
+    margin: 4em;
+}
+
+.bigger
+{
+    font-size: 48px;
+}
+
+.medium
+{
+    font-size: 32px;
+}
+
+
+.container #splash
+{
+    margin-top: 85%;
+    margin-bottom: auto;
+}
+
+#splash
+{
+/* center item responsive */
+
+    text-align: center;
+    bottom: 0;
+    height: 100px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.links
+{
+    font-size: 32px;
+    margin-right: 35px;
+    margin-left:  35px;
+}
+
+
+#navigation
+{
+    width: 100%;
+    padding-bottom: 3em;
+}
+
+#navigation .links
+{
+    display: block;
+    float: right;
+    padding-left: 2rem;
+}
+
+#navigation .links a
+{
+    font-weight: inherit;
+}
+
+
+#navigation .links:first-of-type
+{
+    float: left;
+    padding-left: 0;
+}
+
+#navigation .links.active .label
+{
+    height: 0;
+    overflow: hidden;
+}
+
+
+p
+{
+    text-indent: 2em;
+    font-size: 18px;
+    padding: 30px;
+}
+
+.contact-info
+{
+    display: flex;
+    justify-content: center;
+}
+
+
+img.social
+{
+    width: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+img.proj
+{
+    width: 300px;
+    margin-left: 2.0em;
+}
