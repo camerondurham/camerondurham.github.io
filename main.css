@@ -2,16 +2,24 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400&display=swap');
 
-body, html
+body
 {
     /* font-family: 'Oxygen', sans-serif; */
     font-family: 'Quicksand', sans-serif;
     text-rendering: optimizeLegibility;
-    margin: 0 auto;
-    width: 100%;
-    display: grid;
+
+    /*    margin: 0 auto; */
+
+    line-height: 1.5;
+    margin: 4em auto 5rem auto;
+    max-width: 800px;
+
 }
 
+html
+{
+margin-left: calc(100vw - 100%);
+}
 
 a
 {
@@ -28,7 +36,7 @@ a
 
 #about
 {
-    margin-top: 25em;
+    margin-top: 15em;
 }
 
 #projects
@@ -38,7 +46,8 @@ a
 
 .item
 {
-    margin: 4em;
+    /* up/below spaced more then left/right */
+    margin: 4em 1rem 4rem 1rem;
 }
 
 .bigger
@@ -48,19 +57,20 @@ a
 
 .medium
 {
-    font-size: 32px;
+    font-size: 28px;
 }
 
 
-.container #splash
+#splash
 {
-    margin-top: 85%;
-    margin-bottom: auto;
+    /* margin-top: 85%; */
+    /* margin-bottom: auto; */
+    line-height: 1.0;
 }
 
 #splash
 {
-/* center item responsive */
+    /* center item responsive */
 
     text-align: center;
     bottom: 0;
@@ -72,12 +82,48 @@ a
     right: 0;
 }
 
+#homepage-links
+{
+    margin-top: 2rem;
+}
+/*
+TODO: Make these flexible and change with media type
+
+Default: mobile
+ */
 .links
 {
-    font-size: 32px;
-    margin-right: 35px;
-    margin-left:  35px;
+    font-size: 24px;
+    margin-right:  5px;
+    margin-left:   5px;
 }
+
+#navigation.links
+{
+    padding-left: 2rem;
+}
+
+
+
+/* iPad vertical is 768px. Media query set for screens >=768px  */
+@media only screen and (max-width: 768px) {
+    body
+    {
+        margin: 1rem 1rem;
+    }
+    .links {
+
+    }
+}
+/* Small desktop starts at 992px. Media query set for screens >=992px */
+@media only screen and (max-width: 992px) {
+    .links {
+    }
+}
+
+
+
+
 
 
 #navigation
@@ -90,7 +136,7 @@ a
 {
     display: block;
     float: right;
-    padding-left: 2rem;
+    /* padding-left: 2rem; */
 }
 
 #navigation .links a
@@ -116,7 +162,7 @@ p
 {
     text-indent: 2em;
     font-size: 18px;
-    padding: 30px;
+    /* padding: 30px; */
 }
 
 .contact-info
