@@ -1,0 +1,6 @@
+[submodule "camsblog/themes/d3c3nt"]
+	path = camsblog/themes/d3c3nt
+	url = git://git.figbert.com/d3c3nt.git
+[submodule "camsblog/themes/zola.386"]
+	path = camsblog/themes/zola.386
+	url = https://github.com/lopes/zola.386
