@@ -4,7 +4,8 @@
 pkgs.mkShell {
   buildInputs = [
     pkgs.zola
-    pkgs.act
+# TODO: re-enable act when I can figure out how to make it work
+    # pkgs.act
   ];
 
   shellHook = ''
