@@ -4,6 +4,7 @@
 pkgs.mkShell {
   buildInputs = [
     pkgs.zola
+    pkgs.act
   ];
 
   shellHook = ''
