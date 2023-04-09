@@ -4,14 +4,16 @@
 pkgs.mkShell {
   buildInputs = [
     pkgs.zola
-# TODO: re-enable act when I can figure out how to make it work
-    # pkgs.act
+
+    # pkgs.act TODO: re-enable act when I can figure out how to make it work
   ];
 
   shellHook = ''
     echo Starting blog shell...
-    # make sure to pull in latest chnage from themes...
+    # make sure to pull in latest change from themes...
     git submodule update --init --recursive
+    alias g="git"
+    zola serve
   '';
 
   # Add environment variables here, e.g.:
