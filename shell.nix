@@ -1,10 +1,10 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> { } }:
 
 # https://nixos.wiki/wiki/Development_environment_with_nix-shell
 pkgs.mkShell {
   buildInputs = [
     pkgs.zola
-
+    pkgs.nixpkgs-fmt
     # pkgs.act TODO: re-enable act when I can figure out how to make it work
   ];
 

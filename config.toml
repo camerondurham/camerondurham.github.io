@@ -37,5 +37,4 @@ custom_css = [
 
 [extra.analytics]
 enabled = true
-goatcounter_user = "empirical6122"
-# goatcounter_host = ""    # default= goatcounter.com
+goatcounter_user = "u64cam"
