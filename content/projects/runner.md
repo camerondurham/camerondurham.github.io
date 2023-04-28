@@ -4,5 +4,5 @@ description = "Remote code executor server, frontend, and CLI to run untrusted c
 weight = 1
 
 [extra]
-link_to = "https://github.com/camerondurham/runner"
+link_to = "https://u64.cam/runner"
 +++
