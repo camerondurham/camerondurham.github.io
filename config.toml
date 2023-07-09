@@ -29,6 +29,9 @@ menu = [
 socials = [
     { name = "github", url = "https://github.com/camerondurham/", icon = "github" },
     { name = "stackoverflow", url = "https://stackoverflow.com/users/4676641/cam", icon="stack-overflow" },
+    { name = "linkedin", url = "https://www.linkedin.com/in/cameron-durham/", icon = "linkedin" },
+    { name = "spotify", url = "https://open.spotify.com/user/mnakgi5690zc9bqpbyk8z59ma", icon = "spotify" },
+    { name = "instagram", url = "https://www.instagram.com/u64.cam/", icon = "instagram" },
 ]
 
 custom_css = [
