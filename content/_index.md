@@ -1,5 +1,4 @@
 +++
-title = "hey, i'm cam"
-path = "about"
-page_template = "page.html"
+[extra]
+section_path = "about/_index.md"
 +++
