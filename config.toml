@@ -22,7 +22,7 @@ theme = "auto"
 
 menu = [
     { name = "/about", url = "/about", weight = 1 },
-    { name = "/lang-sandbox", url = "https://u64.cam/runner", weight = 2},
+    { name = "/codecanvas", url = "https://u64.cam/runner", weight = 2},
     { name = "/photos", url = "/photos", weight = 2 },
     { name = "/projects", url = "/projects", weight = 2 },
     # { name = "/posts", url = "/posts", weight = 3 },
