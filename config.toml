@@ -34,6 +34,9 @@ socials = [
     { name = "stackoverflow", url = "https://stackoverflow.com/users/4676641/cam", icon="stack-overflow" },
     { name = "linkedin", url = "https://www.linkedin.com/in/cameron-durham/", icon = "linkedin" },
     { name = "hacker-news", url = "https://news.ycombinator.com/user?id=super_linear", icon="hacker-news" },
+    { name = "spotify", url = "https://open.spotify.com/user/mnakgi5690zc9bqpbyk8z59ma", icon = "spotify" },
+    { name = "discord", url = "https://discordapp.com/users/632337069955612703/", icon = "discord" },
+    { name = "steam", url = "https://steamcommunity.com/profiles/76561198314787235/", icon = "steam" },
 ]
 
 custom_css = [
