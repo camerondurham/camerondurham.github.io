@@ -1,6 +1,6 @@
 +++
 title = "Previous Work"
-description = "I went to USC in Los Angeles for my Conmputer Science undergrad degree and graduated in May 2021. At USC I was a TA for CS104. Before that, I interned (virtually) on Tesla's Infotainment UI team and Oracle's Austin cloud hub."
+description = "I went to USC in Los Angeles for my Computer Science undergrad degree where I was a TA for CS104 and graduated in May 2021. I interned on Tesla's Infotainment UI team (where I worked on building a platform to run vehicle infotainment UI software on-demand), and at Amazon."
 weight = 2 
 +++
 
