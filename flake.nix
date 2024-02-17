@@ -2,7 +2,7 @@
   description = "An overengineered and unnecessary flake for my blog";
 
   nixConfig.bash-prompt = "[nix(cams-blog)] ";
-  inputs = { nixpkgs.url = "github:nixos/nixpkgs/22.11"; };
+  inputs = { nixpkgs.url = "github:nixos/nixpkgs/23.11"; };
 
   outputs = { self, nixpkgs }:
     let
