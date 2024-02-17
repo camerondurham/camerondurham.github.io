@@ -1,11 +1,7 @@
 +++
 title = "Previous Work"
-description = "I obtained my undergrad Computer Science degree from USC in Los Angeles in May 2021. At USC, I was a Lead Course Producer for CS104 (the school's DS&A course in C++). Before that, I interned on Tesla's Infotainment UI team (building a platform to run vehicle infotainment UI software on-demand), and on Amazon's 3P search experience (building automated customer contact triaging tooling)."
+description = "I graduated from the University of Southern California in 2021 with a B.S. in Computer Science. As a student, I served as Lead Course Producer for USC's Data Structures and Algorithms course. I also completed internships at Tesla working to virtualize infotainment user interfaces and at Amazon developing automated tools to automate customer support workflows."
 weight = 2 
 +++
 
-I went to USC in Los Angeles for my undergrad degree in computer science and
-graduated in May 2021. Before that, I was an intern at Tesla working on
-building remote simulations of the Model SX and 3Y infotainment UI builds (kind
-of like Vercel for the vehicle infotainment system). Before that, I was an
-intern at Amazon and Oracle.
+I graduated from the University of Southern California in 2021 with a B.S. in Computer Science. As a student, I served as Lead Course Producer for USC's Data Structures and Algorithms course. I also completed internships at Tesla, where I worked closely with Media UI, Test Automation, and Technical Writing teams to automate working to virtualize Model S/X, 3/Y infotainment user interfaces and at Amazon developing automated tools to automate customer support workflows.
