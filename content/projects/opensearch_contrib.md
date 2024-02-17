@@ -4,6 +4,6 @@ description = "Fix broken parsing of single-line comments in OpenSearch cluster 
 weight = 3
 
 [extra]
-link_to = "https://github.com/earthly/earthly/pull/1244"
+link_to = "https://github.com/opensearch-project/OpenSearch/pull/11816"
 +++
 
