@@ -1,7 +1,7 @@
 +++
 title = "still 3"
 description = "3D printed pyramid for Parsons Photo BFA Sophomore Thesis"
-weight = 2
+weight = 3
 
 [extra]
 local_image = "/photos/still-3.jpg"
