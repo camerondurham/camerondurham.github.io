@@ -22,7 +22,7 @@ theme = "auto"
 
 menu = [
     { name = "/codecanvas", url = "https://u64.cam/codecanvas", weight = 2},
-    { name = "/photograpy", url = "/photos", weight = 2 },
+    { name = "/photos", url = "/photos", weight = 2 },
     { name = "/projects", url = "/projects", weight = 2 },
     { name = "/posts", url = "/posts", weight = 3 },
 ]
@@ -32,10 +32,10 @@ socials = [
     { name = "stackoverflow", url = "https://stackoverflow.com/users/4676641/cam", icon="stack-overflow" },
     { name = "linkedin", url = "https://www.linkedin.com/in/cameron-durham/", icon = "linkedin" },
     { name = "hacker-news", url = "https://news.ycombinator.com/user?id=super_linear", icon="hacker-news" },
-    { name = "discord", url = "https://discordapp.com/users/632337069955612703/", icon = "discord" },
+    # { name = "discord", url = "https://discordapp.com/users/632337069955612703/", icon = "discord" },
     { name = "spotify", url = "https://open.spotify.com/user/mnakgi5690zc9bqpbyk8z59ma", icon = "spotify" },
     # { name = "bluesky", url = "https://bsky.app/profile/u64.bsky.social", icon = "bluesky" },
-    { name = "steam", url = "https://steamcommunity.com/profiles/76561198314787235/", icon = "steam" },
+    # { name = "steam", url = "https://steamcommunity.com/profiles/76561198314787235/", icon = "steam" },
 ]
 
 custom_css = [
