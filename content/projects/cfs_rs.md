@@ -1,6 +1,7 @@
 +++
 title = "cfs-rs"
 description = "Very minimal container runtime in Rust. Implementation of Containers from Scratch but in Rust, based on Liz Rice's talks."
+date = "2021-06-06"
 weight = 1
 
 [extra]
