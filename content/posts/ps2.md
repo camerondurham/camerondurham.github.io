@@ -44,7 +44,7 @@ Notes and resources documenting issues observed on a 2022 Polestar 2 with Perfor
 **Severity**: Medium (affects driving comfort and potentially safety)
 
 **Evidence**:
-- [Video Documentation - Highway Noise](https://share.icloud.com/photos/0842YqazQqlXTrYDVoXdd3q8A)
+- Unlisted YouTube Video/Audio Documentation - Highway Noise: [https://youtu.be/GY7blfG6En8](https://youtu.be/GY7blfG6En8)
 
 **Potential Causes**:
 - Foam insulation pad between wheel and tire causing uneven mass distribution during rotation
