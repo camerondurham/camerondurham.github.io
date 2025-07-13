@@ -9,10 +9,14 @@ Website zola replacement.
 * [getzola :: themes :: apollo](https://www.getzola.org/themes/apollo/)
 * [not-matthias/apollo](https://github.com/not-matthias/apollo)
 
-## dev notes
+## dev setup
+
+After cloning the repository:
 
 ```sh
-# run after cloning to fetch theme, otherwise you'll get "Failed to open file ... themes/apollo/theme.html
-# when running zola serve
+# Fetch theme submodule (required for zola serve)
 git submodule update --init --recursive
+
+# Install git hooks (recommended - strips trailing whitespace on commit)
+./scripts/install-hooks.sh
 ```

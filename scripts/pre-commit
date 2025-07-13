@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Strip trailing whitespace from staged files
+git diff --cached --name-only --diff-filter=ACM | while read file; do
+    # Skip binary files
+    if file "$file" | grep -q "text"; then
+        # Remove trailing whitespace
+        sed -i '' 's/[[:space:]]*$//' "$file"
+        # Re-add the file to staging if it was modified
+        git add "$file"
+    fi
+done

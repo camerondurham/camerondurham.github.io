@@ -1,31 +1,66 @@
 +++
-title="Polestar 2 Service"
+title="Polestar 2 Service Issues Documentation"
 date="2025-07-02"
 +++
 
-Notes on issues I've observed on my 2022 Polestar 2 with Performance and Pilot Package.
+Notes and resources documenting issues observed on a 2022 Polestar 2 with Performance and Pilot Package.
 
-### Clicking During Deceleration at Low Speeds
+## Vehicle Information
+- **Model**: 2022 Polestar 2
+- **Package**: Performance and Pilot Package
+- **Affected Model Years**: Various (see individual issues)
 
-When 1-pedal driving is enabled, will hear faint clicking sound from rear axels when windows are rolled down.
+## Issue #1: Rear Axle Clicking During Deceleration
 
-- NHTSA ID Number: 10253278
-- Manufacturer Communication Number: 36854.1.0
-- Affects Polestar 2 Model Year 2021-2022
-- NHTSA ID Lookup: [www.nhtsa.gov/?nhtsaId=10253278](https://www.nhtsa.gov/?nhtsaId=10253278)
-- Manufacturer Communications: [MC-10253278-0001.pdf](https://static.nhtsa.gov/odi/tsbs/2024/MC-10253278-0001.pdf)
-- Example Sound: [Polestar Tech Hub Sound Upload](https://cdn.polestartechhub.com/uploads/6616cd04bfff4d0001bd68af/TJ%2036854_1.m4a)
+**Symptoms**: Faint clicking sound from rear axles during deceleration
 
-### Suspension on Front Shaking/Knocking Noises at High Speeds
+**When it occurs**:
+- 1-pedal driving enabled
+- Decelerating quickly from ~10-20mph
+- Most audible with windows rolled down
 
-Need to record this specific issue, only recently noticed it when driving ~65-75mph on smooth highway road.
+**Severity**: Low (audible but not affecting vehicle operation)
 
-Potentially related to suspension related manufacturer communications.
-- NHTSA ID Number: 10244272
-- Manufacturer Communication Number: 36527.3.0
-- NHTS ID Lookup: [www.nhtsa.gov/?nhtsaId=10244272](https://www.nhtsa.gov/?nhtsaId=10244272)
-- Manufacturer Communications: [MC-10244272-0001.pdf](https://static.nhtsa.gov/odi/tsbs/2023/MC-10244272-0001.pdf)
+**Evidence**:
+- [Audio Example - Polestar Tech Hub](https://cdn.polestartechhub.com/uploads/6616cd04bfff4d0001bd68af/TJ%2036854_1.m4a)
 
-## Other Useful Resources
+**Official Documentation**:
+- **NHTSA ID**: 10253278
+- **Manufacturer Communication**: 36854.1.0
+- **Affected Models**: Polestar 2 Model Year 2021-2022
+- **NHTSA Lookup**: [www.nhtsa.gov/?nhtsaId=10253278](https://www.nhtsa.gov/?nhtsaId=10253278)
+- **Technical Service Bulletin**: [MC-10253278-0001.pdf](https://static.nhtsa.gov/odi/tsbs/2024/MC-10253278-0001.pdf)
 
-- [NHTSA Content on 2022 Polestar 2 AWD](https://www.nhtsa.gov/vehicle/2022/POLESTAR/POLESTAR%252525202/5%25252520HB/AWD)
+## Issue #2: Front Suspension Noise and Tire Wobble
+
+**Symptoms**:
+- Knocking/wobble sounds from front wheels
+- Sensation similar to unbalanced wheels
+
+**When it occurs**:
+- Driving speeds over ~50mph
+- Most noticeable on smooth highway surfaces
+
+**Severity**: Medium (affects driving comfort and potentially safety)
+
+**Evidence**:
+- [Video Documentation - Highway Noise](https://share.icloud.com/photos/0842YqazQqlXTrYDVoXdd3q8A)
+
+**Potential Causes**:
+- Foam insulation pad between wheel and tire causing uneven mass distribution during rotation
+
+**Official Documentation**:
+- **NHTSA ID**: 10244272
+- **Manufacturer Communication**: 36527.3.0
+- **NHTSA Lookup**: [www.nhtsa.gov/?nhtsaId=10244272](https://www.nhtsa.gov/?nhtsaId=10244272)
+- **Technical Service Bulletin**: [MC-10244272-0001.pdf](https://static.nhtsa.gov/odi/tsbs/2023/MC-10244272-0001.pdf)
+
+**Community Discussion**:
+- [Reddit Thread - Service Center Owner Comments](https://www.reddit.com/r/Polestar/comments/1anfxk8/comment/kpzbbqj)
+
+## Additional Resources
+
+### Polestar 2 Reference Materials
+- [Polestar 2 Emergency Information Guide](https://github.com/drittich/polestar2-emergency-info)
+- [NHTSA Safety Information - 2022 Polestar 2 AWD](https://www.nhtsa.gov/vehicle/2022/POLESTAR/POLESTAR%252525202/5%25252520HB/AWD)
+
