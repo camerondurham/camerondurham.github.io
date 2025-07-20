@@ -63,4 +63,4 @@ Notes and resources documenting issues observed on a 2022 Polestar 2 with Perfor
 ### Polestar 2 Reference Materials
 - [Polestar 2 Emergency Information Guide](https://github.com/drittich/polestar2-emergency-info)
 - [NHTSA Safety Information - 2022 Polestar 2 AWD](https://www.nhtsa.gov/vehicle/2022/POLESTAR/POLESTAR%252525202/5%25252520HB/AWD)
-
+- [Performance Upgrade](https://www.polestar.com/us/performance-software-upgrade/)
