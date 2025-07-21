@@ -43,6 +43,9 @@ custom_css = [
 ]
 
 
+[extra.analytics]
+enabled = true
+
 # switch to non-deprecated config
 [extra.analytics.goatcounter]
 user = "u64cam"
