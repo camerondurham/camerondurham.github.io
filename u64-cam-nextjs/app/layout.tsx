@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import SocialLinks from "@/components/SocialLinks";
+import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +18,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "u64.cam",
   description: "Cameron Durham's personal website",
+  alternates: {
+    types: {
+      'application/rss+xml': '/api/feed',
+    },
+  },
 };
 
 export default function RootLayout({
@@ -36,6 +42,7 @@ export default function RootLayout({
         <footer>
           <SocialLinks />
         </footer>
+        <Analytics />
       </body>
     </html>
   );
