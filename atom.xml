@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title></title>
+	<link href="https://u64.cam/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://u64.cam"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2025-07-02T00:00:00+00:00</updated>
+	<id>https://u64.cam/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Polestar 2 Service Issues Documentation</title>
+		<published>2025-07-02T00:00:00+00:00</published>
+		<updated>2025-07-02T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://u64.cam/posts/ps2/" type="text/html"/>
+		<id>https://u64.cam/posts/ps2/</id>
+		<content type="html">&lt;p&gt;Service issues documented for 2022 Polestar 2 (Performance + Pilot Package).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;issue-1-front-suspension-noise-wobble&quot;&gt;Issue 1: Front Suspension Noise&#x2F;Wobble&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Symptoms:&lt;&#x2F;strong&gt; Knocking&#x2F;wobble sounds from front wheels at 50+ mph, similar to unbalanced tires&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Potential Cause:&lt;&#x2F;strong&gt; Foam insulation pad between wheel and tire causing uneven mass distribution&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Evidence:&lt;&#x2F;strong&gt; &lt;a href=&quot;https:&#x2F;&#x2F;youtu.be&#x2F;GY7blfG6En8&quot;&gt;Highway noise video&lt;&#x2F;a&gt; | &lt;a href=&quot;https:&#x2F;&#x2F;www.reddit.com&#x2F;r&#x2F;Polestar&#x2F;comments&#x2F;1anfxk8&#x2F;fyi_if_you_get_a_tire_wobble&#x2F;&quot;&gt;Reddit discussion&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;issue-2-low-speed-knocking&quot;&gt;Issue 2: Low-Speed Knocking&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Symptoms:&lt;&#x2F;strong&gt; Knocking&#x2F;creaking from front suspension when turning at low speeds&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Documentation:&lt;&#x2F;strong&gt; NHTSA ID 10244272 | &lt;a href=&quot;https:&#x2F;&#x2F;static.nhtsa.gov&#x2F;odi&#x2F;tsbs&#x2F;2023&#x2F;MC-10244272-0001.pdf&quot;&gt;TSB 10244272 (2023)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;issue-3-rear-axle-clicking&quot;&gt;Issue 3: Rear Axle Clicking&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Symptoms:&lt;&#x2F;strong&gt; Faint clicking from rear axles during 1-pedal deceleration (10-20mph)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Affected:&lt;&#x2F;strong&gt; 2021-2022 Polestar 2&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Evidence:&lt;&#x2F;strong&gt; &lt;a href=&quot;https:&#x2F;&#x2F;cdn.polestartechhub.com&#x2F;uploads&#x2F;6616cd04bfff4d0001bd68af&#x2F;TJ%2036854_1.m4a&quot;&gt;Audio example&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Documentation:&lt;&#x2F;strong&gt; NHTSA ID 10253278 | &lt;a href=&quot;https:&#x2F;&#x2F;static.nhtsa.gov&#x2F;odi&#x2F;tsbs&#x2F;2024&#x2F;MC-10253278-0001.pdf&quot;&gt;TSB 10253278 (2024)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;resources&quot;&gt;Resources&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;drittich&#x2F;polestar2-emergency-info&quot;&gt;Polestar 2 Emergency Info&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.loopybunny.co.uk&#x2F;polestar&#x2F;&quot;&gt;Polestar Tech Info&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.nhtsa.gov&#x2F;vehicle&#x2F;2022&#x2F;POLESTAR&#x2F;POLESTAR%252525202&#x2F;5%25252520HB&#x2F;AWD&quot;&gt;NHTSA safety info for Polestar 2 (all years)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.polestar.com&#x2F;us&#x2F;performance-software-upgrade&#x2F;&quot;&gt;Polestar Performance Software Upgrade&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>Coffee Log</title>
+		<published>2025-05-18T00:00:00+00:00</published>
+		<updated>2025-05-18T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://u64.cam/posts/coffee/" type="text/html"/>
+		<id>https://u64.cam/posts/coffee/</id>
+		<content type="html">&lt;p&gt;An infrequently updated log of the coffees I&#x27;ve tried and prefer.&lt;&#x2F;p&gt;
+&lt;p&gt;Current favorite and the only one I&#x27;ve bought multiple times is Counter Culture&#x27;s apollo roast. Their beans are consistently high quality and it&#x27;s honestly a better value than some of the local roaster&#x27;s beans I&#x27;ve bought.&lt;&#x2F;p&gt;
+&lt;p&gt;Here&#x27;s the Amazon link (not an affiliate link): &lt;a href=&quot;https:&#x2F;&#x2F;www.amazon.com&#x2F;dp&#x2F;B00RKD7SUU&quot;&gt;https:&#x2F;&#x2F;www.amazon.com&#x2F;dp&#x2F;B00RKD7SUU&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Coffee Roaster&lt;&#x2F;th&gt;&lt;th&gt;Roast Name&lt;&#x2F;th&gt;&lt;th&gt;Image&lt;&#x2F;th&gt;&lt;th&gt;Last Updated&lt;&#x2F;th&gt;&lt;th&gt;Notes&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;Roastery of Cave Creek&lt;&#x2F;td&gt;&lt;td&gt;Cowgirl - Lighter Roast&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;roc2.png&quot; alt=&quot;roc2.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-06-02&lt;&#x2F;td&gt;&lt;td&gt;Good light roast, somewhat fruity and notes of berries. Relatively cheap as coffee beans got at ~$12 from Whole Foods&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Counter Culture Coffee&lt;&#x2F;td&gt;&lt;td&gt;Apollo - Coffee from Ethiopia&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;counter-culture.png&quot; alt=&quot;counter-culture.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-05-18&lt;&#x2F;td&gt;&lt;td&gt;Nice light roast from Counter Culture with fruity&#x2F;citrus taste and smells great. On discount for ~$13.40 at Whole Foods with even more discount for Prime members. It&#x27;s light, really nice to taste.&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Trader Joe&#x27;s&lt;&#x2F;td&gt;&lt;td&gt;Whole Bean Coffee Medium Roast&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;tj.png&quot; alt=&quot;tj.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-05-18&lt;&#x2F;td&gt;&lt;td&gt;By far my least favorite coffee bean. It&#x27;s so dark for a &amp;quot;medium roast&amp;quot; it seems like it&#x27;s meant only to be consumed with lots of milk and sugar. Not very enjoyable for me. Still so far the cheapest option (I think it was ~$8 at Trader Joe&#x27;s)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Cult&lt;&#x2F;td&gt;&lt;td&gt;Colombian Dream&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;cult.png&quot; alt=&quot;cult.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-05-03&lt;&#x2F;td&gt;&lt;td&gt;Says it&#x27;s a fruity balanced light roast. However it tastes slightly burnt, nutty I suppose and doesn&#x27;t seem to have any notes of fruit. The cheapest option so far at ~$11 at Fry&#x27;s.&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Cartel&lt;&#x2F;td&gt;&lt;td&gt;El Salvador Miramar&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;cartel.png&quot; alt=&quot;cartel.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-04-19&lt;&#x2F;td&gt;&lt;td&gt;Light Roast &amp;quot;Washed&amp;quot; Package notes say it tastes like Apple Galette, Walnut, White Grape. Bags of coffee come with a drip or cold brew if you pickup the bag in the store. The coffee is probably my new favorite after Press&#x27;s light roast. It smelled amazing and has my favorite packaging.&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Peixoto&lt;&#x2F;td&gt;&lt;td&gt;Brazil Familia Peixoto&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;peixoto.png&quot; alt=&quot;peixoto.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-03-30&lt;&#x2F;td&gt;&lt;td&gt;Medium roast, may be light but can&#x27;t tell. Maybe has some fruitiness but mostly nut &#x2F; more bitter taste. Packaging is superior and will keep longer. Ended up too dark roast for my personal taste, did have nutty&#x2F;chocolate hints but I didn&#x27;t taste berries like it&#x27;s claimed. Had to drive out to Chandler to pick this up and didn&#x27;t feel as worth it.&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;Press&lt;&#x2F;td&gt;&lt;td&gt;Bloom Light Roast&lt;&#x2F;td&gt;&lt;td&gt;&lt;img src=&quot;https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;camerondurham&#x2F;camerondurham.github.io&#x2F;refs&#x2F;heads&#x2F;main&#x2F;content&#x2F;posts&#x2F;assets&#x2F;press-bloom.png&quot; alt=&quot;press-bloom.png&quot; &#x2F;&gt;&lt;&#x2F;td&gt;&lt;td&gt;2025-03-30&lt;&#x2F;td&gt;&lt;td&gt;Fruity, light roast. So far my favorite.&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>cfs-rs</title>
+		<published>2021-06-06T00:00:00+00:00</published>
+		<updated>2021-06-06T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://u64.cam/projects/cfs-rs/" type="text/html"/>
+		<id>https://u64.cam/projects/cfs-rs/</id>
+		<content type="html"></content>
+	</entry>
+	<entry xml:lang="en">
+		<title>ch</title>
+		<published>2021-01-01T00:00:00+00:00</published>
+		<updated>2021-01-01T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://u64.cam/projects/ch/" type="text/html"/>
+		<id>https://u64.cam/projects/ch/</id>
+		<content type="html"></content>
+	</entry>
+</feed>
