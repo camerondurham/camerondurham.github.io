@@ -22,5 +22,6 @@ Service issues documented for 2022 Polestar 2 (Performance + Pilot Package).
 
 ### Resources
 - [Polestar 2 Emergency Info](https://github.com/drittich/polestar2-emergency-info)
+- [Polestar Tech Info](https://www.loopybunny.co.uk/polestar/)
 - [NHTSA safety info for Polestar 2 (all years)](https://www.nhtsa.gov/vehicle/2022/POLESTAR/POLESTAR%252525202/5%25252520HB/AWD)
 - [Polestar Performance Software Upgrade](https://www.polestar.com/us/performance-software-upgrade/)
