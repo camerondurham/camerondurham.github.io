@@ -1,0 +1,28 @@
+[[hooks]]
+stage = "build"
+command = "sh"
+command_arguments = ["-c", "echo 'Building Leptos app...'"]
+
+[build]
+# The index HTML file to use for the build
+target = "index.html"
+# The output directory for the build
+dist = "dist"
+# Whether to minify HTML
+minify = "on_release"
+# Public URL from which assets are served
+public_url = "/"
+
+[watch]
+# Paths to watch for changes
+watch = ["src", "Cargo.toml", "index.html"]
+# Paths to ignore
+ignore = ["dist"]
+
+[serve]
+# The port to serve on
+port = 8080
+# The address to serve on
+address = "127.0.0.1"
+# Open the browser on serve
+open = false
