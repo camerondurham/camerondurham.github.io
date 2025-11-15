@@ -5,6 +5,10 @@ This is a rewrite of my personal website using [Leptos](https://leptos.dev/), a 
 ## Prerequisites
 
 - [Rust](https://www.rust-lang.org/tools/install) (latest stable)
+- WASM target for Rust
+  ```bash
+  rustup target add wasm32-unknown-unknown
+  ```
 - [Trunk](https://trunkrs.dev/) - WASM web application bundler
   ```bash
   cargo install trunk
@@ -13,6 +17,12 @@ This is a rewrite of my personal website using [Leptos](https://leptos.dev/), a 
   ```bash
   cargo install wasm-bindgen-cli
   ```
+
+**Quick setup** - Install all dependencies:
+```bash
+rustup target add wasm32-unknown-unknown
+cargo install trunk wasm-bindgen-cli
+```
 
 ## Development
 
