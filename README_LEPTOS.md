@@ -47,6 +47,26 @@ trunk build --release
 
 The output will be in the `dist/` directory.
 
+## Testing
+
+To verify the application is running correctly:
+
+1. Start the development server:
+   ```bash
+   trunk serve
+   ```
+
+2. Test the server with curl:
+   ```bash
+   # Check the homepage loads
+   curl http://127.0.0.1:8080/
+
+   # Verify all assets are served correctly
+   curl -I http://127.0.0.1:8080/  # Should return HTTP 200
+   ```
+
+3. Open http://127.0.0.1:8080 in your browser to see the site
+
 ## Deployment
 
 For GitHub Pages deployment:
