@@ -3,7 +3,7 @@ use leptos_meta::*;
 use leptos_router::*;
 
 use crate::components::nav::Nav;
-use crate::pages::{home::Home, posts::Posts, projects::Projects, photos::Photos};
+use crate::pages::{home::Home, posts::Posts, post_detail::PostDetail, projects::Projects, photos::Photos};
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -21,6 +21,7 @@ pub fn App() -> impl IntoView {
                 <Routes>
                     <Route path="/" view=Home/>
                     <Route path="/posts" view=Posts/>
+                    <Route path="/posts/:slug" view=PostDetail/>
                     <Route path="/projects" view=Projects/>
                     <Route path="/photos" view=Photos/>
                     <Route path="/codecanvas" view=|| view! { <div>"CodeCanvas - Coming Soon"</div> }/>

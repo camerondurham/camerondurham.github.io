@@ -58,11 +58,15 @@ To verify the application is running correctly:
 
 2. Test the server with curl:
    ```bash
-   # Check the homepage loads
-   curl http://127.0.0.1:8080/
+   # Check the homepage loads (should return HTTP 200)
+   curl -I http://127.0.0.1:8080/
 
-   # Verify all assets are served correctly
-   curl -I http://127.0.0.1:8080/  # Should return HTTP 200
+   # Check the posts listing page
+   curl -I http://127.0.0.1:8080/posts
+
+   # Check individual post pages
+   curl -I http://127.0.0.1:8080/posts/coffee
+   curl -I http://127.0.0.1:8080/posts/ps2
    ```
 
 3. Open http://127.0.0.1:8080 in your browser to see the site
