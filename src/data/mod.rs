@@ -21,7 +21,10 @@ pub struct Project {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Photo {
     pub title: String,
-    pub description: Option<String>,
+    pub description: String,
+    pub image_url: String,
+    pub link_to: String,
+    pub weight: i32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -189,4 +192,67 @@ Here's the Amazon link (not an affiliate link): [https://www.amazon.com/dp/B00RK
 
 pub fn get_post_by_slug(slug: &str) -> Option<Post> {
     get_posts().into_iter().find(|p| p.slug == slug)
+}
+
+pub fn get_photos() -> Vec<Photo> {
+    let mut photos = vec![
+        Photo {
+            title: "Twilight Epiphany".to_string(),
+            description: "James Turrell Twilight Epiphany at Rice University (shared under Unsplash License)".to_string(),
+            image_url: "https://images.unsplash.com/photo-1600047050118-8671c626b333?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80".to_string(),
+            link_to: "https://unsplash.com/photos/E57BNhGGaGA".to_string(),
+            weight: 1,
+        },
+        Photo {
+            title: "sphere".to_string(),
+            description: "Still life tests (shared under Unsplash License)".to_string(),
+            image_url: "https://images.unsplash.com/photo-1607166291450-6956e8ad1719?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80".to_string(),
+            link_to: "https://unsplash.com/photos/mRoO9w08evU".to_string(),
+            weight: 1,
+        },
+        Photo {
+            title: "still 1".to_string(),
+            description: "blue acryllic sphere (shared under Unsplash License)".to_string(),
+            image_url: "https://images.unsplash.com/photo-1607166291254-0b493edab3e4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D".to_string(),
+            link_to: "https://unsplash.com/photos/black-ball-on-blue-sky-c9WkEaPBqLI".to_string(),
+            weight: 2,
+        },
+        Photo {
+            title: "still 4".to_string(),
+            description: "Acryllic Monolith (shared under Unsplash License)".to_string(),
+            image_url: "https://images.unsplash.com/photo-1628405242556-ed887753ff35?q=80&w=1429&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D".to_string(),
+            link_to: "https://unsplash.com/photos/black-and-gray-box-on-white-surface-mBmKi1MHsn8".to_string(),
+            weight: 2,
+        },
+        Photo {
+            title: "still 2".to_string(),
+            description: "3D printed grid photographed for Parsons Photo BFA Sophomore Thesis".to_string(),
+            image_url: "/photos/still-2.jpg".to_string(),
+            link_to: "https://unsplash.com/@cmrnrd".to_string(),
+            weight: 3,
+        },
+        Photo {
+            title: "still 3".to_string(),
+            description: "3D printed pyramid for Parsons Photo BFA Sophomore Thesis".to_string(),
+            image_url: "/photos/still-3.jpg".to_string(),
+            link_to: "https://unsplash.com/@cmrnrd".to_string(),
+            weight: 3,
+        },
+        Photo {
+            title: "landscape 1".to_string(),
+            description: "Cliffs of Moher, Ireland".to_string(),
+            image_url: "https://images.unsplash.com/photo-1600307736977-f8ef93ab19f3?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&fit=crop".to_string(),
+            link_to: "https://unsplash.com/photos/gray-rocky-mountain-with-green-grass-5Fw46YFc03s".to_string(),
+            weight: 4,
+        },
+        Photo {
+            title: "architecture 1".to_string(),
+            description: "Manhattan Office Space (shared under Unsplash License)".to_string(),
+            image_url: "https://images.unsplash.com/photo-1703537804519-ccc1aa0f212d?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D".to_string(),
+            link_to: "https://unsplash.com/photos/a-very-tall-building-lit-up-at-night-sLtoWdA1PWc".to_string(),
+            weight: 5,
+        },
+    ];
+    photos.sort_by_key(|p| p.weight);
+    photos
 }
