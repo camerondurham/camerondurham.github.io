@@ -9,6 +9,51 @@ pub struct Post {
     pub content: String,
 }
 
+/// Parse a markdown file with TOML frontmatter (+++...+++ delimiters)
+/// Returns (title, date, content)
+fn parse_markdown_with_frontmatter(raw: &str) -> (String, String, String) {
+    let mut title = String::new();
+    let mut date = String::new();
+    let content: String;
+
+    // Check for TOML frontmatter (starts with +++)
+    if raw.starts_with("+++") {
+        // Find the closing +++
+        if let Some(end_idx) = raw[3..].find("+++") {
+            let frontmatter = &raw[3..3 + end_idx];
+            content = raw[3 + end_idx + 3..].trim().to_string();
+
+            // Parse simple TOML key="value" pairs
+            for line in frontmatter.lines() {
+                let line = line.trim();
+                if let Some(rest) = line.strip_prefix("title=") {
+                    title = rest.trim().trim_matches('"').to_string();
+                } else if let Some(rest) = line.strip_prefix("date=") {
+                    date = rest.trim().trim_matches('"').to_string();
+                }
+            }
+        } else {
+            content = raw.to_string();
+        }
+    } else {
+        content = raw.to_string();
+    }
+
+    (title, date, content)
+}
+
+/// Generate a summary from the first paragraph of content
+fn generate_summary(content: &str) -> String {
+    content
+        .lines()
+        .find(|line| !line.trim().is_empty())
+        .unwrap_or("")
+        .chars()
+        .take(150)
+        .collect::<String>()
+        + if content.len() > 150 { "..." } else { "" }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Project {
     pub title: String,
@@ -136,58 +181,35 @@ pub fn get_projects() -> Vec<Project> {
     ]
 }
 
+/// Static post content loaded at compile time from markdown files
+const POST_PS2_RAW: &str = include_str!("../../content/posts/ps2.md");
+const POST_COFFEE_RAW: &str = include_str!("../../content/posts/coffee.md");
+
 pub fn get_posts() -> Vec<Post> {
-    vec![
-        Post {
-            slug: "ps2".to_string(),
-            title: "Polestar 2 Service Issues Documentation".to_string(),
-            date: "2025-07-02".to_string(),
-            summary: "Service issues documented for 2022 Polestar 2 (Performance + Pilot Package).".to_string(),
-            content: r#"Service issues documented for 2022 Polestar 2 (Performance + Pilot Package).
+    // Parse each post from its markdown file
+    let posts_raw = [
+        ("ps2", POST_PS2_RAW),
+        ("coffee", POST_COFFEE_RAW),
+    ];
 
-### Issue 1: Front Suspension Noise/Wobble
-- **Symptoms:** Knocking/wobble sounds from front wheels at 50+ mph, similar to unbalanced tires
-- **Potential Cause:** Foam insulation pad between wheel and tire causing uneven mass distribution
-- **Evidence:** [Highway noise video](https://youtu.be/GY7blfG6En8) | [Reddit discussion](https://www.reddit.com/r/Polestar/comments/1anfxk8/fyi_if_you_get_a_tire_wobble/)
+    let mut posts: Vec<Post> = posts_raw
+        .iter()
+        .map(|(slug, raw)| {
+            let (title, date, content) = parse_markdown_with_frontmatter(raw);
+            let summary = generate_summary(&content);
+            Post {
+                slug: slug.to_string(),
+                title,
+                date,
+                summary,
+                content,
+            }
+        })
+        .collect();
 
-### Issue 2: Low-Speed Knocking
-- **Symptoms:** Knocking/creaking from front suspension when turning at low speeds
-- **Documentation:** NHTSA ID 10244272 | [TSB 10244272 (2023)](https://static.nhtsa.gov/odi/tsbs/2023/MC-10244272-0001.pdf)
-
-### Issue 3: Rear Axle Clicking
-- **Symptoms:** Faint clicking from rear axles during 1-pedal deceleration (10-20mph)
-- **Affected:** 2021-2022 Polestar 2
-- **Evidence:** [Audio example](https://cdn.polestartechhub.com/uploads/6616cd04bfff4d0001bd68af/TJ%2036854_1.m4a)
-- **Documentation:** NHTSA ID 10253278 | [TSB 10253278 (2024)](https://static.nhtsa.gov/odi/tsbs/2024/MC-10253278-0001.pdf)
-
-### Resources
-- [Polestar 2 Emergency Info](https://github.com/drittich/polestar2-emergency-info)
-- [Polestar Tech Info](https://www.loopybunny.co.uk/polestar/)
-- [NHTSA safety info for Polestar 2 (all years)](https://www.nhtsa.gov/vehicle/2022/POLESTAR/POLESTAR%252525202/5%25252520HB/AWD)
-- [Polestar Performance Software Upgrade](https://www.polestar.com/us/performance-software-upgrade/)"#.to_string(),
-        },
-        Post {
-            slug: "coffee".to_string(),
-            title: "Coffee Log".to_string(),
-            date: "2025-05-18".to_string(),
-            summary: "An infrequently updated log of the coffees I've tried and prefer.".to_string(),
-            content: r#"An infrequently updated log of the coffees I've tried and prefer.
-
-Current favorite and the only one I've bought multiple times is Counter Culture's apollo roast. Their beans are consistently high quality and it's honestly a better value than some of the local roaster's beans I've bought.
-
-Here's the Amazon link (not an affiliate link): [https://www.amazon.com/dp/B00RKD7SUU](https://www.amazon.com/dp/B00RKD7SUU)
-
-| Coffee Roaster         | Roast Name                     | Last Updated | Notes |
-| ---------------------- | ------------------------------ | ------------ | ----- |
-| Roastery of Cave Creek | Cowgirl - Lighter Roast        | 2025-06-02   | Good light roast, somewhat fruity and notes of berries. Relatively cheap at ~$12 from Whole Foods |
-| Counter Culture Coffee | Apollo - Coffee from Ethiopia  | 2025-05-18   | Nice light roast with fruity/citrus taste and smells great. On discount for ~$13.40 at Whole Foods |
-| Trader Joe's           | Whole Bean Coffee Medium Roast | 2025-05-18   | By far my least favorite. Too dark for a "medium roast" |
-| Cult                   | Colombian Dream                | 2025-05-03   | Says it's fruity but tastes slightly burnt. Cheapest at ~$11 at Fry's |
-| Cartel                 | El Salvador Miramar            | 2025-04-19   | Light Roast "Washed" - Apple Galette, Walnut, White Grape notes |
-| Peixoto                | Brazil Familia Peixoto         | 2025-03-30   | Medium roast with nutty/chocolate hints |
-| Press                  | Bloom Light Roast              | 2025-03-30   | Fruity, light roast. So far my favorite |"#.to_string(),
-        },
-    ]
+    // Sort by date descending (newest first)
+    posts.sort_by(|a, b| b.date.cmp(&a.date));
+    posts
 }
 
 pub fn get_post_by_slug(slug: &str) -> Option<Post> {
