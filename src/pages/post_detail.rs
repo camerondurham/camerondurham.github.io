@@ -1,23 +1,17 @@
 use leptos::*;
 use leptos_router::*;
+use pulldown_cmark::{Parser, Options, html};
 use crate::data::get_post_by_slug;
 
-fn render_content(content: &str) -> Vec<View> {
-    content.lines().map(|line| {
-        let line = line.to_string();
-        if line.starts_with("### ") {
-            let heading = line.trim_start_matches("### ").to_string();
-            view! { <h3>{heading}</h3> }.into_view()
-        } else if line.starts_with("- ") {
-            view! { <p class="list-item">{line}</p> }.into_view()
-        } else if line.starts_with("|") {
-            view! { <p class="table-row"><code>{line}</code></p> }.into_view()
-        } else if line.is_empty() {
-            view! { <br/> }.into_view()
-        } else {
-            view! { <p>{line}</p> }.into_view()
-        }
-    }).collect()
+fn markdown_to_html(content: &str) -> String {
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_TABLES);
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+
+    let parser = Parser::new_ext(content, options);
+    let mut html_output = String::new();
+    html::push_html(&mut html_output, parser);
+    html_output
 }
 
 #[component]
@@ -33,16 +27,14 @@ pub fn PostDetail() -> impl IntoView {
         <div class="container">
             {move || match post() {
                 Some(p) => {
-                    let content_views = render_content(&p.content);
+                    let html_content = markdown_to_html(&p.content);
                     view! {
                         <article class="post-detail">
                             <header class="post-header">
                                 <h1>{p.title}</h1>
                                 <time datetime={p.date.clone()}>{p.date}</time>
                             </header>
-                            <div class="post-content">
-                                {content_views}
-                            </div>
+                            <div class="post-content" inner_html={html_content}></div>
                             <footer class="post-footer">
                                 <A href="/posts" class="back-link">"← Back to posts"</A>
                             </footer>
