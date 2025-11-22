@@ -8,7 +8,34 @@
     <link rel="stylesheet" href="/style.css">
     <link data-trunk rel="rust" data-wasm-opt="z"/>
     <link data-trunk rel="css" href="style.css"/>
+
+    <!-- GoatCounter Analytics -->
+    <script data-goatcounter="https://u64cam.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <noscript>
+        <img src="https://u64cam.goatcounter.com/count?p=/&t=" alt="" />
+    </noscript>
 </head>
 <body>
+    <script>
+        // Track SPA page views on route changes
+        (function() {
+            var lastPath = window.location.pathname;
+
+            // Check for route changes every 100ms
+            setInterval(function() {
+                var currentPath = window.location.pathname;
+                if (currentPath !== lastPath) {
+                    lastPath = currentPath;
+                    if (window.goatcounter && window.goatcounter.count) {
+                        window.goatcounter.count({
+                            path: currentPath,
+                            title: document.title,
+                            event: false
+                        });
+                    }
+                }
+            }, 100);
+        })();
+    </script>
 </body>
 </html>

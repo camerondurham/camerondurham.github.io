@@ -93,15 +93,82 @@ For GitHub Pages deployment:
 │   ├── pages/           # Page components
 │   │   ├── home.rs      # Home/About page
 │   │   ├── posts.rs     # Posts listing
+│   │   ├── post_detail.rs # Individual post page
 │   │   ├── projects.rs  # Projects listing
 │   │   └── photos.rs    # Photos gallery
 │   └── data/            # Data models and content
 │       └── mod.rs       # Content data structures
+├── content/
+│   └── posts/           # Markdown post files
+│       ├── coffee.md
+│       └── ps2.md
 ├── index.html           # HTML template
 ├── style.css            # Global styles
 ├── Cargo.toml           # Rust dependencies
 └── Trunk.toml           # Trunk configuration
 ```
+
+## Adding New Posts
+
+Posts are written as Markdown files in `content/posts/` and loaded at compile time.
+
+### Step 1: Create a Markdown File
+
+Create a new `.md` file in `content/posts/` with TOML frontmatter:
+
+```markdown
++++
+title="Your Post Title"
+date="2025-01-15"
++++
+
+Your post content here in Markdown format.
+
+### Subheadings work
+
+- Lists work
+- **Bold** and *italic* work
+- [Links](https://example.com) work
+
+| Tables | Also | Work |
+|--------|------|------|
+| cell   | cell | cell |
+```
+
+### Step 2: Register the Post in Rust
+
+Edit `src/data/mod.rs` to include the new post:
+
+1. Add a new `include_str!()` constant:
+   ```rust
+   const POST_YOUR_SLUG_RAW: &str = include_str!("../../content/posts/your-post.md");
+   ```
+
+2. Add the slug and constant to the `posts_raw` array in `get_posts()`:
+   ```rust
+   let posts_raw = [
+       ("ps2", POST_PS2_RAW),
+       ("coffee", POST_COFFEE_RAW),
+       ("your-slug", POST_YOUR_SLUG_RAW),  // Add this line
+   ];
+   ```
+
+### Step 3: Rebuild
+
+The post will be available at `/posts/your-slug` after rebuilding:
+
+```bash
+trunk serve
+```
+
+### Frontmatter Fields
+
+| Field   | Required | Description                    |
+|---------|----------|--------------------------------|
+| `title` | Yes      | Display title for the post     |
+| `date`  | Yes      | Publication date (YYYY-MM-DD)  |
+
+Posts are automatically sorted by date (newest first).
 
 ## Technologies
 
