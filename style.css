@@ -16,7 +16,7 @@
     --text-0: #212121;
     --text-1: #666666;
     --text-2: #999999;
-    --primary-color: #2196f3;
+    --primary-color: #5a2095;
     --hover-color: #ffffff;
     --highlight-color: #f0f0f0;
     --label-color: #f0f0f0;
@@ -31,9 +31,9 @@
         --text-1: #a0a0a0;
         --text-2: #737373;
         --border-color: #424242;
-        --primary-color: #64b5f6;
+        --primary-color: #CF9FFF;
         --hover-color: #1a1a1a;
-        --highlight-color: #204e8a;
+        --highlight-color: #3d1f5c;
     }
 }
 
