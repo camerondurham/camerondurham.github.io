@@ -1,8 +1,5 @@
-public
-
 # Rust/Cargo
 target/
-Cargo.lock
 **/*.rs.bk
 
 # Trunk build output
@@ -17,5 +14,4 @@ dist/
 
 # OS
 .DS_Store
-Thumbs.db/
-.DS_Store
+Thumbs.db
