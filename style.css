@@ -67,19 +67,13 @@ html {
 
 body {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     flex-grow: 1;
     padding: 0.9rem;
     padding-bottom: 1.5rem;
     margin-bottom: 1.5rem;
     min-height: calc(100vh - 150px);
-}
-
-@media (min-width: 992px) {
-    body {
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-    }
 }
 
 /* Layout */
@@ -146,6 +140,8 @@ main .meta a, main .cards a {
 nav, .nav {
     padding: 0;
     margin-bottom: 1rem;
+    width: 100%;
+    max-width: var(--page-width);
 }
 
 .nav-container {
@@ -155,8 +151,11 @@ nav, .nav {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    width: 100%;
     max-width: var(--page-width);
     margin: 0 auto;
+    padding: 0 0.9rem;
+    box-sizing: border-box;
 }
 
 @media (max-width: 600px) {
