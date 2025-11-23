@@ -1,2 +1,21 @@
-public/
+public
+
+# Rust/Cargo
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Trunk build output
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db/
 .DS_Store
