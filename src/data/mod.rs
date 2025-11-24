@@ -128,11 +128,11 @@ pub fn get_socials() -> Vec<Social> {
             url: "https://news.ycombinator.com/user?id=super_linear".to_string(),
             icon: "hacker-news".to_string(),
         },
-        Social {
-            name: "spotify".to_string(),
-            url: "https://open.spotify.com/user/mnakgi5690zc9bqpbyk8z59ma".to_string(),
-            icon: "spotify".to_string(),
-        },
+        // Social {
+        //     name: "spotify".to_string(),
+        //     url: "https://open.spotify.com/user/mnakgi5690zc9bqpbyk8z59ma".to_string(),
+        //     icon: "spotify".to_string(),
+        // },
         Social {
             name: "bluesky".to_string(),
             url: "https://bsky.app/profile/u64.bsky.social".to_string(),
@@ -246,20 +246,20 @@ pub fn get_photos() -> Vec<Photo> {
             link_to: "https://unsplash.com/photos/black-and-gray-box-on-white-surface-mBmKi1MHsn8".to_string(),
             weight: 2,
         },
-        Photo {
-            title: "still 2".to_string(),
-            description: "3D printed grid photographed for Parsons Photo BFA Sophomore Thesis".to_string(),
-            image_url: "/photos/still-2.jpg".to_string(),
-            link_to: "https://unsplash.com/@cmrnrd".to_string(),
-            weight: 3,
-        },
-        Photo {
-            title: "still 3".to_string(),
-            description: "3D printed pyramid for Parsons Photo BFA Sophomore Thesis".to_string(),
-            image_url: "/photos/still-3.jpg".to_string(),
-            link_to: "https://unsplash.com/@cmrnrd".to_string(),
-            weight: 3,
-        },
+        // Photo {
+        //     title: "still 2".to_string(),
+        //     description: "3D printed grid photographed for Parsons Photo BFA Sophomore Thesis".to_string(),
+        //     image_url: "/photos/still-2.jpg".to_string(),
+        //     link_to: "https://unsplash.com/@cmrnrd".to_string(),
+        //     weight: 3,
+        // },
+        // Photo {
+        //     title: "still 3".to_string(),
+        //     description: "3D printed pyramid for Parsons Photo BFA Sophomore Thesis".to_string(),
+        //     image_url: "/photos/still-3.jpg".to_string(),
+        //     link_to: "https://unsplash.com/@cmrnrd".to_string(),
+        //     weight: 3,
+        // },
         Photo {
             title: "landscape 1".to_string(),
             description: "Cliffs of Moher, Ireland".to_string(),

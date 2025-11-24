@@ -8,7 +8,7 @@ pub fn Photos() -> impl IntoView {
     view! {
         <div class="container">
             <h1>"Photos"</h1>
-            <p class="photos-intro">"A collection of photography work and visual explorations."</p>
+            <p class="photos-intro">"A collection of some photography from art school and personal travel."</p>
             <div class="photos-grid">
                 {photos.into_iter().map(|photo| {
                     view! {
