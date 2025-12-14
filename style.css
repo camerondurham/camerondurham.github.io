@@ -37,6 +37,39 @@
     }
 }
 
+/* Dark mode override (when explicitly enabled) */
+html.dark {
+    --bg-0: #1a1a1a;
+    --bg-1: #212121;
+    --bg-2: #2a2a2a;
+    --text-0: #e0e0e0;
+    --text-1: #a0a0a0;
+    --text-2: #737373;
+    --border-color: #424242;
+    --primary-color: #CF9FFF;
+    --hover-color: #1a1a1a;
+    --highlight-color: #3d1f5c;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--text-1);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--primary-color);
+    color: var(--hover-color);
+}
+
 /* Reset */
 * {
     margin: 0;
