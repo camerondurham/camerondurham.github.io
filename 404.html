@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // GitHub Pages SPA redirect solution
+        // This script captures the current path and redirects to index.html
+        // while preserving the path in sessionStorage so the client-side
+        // router can handle it
+        sessionStorage.redirect = location.pathname + location.search + location.hash;
+    </script>
+    <meta http-equiv="refresh" content="0;URL='/'">
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>

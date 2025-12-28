@@ -23,6 +23,16 @@
 </head>
 <body>
     <script>
+        // GitHub Pages SPA redirect handling
+        // Check if we were redirected from 404.html
+        (function() {
+            var redirect = sessionStorage.redirect;
+            delete sessionStorage.redirect;
+            if (redirect && redirect !== location.pathname) {
+                history.replaceState(null, null, redirect);
+            }
+        })();
+
         // Track SPA page views on route changes
         (function() {
             var lastPath = window.location.pathname;

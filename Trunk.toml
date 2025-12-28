@@ -13,6 +13,10 @@ minify = "on_release"
 # Public URL from which assets are served
 public_url = "/"
 
+# Copy 404.html for GitHub Pages SPA support
+[[copy]]
+target = "404.html"
+
 [watch]
 # Paths to watch for changes
 watch = ["src", "Cargo.toml", "index.html"]
