@@ -6,14 +6,23 @@
     <title>Redirecting...</title>
     <script>
         // GitHub Pages SPA redirect solution
-        // This script captures the current path and redirects to index.html
-        // while preserving the path in sessionStorage so the client-side
-        // router can handle it
-        sessionStorage.redirect = location.pathname + location.search + location.hash;
+        // Save the requested path before redirecting to index.html
+        // The index.html will restore this path once the WASM router is ready
+        (function() {
+            var path = window.location.pathname + window.location.search + window.location.hash;
+            // Only save if not root path
+            if (path !== '/') {
+                sessionStorage.setItem('redirect', path);
+            }
+            // Redirect to index.html to load the app
+            window.location.replace('/');
+        })();
     </script>
-    <meta http-equiv="refresh" content="0;URL='/'">
 </head>
 <body>
     <p>Redirecting...</p>
+    <noscript>
+        <meta http-equiv="refresh" content="0;URL='/'">
+    </noscript>
 </body>
 </html>
