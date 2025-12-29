@@ -1,0 +1,63 @@
+---
+---
+
+<div id="search" class="search-container">
+  <input type="text" id="search-input" placeholder="Search posts..." />
+  <div id="search-results"></div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const pagefind = await import('/pagefind/pagefind.js');
+      await pagefind.init();
+      
+      const input = document.getElementById('search-input');
+      const results = document.getElementById('search-results');
+      
+      input.addEventListener('input', async (e) => {
+        const query = e.target.value;
+        if (!query) {
+          results.innerHTML = '';
+          return;
+        }
+        
+        const search = await pagefind.search(query);
+        const data = await Promise.all(search.results.slice(0, 5).map(r => r.data()));
+        
+        results.innerHTML = data.map(item => 
+          '<a href="' + item.url + '" class="search-result">' +
+          '<strong>' + (item.meta?.title || item.url) + '</strong>' +
+          '<p>' + item.excerpt + '</p></a>'
+        ).join('');
+      });
+    } catch (e) {
+      console.log('Pagefind not available in dev mode');
+    }
+  });
+</script>
+
+<style>
+.search-container { margin-bottom: 1.5rem; }
+#search-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-1);
+  color: var(--text-0);
+}
+#search-results { margin-top: 0.5rem; }
+.search-result {
+  display: block;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: var(--bg-1);
+  border-radius: 4px;
+  border-bottom: none !important;
+}
+.search-result:hover { background: var(--primary-color); }
+.search-result p { font-size: 0.85rem; color: var(--text-1); margin: 0.25rem 0 0; }
+.search-result mark { background: var(--highlight-color); }
+</style>

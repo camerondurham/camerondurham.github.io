@@ -1,17 +1,28 @@
-# Rust/Cargo
-target/
-**/*.rs.bk
+# Dependencies
+node_modules/
 
-# Trunk build output
+# Build output
 dist/
 
+# Astro
+.astro/
+
+# Environment
+.env
+.env.*
+!.env.example
+
 # IDE
-.idea/
 .vscode/
-*.swp
-*.swo
-*~
+.idea/
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Old Rust/WASM files (can remove after migration)
+target/

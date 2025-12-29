@@ -1,0 +1,83 @@
+---
+const menuItems = [
+  { name: "/photos", url: "/photos" },
+  { name: "/projects", url: "/projects" },
+  { name: "/posts", url: "/posts" },
+];
+
+const socials = [
+  { name: "github", url: "https://github.com/camerondurham/" },
+  { name: "stackoverflow", url: "https://stackoverflow.com/users/4676641/cam" },
+  { name: "linkedin", url: "https://www.linkedin.com/in/cameron-durham/" },
+  { name: "hacker-news", url: "https://news.ycombinator.com/user?id=super_linear" },
+  { name: "bluesky", url: "https://bsky.app/profile/u64.bsky.social" },
+];
+---
+
+<nav class="nav">
+  <div class="nav-container">
+    <div class="nav-header">
+      <a href="/" class="nav-title">Cameron Durham</a>
+    </div>
+    <div class="nav-links">
+      {menuItems.map(item => (
+        <a href={item.url} class="nav-link">{item.name}</a>
+      ))}
+    </div>
+    <div class="nav-socials">
+      {socials.map(social => (
+        <a href={social.url} target="_blank" rel="noopener noreferrer" class="social-link" title={social.name}>
+          {social.name}
+        </a>
+      ))}
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+        <span id="theme-icon">☾</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+.nav {
+  width: 100%;
+  max-width: var(--page-width);
+  margin-bottom: 1rem;
+}
+
+.nav-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.nav-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.nav-links, .nav-socials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-socials { gap: 0.75rem; }
+
+.nav-link { margin-right: 0.5em; }
+
+.social-link {
+  color: var(--text-1);
+  font-size: 0.85rem;
+}
+</style>

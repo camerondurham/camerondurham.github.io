@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.weight - b.data.weight);
+---
+
+<BaseLayout title="Projects | Cameron Durham">
+  <h1>Projects</h1>
+  <div class="projects-list">
+    {projects.map(project => (
+      <article class="project-item">
+        <h2>
+          {project.data.link ? (
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+          ) : (
+            project.data.title
+          )}
+        </h2>
+        <time datetime={project.data.date}>{project.data.date}</time>
+        <p>{project.data.description}</p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+.projects-list { display: flex; flex-direction: column; gap: 2rem; }
+.project-item { border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+.project-item:last-child { border-bottom: none; }
+.project-item h2 { margin-bottom: 0.5rem; }
+.project-item h2::before { content: none; }
+.project-item time { display: block; margin-bottom: 0.75rem; }
+</style>
