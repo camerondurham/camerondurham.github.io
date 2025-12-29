@@ -1,186 +1,121 @@
-# Cameron Durham's Personal Site - Leptos Rewrite
+# Cameron Durham's Personal Site
 
-This is a rewrite of my personal website using [Leptos](https://leptos.dev/), a full-stack web framework for Rust.
-
-## Prerequisites
-
-- [Rust](https://www.rust-lang.org/tools/install) (latest stable)
-- WASM target for Rust
-  ```bash
-  rustup target add wasm32-unknown-unknown
-  ```
-- [Trunk](https://trunkrs.dev/) - WASM web application bundler
-  ```bash
-  cargo install trunk
-  ```
-- [wasm-bindgen-cli](https://rustwasm.github.io/wasm-bindgen/)
-  ```bash
-  cargo install wasm-bindgen-cli
-  ```
-
-**Quick setup** - Install all dependencies:
-```bash
-rustup target add wasm32-unknown-unknown
-cargo install trunk wasm-bindgen-cli
-```
+Personal website built with [Astro](https://astro.build/).
 
 ## Development
 
-To run the development server:
-
 ```bash
-trunk serve --open
+npm install
+npm run dev
 ```
 
-This will:
-- Build the WASM application
-- Start a local development server at http://127.0.0.1:8080
-- Watch for file changes and automatically rebuild
+Site runs at http://localhost:4321
 
-## Building for Production
-
-To build the optimized production bundle:
+## Build
 
 ```bash
-trunk build --release
+npm run build
 ```
 
-The output will be in the `dist/` directory.
+Output in `dist/`. Includes Pagefind search indexing.
 
-## Testing
+## Preview Production Build
 
-To verify the application is running correctly:
+```bash
+npm run preview
+```
 
-1. Start the development server:
-   ```bash
-   trunk serve
-   ```
+## Cloudflare Pages Deployment
 
-2. Test the server with curl:
-   ```bash
-   # Check the homepage loads (should return HTTP 200)
-   curl -I http://127.0.0.1:8080/
+### Setup (one-time)
 
-   # Check the posts listing page
-   curl -I http://127.0.0.1:8080/posts
+1. Go to [Cloudflare Pages](https://dash.cloudflare.com/?to=/:account/pages)
+2. Create a project → Connect to Git
+3. Select this repository
+4. Configure build settings:
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - **Node.js version:** 18 (or latest LTS)
+5. Deploy
 
-   # Check individual post pages
-   curl -I http://127.0.0.1:8080/posts/coffee
-   curl -I http://127.0.0.1:8080/posts/ps2
-   ```
+### Custom Domain
 
-3. Open http://127.0.0.1:8080 in your browser to see the site
+1. In Cloudflare Pages project → Custom domains
+2. Add `u64.cam`
+3. Update DNS if needed
 
-## Deployment
+### Auto-deploy
 
-For GitHub Pages deployment:
-
-1. Build the production bundle:
-   ```bash
-   trunk build --release
-   ```
-
-2. The `dist/` directory contains all the static files needed for deployment.
+Pushes to `main` branch auto-deploy to production.
 
 ## Project Structure
 
 ```
-├── src/
-│   ├── lib.rs           # Main library entry point
-│   ├── app.rs           # Root app component
-│   ├── components/      # Reusable components
-│   │   └── nav.rs       # Navigation component
-│   ├── pages/           # Page components
-│   │   ├── home.rs      # Home/About page
-│   │   ├── posts.rs     # Posts listing
-│   │   ├── post_detail.rs # Individual post page
-│   │   ├── projects.rs  # Projects listing
-│   │   └── photos.rs    # Photos gallery
-│   └── data/            # Data models and content
-│       └── mod.rs       # Content data structures
-├── content/
-│   └── posts/           # Markdown post files
-│       ├── coffee.md
-│       └── ps2.md
-├── index.html           # HTML template
-├── style.css            # Global styles
-├── Cargo.toml           # Rust dependencies
-└── Trunk.toml           # Trunk configuration
+src/
+├── components/     # Nav, Search
+├── content/        # Markdown content collections
+│   ├── posts/      # Blog posts
+│   ├── projects/   # Projects
+│   └── photos/     # Photo gallery
+├── layouts/        # BaseLayout
+└── pages/          # Routes
+    ├── posts/      # /posts, /posts/[slug]
+    ├── 404.astro
+    ├── index.astro
+    ├── photos.astro
+    ├── projects.astro
+    └── rss.xml.ts
 ```
 
-## Adding New Posts
+## Adding Content
 
-Posts are written as Markdown files in `content/posts/` and loaded at compile time.
+### New Post
 
-### Step 1: Create a Markdown File
-
-Create a new `.md` file in `content/posts/` with TOML frontmatter:
+Create `src/content/posts/my-post.md`:
 
 ```markdown
-+++
-title="Your Post Title"
-date="2025-01-15"
-+++
+---
+title: "Post Title"
+date: "2025-01-15"
+tags: ["tag1", "tag2"]
+summary: "Brief description"
+---
 
-Your post content here in Markdown format.
-
-### Subheadings work
-
-- Lists work
-- **Bold** and *italic* work
-- [Links](https://example.com) work
-
-| Tables | Also | Work |
-|--------|------|------|
-| cell   | cell | cell |
+Content here...
 ```
 
-### Step 2: Register the Post in Rust
+### New Project
 
-Edit `src/data/mod.rs` to include the new post:
+Create `src/content/projects/my-project.md`:
 
-1. Add a new `include_str!()` constant:
-   ```rust
-   const POST_YOUR_SLUG_RAW: &str = include_str!("../../content/posts/your-post.md");
-   ```
-
-2. Add the slug and constant to the `posts_raw` array in `get_posts()`:
-   ```rust
-   let posts_raw = [
-       ("ps2", POST_PS2_RAW),
-       ("coffee", POST_COFFEE_RAW),
-       ("your-slug", POST_YOUR_SLUG_RAW),  // Add this line
-   ];
-   ```
-
-### Step 3: Rebuild
-
-The post will be available at `/posts/your-slug` after rebuilding:
-
-```bash
-trunk serve
+```markdown
+---
+title: "Project Name"
+date: "2025-01-01"
+description: "What it does"
+weight: 1
+link: "https://github.com/..."
+---
 ```
 
-### Frontmatter Fields
+### New Photo
 
-| Field   | Required | Description                    |
-|---------|----------|--------------------------------|
-| `title` | Yes      | Display title for the post     |
-| `date`  | Yes      | Publication date (YYYY-MM-DD)  |
+Create `src/content/photos/my-photo.md`:
 
-Posts are automatically sorted by date (newest first).
+```markdown
+---
+title: "Photo Title"
+description: "Description"
+image_url: "https://..."
+link: "https://..."
+weight: 1
+---
+```
 
-## Technologies
+## Features
 
-- **Leptos**: Reactive web framework
-- **leptos_router**: Client-side routing
-- **leptos_meta**: HTML meta tags management
-- **Trunk**: WASM bundler and dev server
-
-## Original Site
-
-This site was previously built with [Zola](https://www.getzola.org/) static site generator. The Zola configuration and content files are still present in the repository for reference.
-
-## License
-
-Personal website content © Cameron Durham
+- RSS feed at `/rss.xml`
+- Sitemap at `/sitemap-index.xml`
+- Client-side search (Pagefind)
+- Dark/light theme toggle
+- GoatCounter analytics

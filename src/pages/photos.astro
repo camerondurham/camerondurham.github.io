@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const photos = (await getCollection('photos')).sort((a, b) => a.data.weight - b.data.weight);
+---
+
+<BaseLayout title="Photos | Cameron Durham">
+  <h1>Photos</h1>
+  <p class="photos-intro">A collection of some photography from art school and personal travel.</p>
+  <div class="photos-grid">
+    {photos.map(photo => (
+      <a href={photo.data.link} target="_blank" rel="noopener noreferrer" class="photo-card">
+        <div class="photo-image-container">
+          <img src={photo.data.image_url} alt={photo.data.title} loading="lazy" />
+        </div>
+        <div class="photo-info">
+          <h3>{photo.data.title}</h3>
+          <p>{photo.data.description}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+.photos-intro { margin-bottom: 2rem; color: var(--text-1); }
+.photos-grid { display: grid; gap: 24px; padding: 12px 0; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
+@media (max-width: 640px) { .photos-grid { grid-template-columns: 1fr; } }
+.photo-card { background: var(--bg-1); border: 2px solid var(--border-color); border-radius: 10px; overflow: hidden; display: block; }
+.photo-card:hover { background: transparent; }
+.photo-image-container { width: 100%; height: 300px; overflow: hidden; }
+.photo-image-container img { width: 100%; height: 100%; object-fit: cover; }
+.photo-info { padding: 0 24px 24px; }
+.photo-info h3 { margin-top: 0.7em; font-size: 1rem; font-weight: 600; }
+.photo-info h3::before { content: none; }
+.photo-info p { margin-top: 0.5em; font-size: 0.9rem; color: var(--text-1); }
+</style>
