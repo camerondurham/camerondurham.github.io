@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Set this to your existing Cloudflare Pages project name.
+  // You can generate a full file from Cloudflare with:
+  // npx wrangler pages download config <PROJECT_NAME>
+  "name": "replace-with-pages-project-name",
+  "pages_build_output_dir": "dist"
+}

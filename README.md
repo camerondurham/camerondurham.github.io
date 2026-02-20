@@ -35,8 +35,29 @@ npm run preview
 4. Configure build settings:
    - **Build command:** `npm run build`
    - **Build output directory:** `dist`
-   - **Node.js version:** 18 (or latest LTS)
+   - **Node.js version:** 20 (or latest LTS)
 5. Deploy
+
+### Wrangler (CLI deploys / CI)
+
+If you deploy with Wrangler, use current Pages commands and config:
+
+1. Authenticate: `npx wrangler login`
+2. Sync config from Cloudflare (recommended): `npx wrangler pages download config <PROJECT_NAME>`
+3. Ensure `wrangler.jsonc` includes `"pages_build_output_dir": "dist"`
+4. Deploy: `npx wrangler pages deploy dist --project-name <PROJECT_NAME>`
+
+Useful scripts:
+
+```bash
+npm run cf:deploy
+npm run cf:dev
+```
+
+Notes:
+- Use `wrangler pages deploy` (not old publish-style commands).
+- A stale `wrangler.toml/jsonc` can override dashboard assumptions and cause deploy failures.
+- This repo is a static Astro site (`astro build` output), so Cloudflare Pages does not require an Astro server adapter.
 
 ### Custom Domain
 
