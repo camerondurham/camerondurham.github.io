@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes')).sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout title="Notes | Cameron Durham">
+  <h1>Engineering Notes</h1>
+  <p class="intro">
+    Practical writeups on decisions, tradeoffs, and operational lessons. These notes are intentionally sanitized where work was proprietary.
+  </p>
+
+  <div class="notes-list">
+    {notes.map(note => (
+      <article class="note-item">
+        <h2><a href={`/notes/${note.slug}`}>{note.data.title}</a></h2>
+        <time datetime={note.data.date}>{note.data.date}</time>
+        <p>{note.data.summary}</p>
+        {note.data.tags.length > 0 && (
+          <p class="tags">
+            {note.data.tags.map(tag => <span class="tag">{tag}</span>)}
+          </p>
+        )}
+      </article>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+.intro { margin-bottom: 2rem; color: var(--text-1); }
+.notes-list { display: flex; flex-direction: column; gap: 2rem; }
+.note-item { border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+.note-item:last-child { border-bottom: none; }
+.note-item h2 { margin-bottom: 0.5rem; }
+.note-item h2::before { content: none; }
+.note-item time { display: block; margin-bottom: 0.75rem; }
+.tags { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag { background: var(--bg-1); border: 1px solid var(--border-color); border-radius: 4px; padding: 0.15rem 0.45rem; font-size: 0.8rem; color: var(--text-1); }
+</style>
