@@ -1,6 +1,4 @@
-# Cameron Durham's Personal Site
-
-Personal website built with [Astro](https://astro.build/).
+# cam's site
 
 ## Development
 
