@@ -1,7 +1,5 @@
 # cam's site
 
-Personal website built with [Astro](https://astro.build/).
-
 ## Development
 
 ```bash
