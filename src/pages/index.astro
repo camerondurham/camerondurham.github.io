@@ -1,22 +1,163 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const [posts, notes, impact, photos] = await Promise.all([
+  getCollection('posts'),
+  getCollection('notes'),
+  getCollection('impact'),
+  getCollection('photos'),
+]);
+
+const latestPost = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0];
+const latestNote = notes.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0];
+const featuredImpact = impact.sort((a, b) => a.data.order - b.data.order)[0];
+const featuredPhoto = photos.sort((a, b) => a.data.weight - b.data.weight)[0];
+
+const nowItems = [
+  'Building and scaling distributed search indexing workflows.',
+  'Contributing upstream to open-source tools I actively depend on.',
+  'Writing operational notes on reliability, migration, and latency tradeoffs.',
+  'Experimenting with lightweight local toolchains and containerized workflows.',
+];
 ---
 
 <BaseLayout title="Cameron Durham" description="Cameron Durham - SDE II at Amazon">
-  <section class="about">
-    <h1>About</h1>
+  <section class="hero">
+    <h1>Cameron Durham</h1>
     <p>
-      I'm an SDE II at Amazon, working on catalog indexing for the third-party seller listing platform.
-      I contributed to the <a href="https://www.aboutamazon.com/news/retail/affordable-products-amazon-20-dollars-and-under" target="_blank">Amazon Haul</a> listing experience and work with streaming data processing for distributed search indexing.
-      I also contribute to <a href="https://github.com/camerondurham/open-source-contributions" target="_blank">open-source projects</a> I use.
+      SDE II focused on large-scale search indexing systems, reliability under load, and practical developer tooling.
+      This page is my current status board: what I am shipping, documenting, and exploring right now.
     </p>
-    <p>
-      Previously, I was a lead course producer for <a href="https://bytes.usc.edu/cs104/" target="_blank">USC's CS104 class</a>, developing <a href="https://github.com/csci104/docker" target="_blank">containerized tools</a> for the class environment. I interned at Tesla, where I worked on containerized infotainment UIs for all Tesla car models. Before Tesla, I had internships at Amazon and Oracle.
-    </p>
+  </section>
+
+  <section>
+    <h2>Now</h2>
+    <ul class="now-list">
+      {nowItems.map(item => <li>{item}</li>)}
+    </ul>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>Latest Note</h2>
+      {latestNote ? (
+        <>
+          <time datetime={latestNote.data.date}>{latestNote.data.date}</time>
+          <h3>
+            <a href={`/notes/${latestNote.slug}/`}>{latestNote.data.title}</a>
+          </h3>
+          <p>{latestNote.data.summary}</p>
+        </>
+      ) : <p>No notes yet.</p>}
+    </article>
+
+    <article class="card">
+      <h2>Latest Post</h2>
+      {latestPost ? (
+        <>
+          <time datetime={latestPost.data.date}>{latestPost.data.date}</time>
+          <h3>
+            <a href={`/posts/${latestPost.slug}/`}>{latestPost.data.title}</a>
+          </h3>
+          {latestPost.data.summary && <p>{latestPost.data.summary}</p>}
+        </>
+      ) : <p>No posts yet.</p>}
+    </article>
+
+    <article class="card card-wide">
+      <h2>Featured Impact</h2>
+      {featuredImpact ? (
+        <>
+          {featuredImpact.data.period && <p class="period">{featuredImpact.data.period}</p>}
+          <h3>
+            <a href="/impact">{featuredImpact.data.title}</a>
+          </h3>
+          <p>{featuredImpact.data.summary}</p>
+        </>
+      ) : <p>No impact entries yet.</p>}
+    </article>
+
+    <article class="card card-photo">
+      <h2>Recent Photo</h2>
+      {featuredPhoto ? (
+        <a href={featuredPhoto.data.link} target="_blank" rel="noopener noreferrer" class="photo-link">
+          <img src={featuredPhoto.data.image_url} alt={featuredPhoto.data.title} loading="lazy" />
+          <p class="photo-title">{featuredPhoto.data.title}</p>
+          <p>{featuredPhoto.data.description}</p>
+        </a>
+      ) : <p>No photos yet.</p>}
+    </article>
   </section>
 </BaseLayout>
 
 <style>
-.about { margin-bottom: 2rem; }
-.about p { margin-bottom: 1.5rem; }
+.hero { margin-bottom: 2rem; }
+.hero p { max-width: 75ch; }
+
+.now-list { margin-bottom: 2rem; }
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  margin-bottom: 2rem;
+}
+
+.card {
+  grid-column: span 6;
+  background: var(--bg-1);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.card-wide { grid-column: span 8; }
+.card-photo { grid-column: span 4; }
+
+.card h2 {
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.card h2::before,
+.card h3::before { content: none; }
+
+.card h3 {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.card time,
+.period {
+  display: block;
+  color: var(--text-2);
+  margin-bottom: 0.5rem;
+}
+
+.photo-link {
+  display: block;
+}
+
+.photo-link img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+}
+
+.photo-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+@media (max-width: 900px) {
+  .card,
+  .card-wide,
+  .card-photo {
+    grid-column: span 12;
+  }
+}
 </style>
