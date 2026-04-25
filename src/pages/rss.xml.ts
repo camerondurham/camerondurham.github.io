@@ -10,7 +10,7 @@ export async function GET(context: APIContext) {
     title: post.data.title,
     pubDate: new Date(post.data.date),
     description: post.data.summary || '',
-    link: `/posts/${post.slug}/`,
+    link: `/notes/${post.slug}/`,
   }));
 
   const photoItems = photos.map(photo => ({
@@ -26,7 +26,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: 'Cameron Durham',
-    description: 'Posts and photos from Cameron Durham',
+    description: 'Notes and photos from Cameron Durham',
     site: context.site!,
     items,
   });

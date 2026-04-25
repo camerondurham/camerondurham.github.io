@@ -5,7 +5,7 @@ summary: "Operational patterns I now default to for high-throughput systems wher
 tags: ["distributed-systems", "reliability", "operations"]
 ---
 
-This note intentionally avoids internal implementation details and focuses on transferable engineering lessons.
+These are the operational patterns I now default to in high-throughput systems.
 
 ## 1. Separate customer-critical and bulk workloads early
 

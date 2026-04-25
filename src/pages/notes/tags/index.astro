@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('posts');
+const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort();
+---
+
+<BaseLayout title="Note Tags | Cameron Durham">
+  <h1>Note Tags</h1>
+  <div class="tags-list">
+    {tags.map((tag) => (
+      <a href={`/notes/tags/${tag}`} class="tag-link">{tag}</a>
+    ))}
+  </div>
+  <a href="/notes" class="back-link">← All notes</a>
+</BaseLayout>
+
+<style>
+.tags-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+.tag-link {
+  background: var(--bg-1);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-bottom: none !important;
+}
+.tag-link:hover { background: var(--primary-color); color: var(--hover-color); }
+.back-link { display: inline-block; margin-top: 2rem; }
+</style>

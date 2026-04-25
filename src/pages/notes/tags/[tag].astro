@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('posts');
+  const tags = [...new Set(notes.flatMap((note) => note.data.tags))];
+
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      notes: notes
+        .filter((note) => note.data.tags.includes(tag))
+        .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { notes } = Astro.props;
+---
+
+<BaseLayout title={`Notes tagged "${tag}" | Cameron Durham`}>
+  <h1>Notes tagged "{tag}"</h1>
+  <div class="notes-list">
+    {notes.map((note) => (
+      <article class="note-item">
+        <h2><a href={`/notes/${note.slug}`}>{note.data.title}</a></h2>
+        <time datetime={note.data.date}>{note.data.date}</time>
+        {note.data.summary && <p>{note.data.summary}</p>}
+      </article>
+    ))}
+  </div>
+  <a href="/notes/tags" class="back-link">← All note tags</a>
+</BaseLayout>
+
+<style>
+.notes-list { display: flex; flex-direction: column; gap: 2rem; padding-top: 1rem; }
+.note-item { border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
+.note-item:last-child { border-bottom: none; }
+.note-item h2 { margin-bottom: 0.5rem; }
+.note-item h2::before { content: none; }
+.note-item time { display: block; margin-bottom: 0.5rem; }
+.back-link { display: inline-block; margin-top: 2rem; }
+</style>

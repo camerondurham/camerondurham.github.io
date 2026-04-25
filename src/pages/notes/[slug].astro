@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes');
+  const notes = await getCollection('posts');
   return notes.map(note => ({ params: { slug: note.slug }, props: { note } }));
 }
 
@@ -18,7 +18,7 @@ const { Content } = await render(note);
       <time datetime={note.data.date}>{note.data.date}</time>
       {note.data.tags.length > 0 && (
         <p class="tags">
-          {note.data.tags.map(tag => <span class="tag">{tag}</span>)}
+          {note.data.tags.map(tag => <a href={`/notes/tags/${tag}`} class="tag">{tag}</a>)}
         </p>
       )}
     </header>
@@ -37,6 +37,15 @@ const { Content } = await render(note);
 .note-header { border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; }
 .note-header h1 { margin: 0 0 0.5rem 0; }
 .tags { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.tag { background: var(--bg-1); border: 1px solid var(--border-color); border-radius: 4px; padding: 0.15rem 0.45rem; font-size: 0.8rem; color: var(--text-1); }
+.tag {
+  background: var(--bg-1);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.8rem;
+  color: var(--text-1);
+  border-bottom: none !important;
+}
+.tag:hover { background: var(--primary-color); color: var(--hover-color); }
 .note-footer { border-top: 1px solid var(--border-color); margin-top: 2rem; padding-top: 1rem; }
 </style>

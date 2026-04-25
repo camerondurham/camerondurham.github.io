@@ -52,14 +52,4 @@ const impact = defineCollection({
   }),
 });
 
-const notes = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    date: z.string(),
-    summary: z.string(),
-    tags: z.array(z.string()).default([]),
-  }),
-});
-
-export const collections = { posts, projects, photos, impact, notes };
+export const collections = { posts, projects, photos, impact };
