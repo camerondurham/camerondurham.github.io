@@ -1,167 +1,132 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-
-const [posts, notes, impact, photos] = await Promise.all([
-  getCollection('posts'),
-  getCollection('notes'),
-  getCollection('impact'),
-  getCollection('photos'),
-]);
-
-const latestPost = posts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0];
-const latestNote = notes.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0];
-const featuredImpact = impact.sort((a, b) => a.data.order - b.data.order)[0];
-const featuredPhoto = photos.sort((a, b) => a.data.weight - b.data.weight)[0];
-
-const nowItems = [
-  'Building and scaling distributed search indexing workflows.',
-  'Contributing upstream to open-source tools I actively depend on.',
-  'Writing operational notes on reliability, migration, and latency tradeoffs.',
-  'Experimenting with lightweight local toolchains and containerized workflows.',
+const recentItems = [
+  {
+    label: 'work',
+    title: 'Search indexing, migrations, and reliability work',
+    href: '/work',
+    description: 'Selected production work, open-source contributions, and project notes.',
+  },
+  {
+    label: 'note',
+    title: 'Reliability Under Load: What Actually Worked',
+    href: '/notes/reliability-under-load/',
+    description: 'Operational patterns for high-throughput systems.',
+  },
+  {
+    label: 'note',
+    title: 'Polestar 2 Ownership Notes',
+    href: '/notes/ps2/',
+    description: 'Maintenance notes and upgrades for my 2022 Polestar 2.',
+  },
+  {
+    label: 'photos',
+    title: 'Recent photos',
+    href: '/photos',
+    description: 'A small visual archive.',
+  },
 ];
 ---
 
 <BaseLayout title="Cameron Durham" description="Cameron Durham - SDE II at Amazon">
   <section class="hero">
-    <h1>Current Status</h1>
+    <h1>Cameron Durham</h1>
     <p>
-      I'm currently an SDE II at Amazon, working on catalog indexing for third-party seller listings and related
-      reliability/performance work in distributed search systems.
+      I build backend systems and search indexing infrastructure, and contribute to open-source projects I use.
     </p>
     <p>
-      Previously, I built containerized class tooling at USC CS104 and interned at Tesla, Amazon, and Oracle.
-      This page is my current status board for what I'm shipping, documenting, and exploring.
+      Currently at Amazon, working on distributed catalog indexing and related reliability/performance work.
     </p>
   </section>
 
-  <section>
-    <h2>Now</h2>
-    <ul class="now-list">
-      {nowItems.map(item => <li>{item}</li>)}
-    </ul>
+  <section class="current">
+    <p>
+      <strong>Now:</strong> distributed search indexing, OpenSearch operations,
+      <a href="https://github.com/camerondurham/open-source-contributions" target="_blank" rel="noopener noreferrer">open-source contributions</a>,
+      and occasional notes.
+    </p>
   </section>
 
-  <section class="grid">
-    <article class="card">
-      <h2>Latest Note</h2>
-      {latestNote ? (
-        <>
-          <time datetime={latestNote.data.date}>{latestNote.data.date}</time>
-          <h3>
-            <a href={`/notes/${latestNote.slug}/`}>{latestNote.data.title}</a>
-          </h3>
-          <p>{latestNote.data.summary}</p>
-        </>
-      ) : <p>No notes yet.</p>}
-    </article>
-
-    <article class="card">
-      <h2>Latest Post</h2>
-      {latestPost ? (
-        <>
-          <time datetime={latestPost.data.date}>{latestPost.data.date}</time>
-          <h3>
-            <a href={`/posts/${latestPost.slug}/`}>{latestPost.data.title}</a>
-          </h3>
-          {latestPost.data.summary && <p>{latestPost.data.summary}</p>}
-        </>
-      ) : <p>No posts yet.</p>}
-    </article>
-
-    <article class="card card-wide">
-      <h2>Featured Impact</h2>
-      {featuredImpact ? (
-        <>
-          {featuredImpact.data.period && <p class="period">{featuredImpact.data.period}</p>}
-          <h3>
-            <a href="/impact">{featuredImpact.data.title}</a>
-          </h3>
-          <p>{featuredImpact.data.summary}</p>
-        </>
-      ) : <p>No impact entries yet.</p>}
-    </article>
-
-    <article class="card card-photo">
-      <h2>Recent Photo</h2>
-      {featuredPhoto ? (
-        <a href={featuredPhoto.data.link} target="_blank" rel="noopener noreferrer" class="photo-link">
-          <img src={featuredPhoto.data.image_url} alt={featuredPhoto.data.title} loading="lazy" />
-          <p class="photo-title">{featuredPhoto.data.title}</p>
-          <p>{featuredPhoto.data.description}</p>
+  <section class="recent" aria-labelledby="recent-heading">
+    <h2 id="recent-heading">Recent</h2>
+    <div class="recent-list">
+      {recentItems.map(item => (
+        <a href={item.href} class="recent-item">
+          <span class="label">{item.label}</span>
+          <span class="title">{item.title}</span>
+          <span class="description">{item.description}</span>
         </a>
-      ) : <p>No photos yet.</p>}
-    </article>
+      ))}
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-.hero { margin-bottom: 2rem; }
-.hero p { max-width: 75ch; }
+.hero { margin: 2.5rem 0 1.5rem; }
+.hero h1 { margin-top: 0; margin-bottom: 1rem; }
+.hero h1::before,
+.recent h2::before { content: none; }
+.hero p { max-width: 64ch; font-size: 1rem; }
 
-.now-list { margin-bottom: 2rem; }
-
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  margin-bottom: 2rem;
+.current {
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-1);
+  margin: 1.75rem 0 2rem;
+  padding: 0.85rem 0;
 }
 
-.card {
-  grid-column: span 6;
-  background: var(--bg-1);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1rem;
-}
+.current p { margin: 0; }
 
-.card-wide { grid-column: span 8; }
-.card-photo { grid-column: span 4; }
-
-.card h2 {
+.recent h2 {
   font-size: 1rem;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.75rem;
 }
 
-.card h2::before,
-.card h3::before { content: none; }
-
-.card h3 {
-  font-size: 1.1rem;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+.recent-list {
+  border-top: 1px solid var(--border-color);
+  display: grid;
 }
 
-.card time,
-.period {
-  display: block;
+.recent-item {
+  border-bottom: 1px solid var(--border-color);
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  padding: 0.85rem 0;
+}
+
+.recent-item:hover {
+  background: transparent;
+  color: inherit;
+}
+
+.recent-item:hover .title {
+  color: var(--primary-color);
+}
+
+.label {
   color: var(--text-2);
-  margin-bottom: 0.5rem;
+  font-family: var(--mono-text-font);
+  font-size: 0.8rem;
 }
 
-.photo-link {
-  display: block;
-}
-
-.photo-link img {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-  margin-bottom: 0.75rem;
-}
-
-.photo-title {
+.title {
   font-weight: 600;
-  margin-bottom: 0.25rem;
 }
 
-@media (max-width: 900px) {
-  .card,
-  .card-wide,
-  .card-photo {
-    grid-column: span 12;
+.description {
+  color: var(--text-1);
+  grid-column: 2;
+}
+
+@media (max-width: 640px) {
+  .recent-item {
+    grid-template-columns: 1fr;
+  }
+
+  .description {
+    grid-column: 1;
   }
 }
 </style>
