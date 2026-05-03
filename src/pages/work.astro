@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const [impact, projects] = await Promise.all([
+  getCollection('impact'),
+  getCollection('projects'),
+]);
+
+const workItems = impact.sort((a, b) => a.data.order - b.data.order);
+const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
+---
+
+<BaseLayout title="Work | Cameron Durham" description="Selected work, projects, and open-source tools from Cameron Durham.">
+  <header class="work-header">
+    <h1>Work</h1>
+    <p>
+      Production systems, open-source contributions, and project notes. The work entries keep the measurable details,
+      but avoid internal implementation specifics.
+    </p>
+  </header>
+
+  <section class="section-block" aria-labelledby="systems-heading">
+    <h2 id="systems-heading">Systems</h2>
+    <div class="entry-list">
+      {workItems.map(item => (
+        <article class="entry">
+          <header>
+            <h3>{item.data.title}</h3>
+            {item.data.period && <p class="meta">{item.data.period}</p>}
+          </header>
+
+          <p>{item.data.summary}</p>
+
+          <dl>
+            <div>
+              <dt>Scope</dt>
+              <dd>{item.data.scope}</dd>
+            </div>
+            <div>
+              <dt>Result</dt>
+              <dd>{item.data.outcomes.join(' ')}</dd>
+            </div>
+            <div>
+              <dt>Work</dt>
+              <dd>{item.data.methods.join(' ')}</dd>
+            </div>
+          </dl>
+
+          {item.data.proof.length > 0 && (
+            <p class="links">
+              {item.data.proof.map((link, idx) => (
+                <>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  {idx < item.data.proof.length - 1 ? ' · ' : ''}
+                </>
+              ))}
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block" aria-labelledby="tools-heading">
+    <h2 id="tools-heading">Tools</h2>
+    <div class="tool-list">
+      {projectItems.map(project => (
+        <article class="tool">
+          <h3>
+            {project.data.link ? (
+              <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+            ) : (
+              project.data.title
+            )}
+          </h3>
+          <p>{project.data.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.work-header { margin: 2rem 0; }
+.work-header h1 { margin-top: 0; }
+.work-header h1::before,
+.section-block h2::before,
+.entry h3::before,
+.tool h3::before {
+  content: none;
+}
+
+.work-header p {
+  color: var(--text-1);
+  max-width: 68ch;
+}
+
+.section-block {
+  margin: 2rem 0;
+}
+
+.section-block h2 {
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.entry-list,
+.tool-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.entry {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entry h3,
+.tool h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.35rem;
+}
+
+.meta {
+  color: var(--text-2);
+  font-family: var(--mono-text-font);
+  margin-bottom: 0.65rem;
+}
+
+dl {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+dl div {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 5rem minmax(0, 1fr);
+}
+
+dt {
+  color: var(--text-2);
+  font-family: var(--mono-text-font);
+  font-size: 0.8rem;
+}
+
+dd {
+  margin: 0;
+}
+
+.links {
+  color: var(--text-1);
+  margin-bottom: 0;
+}
+
+.tool-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tool {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.tool p {
+  color: var(--text-1);
+  margin-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .tool-list,
+  dl div {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
