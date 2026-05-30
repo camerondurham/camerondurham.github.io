@@ -9,6 +9,14 @@ export async function getStaticPaths() {
 
 const { note } = Astro.props;
 const { Content } = await render(note);
+const projects = await getCollection('projects');
+const photos = await getCollection('photos');
+const relatedProject = note.data.related_project
+  ? projects.find((project) => project.slug === note.data.related_project)
+  : undefined;
+const relatedPhoto = note.data.related_photo
+  ? photos.find((photo) => photo.slug === note.data.related_photo)
+  : undefined;
 ---
 
 <BaseLayout title={`${note.data.title} | Cameron Durham`}>
@@ -23,9 +31,21 @@ const { Content } = await render(note);
       )}
     </header>
 
+    {note.data.hero_image_url && (
+      <img class="hero-image" src={note.data.hero_image_url} alt={note.data.title} loading="eager" />
+    )}
+
     <div class="note-content">
       <Content />
     </div>
+
+    {(relatedProject || relatedPhoto) && (
+      <aside class="related-panel">
+        <h2>Related</h2>
+        {relatedProject && <p><a href={`/projects#${relatedProject.slug}`}>{relatedProject.data.title}</a></p>}
+        {relatedPhoto && <p><a href={`/photos#${relatedPhoto.slug}`}>{relatedPhoto.data.title}</a></p>}
+      </aside>
+    )}
 
     <footer class="note-footer">
       <a href="/notes">← Back to notes</a>
@@ -36,7 +56,27 @@ const { Content } = await render(note);
 <style>
 .note-header { border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; }
 .note-header h1 { margin: 0 0 0.5rem 0; }
+.hero-image {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
 .tags { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .tag { background: var(--bg-1); border: 1px solid var(--border-color); border-radius: 4px; padding: 0.15rem 0.45rem; font-size: 0.8rem; color: var(--text-1); }
+.related-panel {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-1);
+}
+.related-panel h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+.related-panel h2::before { content: none; }
+.related-panel p:last-child { margin-bottom: 0; }
 .note-footer { border-top: 1px solid var(--border-color); margin-top: 2rem; padding-top: 1rem; }
 </style>

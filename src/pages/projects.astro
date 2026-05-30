@@ -3,32 +3,135 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.weight - b.data.weight);
+const notes = await getCollection('notes');
+const noteMap = new Map(notes.map((note) => [note.slug, note]));
+
+const featuredProjects = projects.filter((project) => project.data.featured);
+const archiveProjects = projects.filter((project) => !project.data.featured);
 ---
 
 <BaseLayout title="Projects | Cameron Durham">
   <h1>Projects</h1>
-  <div class="projects-list">
-    {projects.map(project => (
-      <article class="project-item">
-        <h2>
-          {project.data.link ? (
-            <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
-          ) : (
-            project.data.title
+  <p class="intro">
+    A mix of public tools, older systems projects, and recent experiments around Linux, cars, and developer workflows.
+  </p>
+
+  <section class="project-section">
+    <h2>Featured</h2>
+    <div class="projects-grid">
+      {featuredProjects.map((project) => {
+        const relatedNote = project.data.related_note ? noteMap.get(project.data.related_note) : undefined;
+        return (
+          <article class="project-card" id={project.slug}>
+            <div class="project-header">
+              <div>
+                <p class="meta-line">
+                  <time datetime={project.data.date}>{project.data.date}</time>
+                  {project.data.status && <span class="status-pill">{project.data.status}</span>}
+                </p>
+                <h3>
+                  {project.data.link ? (
+                    <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+                  ) : (
+                    project.data.title
+                  )}
+                </h3>
+              </div>
+            </div>
+            <p>{project.data.description}</p>
+            {project.data.tags.length > 0 && (
+              <div class="pill-row">
+                {project.data.tags.map((tag) => <span class="pill">{tag}</span>)}
+              </div>
+            )}
+            {relatedNote && (
+              <p class="related-link">Related note: <a href={`/notes/${relatedNote.slug}`}>{relatedNote.data.title}</a></p>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="project-section">
+    <h2>Archive</h2>
+    <div class="projects-list">
+      {archiveProjects.map((project) => (
+        <article class="project-item" id={project.slug}>
+          <h3>
+            {project.data.link ? (
+              <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+            ) : (
+              project.data.title
+            )}
+          </h3>
+          <p class="meta-line">
+            <time datetime={project.data.date}>{project.data.date}</time>
+            {project.data.status && <span class="status-pill">{project.data.status}</span>}
+          </p>
+          <p>{project.data.description}</p>
+          {project.data.tags.length > 0 && (
+            <div class="pill-row">
+              {project.data.tags.map((tag) => <span class="pill">{tag}</span>)}
+            </div>
           )}
-        </h2>
-        <time datetime={project.data.date}>{project.data.date}</time>
-        <p>{project.data.description}</p>
-      </article>
-    ))}
-  </div>
+        </article>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
+.intro { margin-bottom: 2rem; color: var(--text-1); max-width: 58ch; }
+.project-section { margin-bottom: 2.5rem; }
+.project-section h2::before, .project-card h3::before, .project-item h3::before { content: none; }
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.project-card {
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1rem;
+  background:
+    linear-gradient(180deg, rgba(210, 94, 44, 0.08), transparent 22%),
+    var(--bg-1);
+}
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-1);
+  font-family: var(--mono-text-font);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+.status-pill, .pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-1);
+  background: var(--bg-0);
+}
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+.related-link {
+  margin-top: 0.9rem;
+  color: var(--text-1);
+}
+.related-link a { margin-left: 0.25rem; }
 .projects-list { display: flex; flex-direction: column; gap: 2rem; }
 .project-item { border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
 .project-item:last-child { border-bottom: none; }
-.project-item h2 { margin-bottom: 0.5rem; }
-.project-item h2::before { content: none; }
-.project-item time { display: block; margin-bottom: 0.75rem; }
+.project-item h3 { margin-bottom: 0.4rem; }
 </style>

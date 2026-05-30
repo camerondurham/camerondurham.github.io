@@ -4,4 +4,7 @@ description: "Manhattan Office Space (shared under Unsplash License)"
 image_url: "https://images.unsplash.com/photo-1703537804519-ccc1aa0f212d?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 link: "https://unsplash.com/photos/a-very-tall-building-lit-up-at-night-sLtoWdA1PWc"
 weight: 5
+location: "Manhattan"
+story: "Hard lines, window grids, and a compressed frame that feels closer to interface design than travel photography."
+tags: ["architecture", "grid", "night", "city"]
 ---

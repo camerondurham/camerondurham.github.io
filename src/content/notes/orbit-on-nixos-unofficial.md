@@ -3,6 +3,8 @@ title: "Running OrBit on NixOS for My Polestar 2 (Unofficial)"
 date: "2026-02-28"
 summary: "Why I built a small Nix+Wine wrapper for OrBit, what it does, and where to find the scripts."
 tags: ["nixos", "wine", "polestar", "automotive", "experiments"]
+featured: true
+related_project: "orbit-runner-flake"
 ---
 
 I wanted a repeatable way to run OrBit on my NixOS laptop and couldn't find a setup I trusted, so I wrote a small wrapper around Wine and a few network helpers.

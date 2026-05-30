@@ -18,6 +18,12 @@ const projects = defineCollection({
     description: z.string(),
     weight: z.number(),
     link: z.string().optional(),
+    status: z.string().optional(),
+    featured: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
+    image_url: z.string().optional(),
+    related_note: z.string().optional(),
+    related_photo: z.string().optional(),
   }),
 });
 
@@ -29,6 +35,12 @@ const photos = defineCollection({
     image_url: z.string(),
     link: z.string(),
     weight: z.number(),
+    year: z.string().optional(),
+    location: z.string().optional(),
+    story: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    related_project: z.string().optional(),
+    related_note: z.string().optional(),
   }),
 });
 
@@ -59,6 +71,10 @@ const notes = defineCollection({
     date: z.string(),
     summary: z.string(),
     tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+    hero_image_url: z.string().optional(),
+    related_project: z.string().optional(),
+    related_photo: z.string().optional(),
   }),
 });
 

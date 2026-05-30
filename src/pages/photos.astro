@@ -3,36 +3,111 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const photos = (await getCollection('photos')).sort((a, b) => a.data.weight - b.data.weight);
+const projects = await getCollection('projects');
+const notes = await getCollection('notes');
+const projectMap = new Map(projects.map((project) => [project.slug, project]));
+const noteMap = new Map(notes.map((note) => [note.slug, note]));
 ---
 
 <BaseLayout title="Photos | Cameron Durham">
-  <h1>Photos</h1>
-  <p class="photos-intro">A collection of some photography from art school and personal travel.</p>
+  <h1>Visual Notebook</h1>
+  <p class="photos-intro">
+    A small set of visual references, photographic studies, and images that keep the rest of the site from feeling too sterile.
+  </p>
   <div class="photos-grid">
-    {photos.map(photo => (
-      <a href={photo.data.link} target="_blank" rel="noopener noreferrer" class="photo-card">
-        <div class="photo-image-container">
-          <img src={photo.data.image_url} alt={photo.data.title} loading="lazy" />
-        </div>
-        <div class="photo-info">
-          <h3>{photo.data.title}</h3>
-          <p>{photo.data.description}</p>
-        </div>
-      </a>
-    ))}
+    {photos.map((photo) => {
+      const relatedProject = photo.data.related_project ? projectMap.get(photo.data.related_project) : undefined;
+      const relatedNote = photo.data.related_note ? noteMap.get(photo.data.related_note) : undefined;
+      return (
+        <article class="photo-card" id={photo.slug}>
+          <a href={photo.data.link} target="_blank" rel="noopener noreferrer" class="photo-image-container">
+            <img src={photo.data.image_url} alt={photo.data.title} loading="lazy" />
+          </a>
+          <div class="photo-info">
+            <div class="photo-heading">
+              <h3>{photo.data.title}</h3>
+              {(photo.data.location || photo.data.year) && (
+                <p class="photo-meta">
+                  {[photo.data.location, photo.data.year].filter(Boolean).join(' · ')}
+                </p>
+              )}
+            </div>
+            <p>{photo.data.description}</p>
+            {photo.data.story && <p class="photo-story">{photo.data.story}</p>}
+            {photo.data.tags.length > 0 && (
+              <div class="pill-row">
+                {photo.data.tags.map((tag) => <span class="pill">{tag}</span>)}
+              </div>
+            )}
+            {(relatedProject || relatedNote) && (
+              <div class="related-row">
+                {relatedProject && <a href={`/projects#${relatedProject.slug}`}>Project: {relatedProject.data.title}</a>}
+                {relatedNote && <a href={`/notes/${relatedNote.slug}`}>Note: {relatedNote.data.title}</a>}
+              </div>
+            )}
+          </div>
+        </article>
+      );
+    })}
   </div>
 </BaseLayout>
 
 <style>
 .photos-intro { margin-bottom: 2rem; color: var(--text-1); }
-.photos-grid { display: grid; gap: 24px; padding: 12px 0; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
+.photos-grid { display: grid; gap: 24px; padding: 12px 0; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 @media (max-width: 640px) { .photos-grid { grid-template-columns: 1fr; } }
-.photo-card { background: var(--bg-1); border: 2px solid var(--border-color); border-radius: 10px; overflow: hidden; display: block; }
-.photo-card:hover { background: transparent; }
-.photo-image-container { width: 100%; height: 300px; overflow: hidden; }
+.photo-card {
+  background:
+    linear-gradient(180deg, rgba(210, 94, 44, 0.08), transparent 18%),
+    var(--bg-1);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.photo-image-container { width: 100%; height: 300px; overflow: hidden; display: block; }
 .photo-image-container img { width: 100%; height: 100%; object-fit: cover; }
 .photo-info { padding: 0 24px 24px; }
-.photo-info h3 { margin-top: 0.7em; font-size: 1rem; font-weight: 600; }
+.photo-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 0.9rem;
+}
+.photo-info h3 { margin-top: 0; font-size: 1rem; font-weight: 600; }
 .photo-info h3::before { content: none; }
+.photo-meta {
+  font-family: var(--mono-text-font);
+  font-size: 0.78rem;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 .photo-info p { margin-top: 0.5em; font-size: 0.9rem; color: var(--text-1); }
+.photo-story { color: var(--text-0); }
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-1);
+  background: var(--bg-0);
+}
+.related-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+}
 </style>

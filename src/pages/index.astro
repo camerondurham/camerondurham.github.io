@@ -1,22 +1,397 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const allNotes = await getCollection('notes');
+const allPhotos = await getCollection('photos');
+
+const featuredProjects = allProjects
+  .filter((project) => project.data.featured)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
+const featuredNotes = allNotes
+  .filter((note) => note.data.featured)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
+
+const featuredPhotos = [...allPhotos]
+  .sort((a, b) => a.data.weight - b.data.weight)
+  .slice(0, 3);
+
+const heroPhoto = featuredPhotos[0];
 ---
 
 <BaseLayout title="Cameron Durham" description="Cameron Durham - SDE II at Amazon">
-  <section class="about">
-    <h1>About</h1>
-    <p>
-      I'm an SDE II at Amazon, working on catalog indexing for the third-party seller listing platform.
-      I contributed to the <a href="https://www.aboutamazon.com/news/retail/affordable-products-amazon-20-dollars-and-under" target="_blank">Amazon Haul</a> listing experience and work with streaming data processing for distributed search indexing.
-      I also contribute to <a href="https://github.com/camerondurham/open-source-contributions" target="_blank">open-source projects</a> I use.
-    </p>
-    <p>
-      Previously, I was a lead course producer for <a href="https://bytes.usc.edu/cs104/" target="_blank">USC's CS104 class</a>, developing <a href="https://github.com/csci104/docker" target="_blank">containerized tools</a> for the class environment. I interned at Tesla, where I worked on containerized infotainment UIs for all Tesla car models. Before Tesla, I had internships at Amazon and Oracle.
-    </p>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Software, systems, and visual obsessions</p>
+      <h1>Cameron Durham</h1>
+      <p class="lede">
+        I build software for distributed systems and spend a lot of my spare time around developer tools,
+        Linux workflows, odd automotive experiments, and image-heavy side quests.
+      </p>
+      <p>
+        I'm an SDE II at Amazon, working on catalog indexing for the third-party seller listing platform.
+        I contributed to the <a href="https://www.aboutamazon.com/news/retail/affordable-products-amazon-20-dollars-and-under" target="_blank">Amazon Haul</a> listing experience and work with streaming data processing for distributed search indexing.
+        I also contribute to <a href="https://github.com/camerondurham/open-source-contributions" target="_blank">open-source projects</a> I use.
+      </p>
+      <p>
+        Previously, I was a lead course producer for <a href="https://bytes.usc.edu/cs104/" target="_blank">USC's CS104 class</a>, developing <a href="https://github.com/csci104/docker" target="_blank">containerized tools</a> for the class environment. I interned at Tesla, where I worked on containerized infotainment UIs for all Tesla car models. Before Tesla, I had internships at Amazon and Oracle.
+      </p>
+      <div class="hero-actions">
+        <a href="/projects">Recent Experiments</a>
+        <a href="/notes">Engineering Notes</a>
+        <a href="/photos">Visual Notebook</a>
+      </div>
+    </div>
+
+    {heroPhoto && (
+      <a href={`/photos#${heroPhoto.slug}`} class="hero-visual">
+        <img src={heroPhoto.data.image_url} alt={heroPhoto.data.title} loading="eager" />
+        <div class="hero-visual-copy">
+          <span class="hero-visual-label">Visual notebook</span>
+          <strong>{heroPhoto.data.title}</strong>
+          {heroPhoto.data.story && <p>{heroPhoto.data.story}</p>}
+        </div>
+      </a>
+    )}
+  </section>
+
+  <section class="now-strip">
+    <article>
+      <span>Current themes</span>
+      <p>Rust utilities, Nix wrappers, vehicle APIs, and making room for more images across the site.</p>
+    </article>
+    <article>
+      <span>What changed recently</span>
+      <p>Public work lately has centered on <code>polestar-api-rs</code>, <code>orbit-runner-flake</code>, and fresh notes about experimental workflows.</p>
+    </article>
+    <article>
+      <span>Why the photos matter</span>
+      <p>The visual side keeps the site from collapsing into a pure resume. It gives the engineering work atmosphere and memory.</p>
+    </article>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>Recent Experiments</h2>
+      <a href="/projects">See all projects</a>
+    </div>
+    <div class="feature-grid">
+      {featuredProjects.map((project) => (
+        <article class="feature-card" id={`project-${project.slug}`}>
+          <div class="feature-card-top">
+            <p class="meta-line">
+              <time datetime={project.data.date}>{project.data.date}</time>
+              {project.data.status && <span class="status-pill">{project.data.status}</span>}
+            </p>
+            <h3>
+              {project.data.link ? (
+                <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+              ) : (
+                project.data.title
+              )}
+            </h3>
+          </div>
+          <p>{project.data.description}</p>
+          {project.data.tags.length > 0 && (
+            <div class="pill-row">
+              {project.data.tags.map((tag) => <span class="pill">{tag}</span>)}
+            </div>
+          )}
+          {project.data.related_note && (
+            <p class="related-link">
+              Related note:
+              <a href={`/notes/${project.data.related_note}`}>{allNotes.find((note) => note.slug === project.data.related_note)?.data.title}</a>
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>Field Notes</h2>
+      <a href="/notes">Browse notes</a>
+    </div>
+    <div class="notes-grid">
+      {featuredNotes.map((note) => (
+        <article class="note-card">
+          <time datetime={note.data.date}>{note.data.date}</time>
+          <h3><a href={`/notes/${note.slug}`}>{note.data.title}</a></h3>
+          <p>{note.data.summary}</p>
+          {note.data.tags.length > 0 && (
+            <div class="pill-row">
+              {note.data.tags.map((tag) => <span class="pill">{tag}</span>)}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>Visual Notebook</h2>
+      <a href="/photos">Open gallery</a>
+    </div>
+    <div class="photo-ribbon">
+      {featuredPhotos.map((photo) => (
+        <a href={`/photos#${photo.slug}`} class="ribbon-card">
+          <img src={photo.data.image_url} alt={photo.data.title} loading="lazy" />
+          <div class="ribbon-copy">
+            <strong>{photo.data.title}</strong>
+            <span>{photo.data.location ?? photo.data.description}</span>
+          </div>
+        </a>
+      ))}
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-.about { margin-bottom: 2rem; }
-.about p { margin-bottom: 1.5rem; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.9fr);
+  gap: 1.5rem;
+  align-items: stretch;
+  margin-top: 1rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-1);
+  font-size: 0.78rem;
+  margin-bottom: 0.75rem;
+}
+
+.hero h1 {
+  margin-top: 0;
+  font-size: clamp(2.5rem, 6vw, 4.4rem);
+  line-height: 0.95;
+}
+
+.hero h1::before { content: none; }
+
+.hero-copy {
+  padding: 1.6rem;
+  border: 1px solid var(--border-color);
+  background:
+    radial-gradient(circle at top right, rgba(210, 94, 44, 0.18), transparent 35%),
+    linear-gradient(135deg, var(--bg-1), transparent 70%);
+  border-radius: 24px;
+}
+
+.lede {
+  font-size: 1.1rem;
+  color: var(--text-0);
+  max-width: 50ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.hero-actions a,
+.section-heading a,
+.related-link a {
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--bg-1);
+  transform: rotate(1deg);
+}
+
+.hero-visual img {
+  width: 100%;
+  height: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.hero-visual-copy {
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+.hero-visual-label,
+.now-strip span,
+.meta-line {
+  display: block;
+  font-family: var(--mono-text-font);
+  font-size: 0.78rem;
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-visual-copy strong,
+.ribbon-copy strong {
+  display: block;
+  margin: 0.35rem 0 0.4rem;
+}
+
+.hero-visual-copy p {
+  color: var(--text-1);
+  margin-bottom: 0;
+}
+
+.now-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.now-strip article,
+.feature-card,
+.note-card {
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1rem;
+  background: var(--bg-1);
+}
+
+.now-strip p,
+.feature-card p,
+.note-card p {
+  margin-bottom: 0;
+}
+
+.section-block {
+  margin-top: 2.5rem;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+}
+
+.section-heading h2::before,
+.feature-card h3::before,
+.note-card h3::before {
+  content: none;
+}
+
+.feature-grid,
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature-card,
+.note-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.feature-card-top h3,
+.note-card h3 {
+  margin: 0.25rem 0 0;
+}
+
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.status-pill,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-1);
+  background: var(--bg-0);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.related-link {
+  color: var(--text-1);
+  font-size: 0.92rem;
+}
+
+.related-link a {
+  margin-left: 0.35rem;
+}
+
+.photo-ribbon {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ribbon-card {
+  display: block;
+  border: 1px solid var(--border-color);
+  background: var(--bg-1);
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.ribbon-card:nth-child(2) {
+  transform: translateY(18px);
+}
+
+.ribbon-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.ribbon-copy {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.ribbon-copy span {
+  color: var(--text-1);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .feature-grid,
+  .notes-grid,
+  .photo-ribbon,
+  .now-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual,
+  .ribbon-card:nth-child(2) {
+    transform: none;
+  }
+}
 </style>
