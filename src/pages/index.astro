@@ -3,21 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const recentItems = [
   {
     label: 'project',
-    title: 'remux',
-    href: 'https://github.com/camerondurham/remux',
-    description: 'Local-first CLI/TUI for finding and reattaching to tmux panes across local and SSH hosts.',
-  },
-  {
-    label: 'work',
-    title: 'Search indexing, migrations, and reliability work',
-    href: '/work',
-    description: 'Selected production work, open-source contributions, and project notes.',
-  },
-  {
-    label: 'note',
-    title: 'Reliability Under Load: What Actually Worked',
-    href: '/notes/reliability-under-load/',
-    description: 'Operational patterns for high-throughput systems.',
+    title: 'traffic demo',
+    href: 'https://traffic-demo.u64.cam/',
   },
   {
     label: 'note',
@@ -47,9 +34,7 @@ const recentItems = [
 
   <section class="current">
     <p>
-      <strong>Now:</strong> distributed search indexing, OpenSearch operations,
-      building <a href="https://github.com/camerondurham/remux" target="_blank" rel="noopener noreferrer">remux</a>
-      for cross-host tmux discovery, and occasional notes.
+      <strong>Current:</strong> <a href="https://traffic-demo.u64.cam/" target="_blank" rel="noopener noreferrer">traffic demo</a>.
     </p>
   </section>
 
@@ -60,7 +45,7 @@ const recentItems = [
         <a href={item.href} class="recent-item">
           <span class="label">{item.label}</span>
           <span class="title">{item.title}</span>
-          <span class="description">{item.description}</span>
+          {item.description && <span class="description">{item.description}</span>}
         </a>
       ))}
     </div>
