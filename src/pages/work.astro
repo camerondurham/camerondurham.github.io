@@ -4,6 +4,8 @@ import { getCollection } from 'astro:content';
 
 const projects = await getCollection('projects');
 const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
+const currentProjects = projectItems.filter(project => project.data.status === 'current');
+const selectedProjects = projectItems.filter(project => project.data.status === 'selected');
 ---
 
 <BaseLayout title="Work | Cameron Durham">
@@ -11,23 +13,45 @@ const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
     <h1>Work</h1>
   </header>
 
-  <section class="section-block" aria-labelledby="current-heading">
-    <h2 id="current-heading">Current</h2>
-    <div class="tool-list">
-      {projectItems.map(project => (
-        <article class="tool">
-          <h3>
-            {project.data.link ? (
-              <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
-            ) : (
-              project.data.title
-            )}
-          </h3>
-          {project.data.description && <p>{project.data.description}</p>}
-        </article>
-      ))}
-    </div>
-  </section>
+  {currentProjects.length > 0 && (
+    <section class="section-block" aria-labelledby="current-heading">
+      <h2 id="current-heading">Current</h2>
+      <div class="tool-list current-projects">
+        {currentProjects.map(project => (
+          <article class="tool">
+            <h3>
+              {project.data.link ? (
+                <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+              ) : (
+                project.data.title
+              )}
+            </h3>
+            {project.data.description && <p>{project.data.description}</p>}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {selectedProjects.length > 0 && (
+    <section class="section-block" aria-labelledby="selected-heading">
+      <h2 id="selected-heading">Selected projects</h2>
+      <div class="tool-list">
+        {selectedProjects.map(project => (
+          <article class="tool">
+            <h3>
+              {project.data.link ? (
+                <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+              ) : (
+                project.data.title
+              )}
+            </h3>
+            {project.data.description && <p>{project.data.description}</p>}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
@@ -62,6 +86,10 @@ const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
 
 .tool-list {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.current-projects {
+  grid-template-columns: 1fr;
 }
 
 .tool {
