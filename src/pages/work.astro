@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 const projects = await getCollection('projects');
 const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
 const currentProjects = projectItems.filter(project => project.data.status === 'current');
+const shippedProjects = projectItems.filter(project => project.data.status === 'shipped');
 const selectedProjects = projectItems.filter(project => project.data.status === 'selected');
 ---
 
@@ -27,6 +28,36 @@ const selectedProjects = projectItems.filter(project => project.data.status === 
               )}
             </h3>
             {project.data.description && <p>{project.data.description}</p>}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {shippedProjects.length > 0 && (
+    <section class="section-block" aria-labelledby="shipped-heading">
+      <h2 id="shipped-heading">Shipped work</h2>
+      <div class="tool-list current-projects">
+        {shippedProjects.map(project => (
+          <article class="tool">
+            <h3>
+              {project.data.link ? (
+                <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.title}</a>
+              ) : (
+                project.data.title
+              )}
+            </h3>
+            {project.data.description && <p>{project.data.description}</p>}
+            {project.data.links.length > 0 && (
+              <p class="evidence-links">
+                {project.data.links.map((link, index) => (
+                  <>
+                    {index > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  </>
+                ))}
+              </p>
+            )}
           </article>
         ))}
       </div>
@@ -100,6 +131,13 @@ const selectedProjects = projectItems.filter(project => project.data.status === 
 .tool p {
   color: var(--text-1);
   margin-bottom: 0;
+}
+
+.tool .evidence-links {
+  color: var(--text-2);
+  font-family: var(--mono-text-font);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 720px) {

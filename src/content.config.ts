@@ -18,8 +18,14 @@ const projects = defineCollection({
     date: z.string().optional(),
     description: z.string().optional(),
     weight: z.number(),
-    status: z.enum(['current', 'selected', 'hidden']).default('selected'),
+    status: z.enum(['current', 'shipped', 'selected', 'hidden']).default('selected'),
     link: z.string().optional(),
+    links: z.array(
+      z.object({
+        label: z.string(),
+        url: z.string().url(),
+      })
+    ).default([]),
   }),
 });
 
