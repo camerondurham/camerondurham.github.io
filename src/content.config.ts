@@ -15,10 +15,17 @@ const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/[^_]*.md' }),
   schema: z.object({
     title: z.string(),
-    date: z.string(),
-    description: z.string(),
+    date: z.string().optional(),
+    description: z.string().optional(),
     weight: z.number(),
+    status: z.enum(['current', 'shipped', 'selected', 'hidden']).default('selected'),
     link: z.string().optional(),
+    links: z.array(
+      z.object({
+        label: z.string(),
+        url: z.string().url(),
+      })
+    ).default([]),
   }),
 });
 

@@ -1,7 +1,7 @@
 ---
 title: "ch"
-date: "2021-01-01"
-description: "Docker config and shell manager for using containers as ad-hoc dev environments"
-weight: 1
+description: "Docker config and shell manager for using (or misusing) containers as dev environments"
+weight: 2
+status: "selected"
 link: "https://github.com/camerondurham/ch"
 ---
