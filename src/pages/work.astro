@@ -7,6 +7,7 @@ const projectItems = projects.sort((a, b) => a.data.weight - b.data.weight);
 const currentProjects = projectItems.filter(project => project.data.status === 'current');
 const shippedProjects = projectItems.filter(project => project.data.status === 'shipped');
 const selectedProjects = projectItems.filter(project => project.data.status === 'selected');
+const impactItems = (await getCollection('impact')).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Work | Cameron Durham">
@@ -28,6 +29,31 @@ const selectedProjects = projectItems.filter(project => project.data.status === 
               )}
             </h3>
             {project.data.description && <p>{project.data.description}</p>}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {impactItems.length > 0 && (
+    <section class="section-block" aria-labelledby="impact-heading">
+      <h2 id="impact-heading">Production impact</h2>
+      <div class="tool-list current-projects">
+        {impactItems.map(item => (
+          <article class="tool">
+            <h3>{item.data.title}</h3>
+            {item.data.period && <p class="period">{item.data.period}</p>}
+            <p>{item.data.summary}</p>
+            {item.data.proof.length > 0 && (
+              <p class="evidence-links">
+                {item.data.proof.map((link, index) => (
+                  <>
+                    {index > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  </>
+                ))}
+              </p>
+            )}
           </article>
         ))}
       </div>
@@ -131,6 +157,13 @@ const selectedProjects = projectItems.filter(project => project.data.status === 
 .tool p {
   color: var(--text-1);
   margin-bottom: 0;
+}
+
+.tool .period {
+  color: var(--text-2);
+  font-family: var(--mono-text-font);
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
 }
 
 .tool .evidence-links {

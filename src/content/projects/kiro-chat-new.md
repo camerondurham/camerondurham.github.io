@@ -1,7 +1,7 @@
 ---
-title: "Kiro CLI: /chat new"
+title: "Kiro CLI: /chat new contribution"
 date: "2026-03-20"
-description: "Start a fresh conversation without restarting the CLI. The current session is saved automatically, and an initial prompt is optional."
+description: "Independent contribution from outside the Kiro team: proposed and implemented /chat new to improve the only coding agent available internally to Amazon engineers at the time. The shipped feature starts a fresh conversation without restarting the CLI and saves the current session automatically."
 weight: 0
 status: "shipped"
 links:
