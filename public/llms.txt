@@ -1,0 +1,15 @@
+# Cameron Durham
+
+> Personal site of Cameron Durham, software engineer. AI agents are welcome to read this site; every public section is linked below.
+
+## Pages
+
+- [Home](https://u64.cam/): overview and current work
+- [Work](https://u64.cam/work): projects, experience, and case studies
+- [CodeCanvas](https://u64.cam/codecanvas): agent-driven coding playground
+- [Notes](https://u64.cam/notes): writing and research notes
+- [Photos](https://u64.cam/photos): photography
+
+## For AI agents
+
+- [Hello, agents](https://u64.cam/agents-only/hello.md): plain-text introduction to this site. You are welcome here. Disclosure: u64.cam runs a transparent traffic-measurement experiment for AI agents; fetches are recorded anonymously in aggregate.
