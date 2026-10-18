@@ -2,16 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const recentItems = [
   {
+    label: 'investigation',
+    title: 'OpenSearch keyword-sort investigation',
+    href: 'https://github.com/camerondurham/bug-repro-opensearch-keyword-sort',
+    description: 'Built a five-release benchmark showing roughly 2–3× faster keyword sorts on affected OpenSearch releases after lowering max_clause_count from 1024 to 128. Synthetic results; upstream investigation remains open.',
+  },
+  {
+    label: 'contribution',
+    title: 'Preserving shard routing during OpenSearch migrations',
+    href: 'https://github.com/opensearch-project/opensearch-migrations/issues/1465',
+    description: 'Investigated and reported lost routing metadata that concentrated migration writes on fewer shards. Maintainers resolved the report with a merged fix and regression tests.',
+  },
+  {
     label: 'project',
     title: 'traffic demo',
     href: 'https://traffic-demo.u64.cam/',
-    description: 'An interactive, YAML-backed architecture map that puts service topology, runtime traffic, health, deployments, and control intent in one operator view.',
+    description: 'A YAML-backed operator console for architecture topology, runtime overlays, and control intent.',
   },
   {
     label: 'project',
     title: 'CodeCanvas',
-    href: '/codecanvas',
-    description: 'A Go remote-code execution system with a server, CLI, browser frontend, and isolated non-root Docker runtimes.',
+    href: 'https://github.com/camerondurham/codecanvas',
+    description: 'A Go remote code executor with an API server, CLI, and browser frontend that runs user code as a non-root user in a Docker container.',
   },
   {
     label: 'note',
@@ -39,12 +51,6 @@ const recentItems = [
     </p>
   </section>
 
-  <section class="current">
-    <p>
-      <strong>Current:</strong> <a href="https://traffic-demo.u64.cam/" target="_blank" rel="noopener noreferrer">traffic demo</a>.
-    </p>
-  </section>
-
   <section class="recent" aria-labelledby="recent-heading">
     <h2 id="recent-heading">Recent</h2>
     <div class="recent-list">
@@ -66,16 +72,6 @@ const recentItems = [
 .recent h2::before { content: none; }
 .hero p { max-width: 64ch; font-size: 1rem; }
 
-.current {
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-1);
-  margin: 1.75rem 0 2rem;
-  padding: 0.85rem 0;
-}
-
-.current p { margin: 0; }
-
 .recent h2 {
   font-size: 1rem;
   margin: 0 0 0.75rem;
@@ -90,7 +86,7 @@ const recentItems = [
   border-bottom: 1px solid var(--border-color);
   display: grid;
   gap: 0.25rem 1rem;
-  grid-template-columns: 6rem minmax(0, 1fr);
+  grid-template-columns: 9rem minmax(0, 1fr);
   padding: 0.85rem 0;
 }
 
