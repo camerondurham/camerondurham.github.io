@@ -7,17 +7,18 @@ set -euo pipefail
 : "${GOATCOUNTER_API_TOKEN:?export GOATCOUNTER_API_TOKEN first (goatcounter → username menu → API)}"
 API="https://u64cam.goatcounter.com/api/v0"
 START="${1:-$(date -v-30d +%F 2>/dev/null || date -u -d '30 days ago' +%F)}"
+END=$(date -v+1d +%F 2>/dev/null || date -u -d tomorrow +%F)   # explicit end so fresh hits are never clipped
 AUTH=(-H "Authorization: Bearer $GOATCOUNTER_API_TOKEN")
 
-echo "u64.cam agent-canary report since $START"
+echo "u64.cam agent-canary report $START → $END"
 echo
 echo "== totals (all JS traffic) =="
-curl -sS "${AUTH[@]}" "$API/stats/total?start=$START" \
+curl -sS "${AUTH[@]}" "$API/stats/total?start=$START&end=$END" \
   | jq -r '"visits: \(.total)  (utc: \(.total_utc))  events: \(.total_events)"'
 
 echo
 echo "== canary channels =="
-curl -sS "${AUTH[@]}" "$API/stats/hits?start=$START" \
+curl -sS "${AUTH[@]}" "$API/stats/hits?start=$START&end=$END" \
   | jq -r '.hits[] | select(.path | test("^/canary/|^/agents-only/")) | [.path, .count] | @tsv' \
   | awk -F'\t' '{printf "  %-48s %s\n", $1, $2}'
 echo "  (nothing above = no canary fetches recorded yet; channels:"
@@ -27,6 +28,6 @@ echo "   comment /canary/comment-*       <- via HTML comment in page source)"
 
 echo
 echo "== top paths (all JS traffic) =="
-curl -sS "${AUTH[@]}" "$API/stats/hits?start=$START" \
+curl -sS "${AUTH[@]}" "$API/stats/hits?start=$START&end=$END" \
   | jq -r '.hits[] | [.path, .count] | @tsv' \
   | awk -F'\t' '{printf "  %-48s %s\n", $1, $2}' | head -15
