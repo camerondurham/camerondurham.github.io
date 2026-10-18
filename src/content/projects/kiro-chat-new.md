@@ -1,10 +1,12 @@
 ---
 title: "Kiro CLI: /chat new contribution"
 date: "2026-03-20"
-description: "Independent contribution from outside the Kiro team: proposed and implemented /chat new to improve the only coding agent available internally to Amazon engineers at the time. The shipped feature starts a fresh conversation without restarting the CLI and saves the current session automatically."
+description: "Contributed /chat new so users can start a fresh conversation without restarting Kiro CLI, including support in the new terminal UI."
 weight: 0
 status: "shipped"
 links:
+  - label: "TUI support follow-up"
+    url: "https://github.com/kirodotdev/Kiro/issues/6771#issuecomment-4277027835"
   - label: "Documentation"
     url: "https://kiro.dev/docs/cli/chat/session-management/"
   - label: "Kiro CLI 1.28 changelog"

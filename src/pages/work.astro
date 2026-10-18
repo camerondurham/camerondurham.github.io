@@ -29,6 +29,16 @@ const impactItems = (await getCollection('impact')).sort((a, b) => a.data.order 
               )}
             </h3>
             {project.data.description && <p>{project.data.description}</p>}
+            {project.data.links.length > 0 && (
+              <p class="evidence-links">
+                {project.data.links.map((link, index) => (
+                  <>
+                    {index > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  </>
+                ))}
+              </p>
+            )}
           </article>
         ))}
       </div>
@@ -104,6 +114,16 @@ const impactItems = (await getCollection('impact')).sort((a, b) => a.data.order 
               )}
             </h3>
             {project.data.description && <p>{project.data.description}</p>}
+            {project.data.links.length > 0 && (
+              <p class="evidence-links">
+                {project.data.links.map((link, index) => (
+                  <>
+                    {index > 0 && <span aria-hidden="true"> · </span>}
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  </>
+                ))}
+              </p>
+            )}
           </article>
         ))}
       </div>
@@ -167,9 +187,9 @@ const impactItems = (await getCollection('impact')).sort((a, b) => a.data.order 
 }
 
 .tool .evidence-links {
-  color: var(--text-2);
+  color: var(--text-1);
   font-family: var(--mono-text-font);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   margin-top: 0.5rem;
 }
 
