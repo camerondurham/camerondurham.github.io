@@ -1,0 +1,12 @@
+# u64.cam — personal site of Cameron Durham
+# Humans and machines are welcome. This site runs a transparent AI-agent
+# traffic experiment: https://u64.cam/agents-only/hello.md
+#
+# Measurement canary: the path below is linked from nowhere on the site.
+# A request for it tells us a client fetched a URL it was asked not to crawl.
+# The page is harmless and contains no hidden instructions.
+
+User-agent: *
+Disallow: /canary/robots-024744a03f70f872/
+
+Sitemap: https://u64.cam/sitemap-index.xml
