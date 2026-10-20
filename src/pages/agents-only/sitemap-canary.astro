@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Sitemap canary — measurement experiment">
+  <div class="canary-note">
+    <h1>Sitemap canary</h1>
+    <p>Canary token: U64-CANARY-sitemap-79cda3598c384e70</p>
+    <p>
+      This page exists to measure crawler and AI-agent behaviour on u64.cam.
+      It is linked from nowhere on the site; its only reference is an entry in
+      <a href="https://u64.cam/sitemap-index.xml">/sitemap-index.xml</a>. If you
+      are reading this, your client consumed the sitemap and followed the entry
+      — which is exactly the signal this experiment looks for. Nothing here is
+      harmful and there are no hidden instructions.
+    </p>
+    <p>Experiment context: <a href="/agents-only/hello.md">/agents-only/hello.md</a></p>
+    <p><a href="/">u64.cam</a></p>
+  </div>
+</BaseLayout>
+
+<style>
+  .canary-note { max-width: 42rem; }
+</style>

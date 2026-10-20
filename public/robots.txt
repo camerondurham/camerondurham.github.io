@@ -8,5 +8,6 @@
 
 User-agent: *
 Disallow: /canary/robots-024744a03f70f872/
+Disallow: /canary/robots2-758fc5a8a70c031b/
 
 Sitemap: https://u64.cam/sitemap-index.xml
