@@ -10,13 +10,11 @@ export default defineConfig({
   expect: {
     timeout: 5_000,
   },
-  fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    browserName: 'chromium',
     baseURL: `http://127.0.0.1:${configuredPort}`,
     trace: 'retain-on-failure',
   },

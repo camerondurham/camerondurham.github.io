@@ -32,14 +32,9 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test('tracer: the guestbook route is served', async ({ page }) => {
+test('renders the configured archive, escaped text, and the public form contract', async ({ page }) => {
   const response = await page.goto('/guestbook/');
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { name: 'Guestbook' })).toBeVisible();
-});
-
-test('renders the configured archive, escaped text, and the public form contract', async ({ page }) => {
-  await page.goto('/guestbook/');
 
   await expect(page.getByRole('heading', { name: 'Guestbook' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'The public archive' })).toBeVisible();
@@ -177,53 +172,33 @@ test('success uses the documented encoding, shows receipt, resets the form, and 
   await expect(page.locator('section.archive li[id]')).toHaveCount(4);
 });
 
-test('HTTP errors preserve the draft and permit retry', async ({ page }) => {
-  let requests = 0;
-  await configureFormspree(page, async (route) => {
-    requests += 1;
-    if (requests === 1) {
-      await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false }) });
-    } else {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
-    }
-  });
-  await page.goto('/guestbook/');
-  await page.getByLabel(/Name/).fill('Retry Visitor');
-  await page.getByLabel(/^Note/).fill('Please retain this draft.');
-  await page.getByRole('button', { name: 'Send for review' }).click();
-  await expect(page.locator('[data-guestbook-status]')).toContainText(ERROR);
-  await expect(page.getByLabel(/Name/)).toHaveValue('Retry Visitor');
-  await expect(page.getByLabel(/^Note/)).toHaveValue('Please retain this draft.');
-  await page.getByRole('button', { name: 'Send for review' }).click();
-  await expect(page.locator('[data-guestbook-status]')).toHaveText(SUCCESS);
-  expect(requests).toBe(2);
-});
-
-test('malformed or HTML receipts are errors and can be retried', async ({ page }) => {
-  let requests = 0;
-  await configureFormspree(page, async (route) => {
-    requests += 1;
-    if (requests === 1) {
-      await route.fulfill({ status: 200, contentType: 'text/html', body: '<html>received</html>' });
-    } else if (requests === 2) {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: false }) });
-    } else {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
-    }
-  });
-  await page.goto('/guestbook/');
-  await page.getByLabel(/Name/).fill('Malformed Receipt');
-  await page.getByLabel(/^Note/).fill('Keep this note after malformed responses.');
-  for (const expectedRequest of [1, 2]) {
+for (const { label, ...failure } of [
+  { label: 'HTTP errors', status: 503, contentType: 'application/json', body: '{"ok":false}' },
+  { label: 'HTML receipts', status: 200, contentType: 'text/html', body: '<html>received</html>' },
+  { label: 'negative JSON receipts', status: 200, contentType: 'application/json', body: '{"ok":false}' },
+]) {
+  test(`${label} preserve the draft and permit retry`, async ({ page }) => {
+    let requests = 0;
+    await configureFormspree(page, async (route) => {
+      requests += 1;
+      await route.fulfill(requests === 1 ? failure : {
+        status: 200, contentType: 'application/json', body: '{"ok":true}',
+      });
+    });
+    await page.goto('/guestbook/');
+    await page.getByLabel(/Name/).fill('Retry Visitor');
+    await page.getByLabel(/^Note/).fill('Please retain this draft.');
     await page.getByRole('button', { name: 'Send for review' }).click();
     await expect(page.locator('[data-guestbook-status]')).toContainText(ERROR);
-    await expect(page.getByLabel(/^Note/)).toHaveValue('Keep this note after malformed responses.');
-    expect(requests).toBe(expectedRequest);
-  }
-  await page.getByRole('button', { name: 'Send for review' }).click();
-  await expect(page.locator('[data-guestbook-status]')).toHaveText(SUCCESS);
-  expect(requests).toBe(3);
-});
+    await expect(page.getByLabel(/Name/)).toHaveValue('Retry Visitor');
+    await expect(page.getByLabel(/^Note/)).toHaveValue('Please retain this draft.');
+    await page.getByRole('button', { name: 'Send for review' }).click();
+    await expect(page.locator('[data-guestbook-status]')).toHaveText(SUCCESS);
+    await expect(page.getByLabel(/Name/)).toHaveValue('');
+    await expect(page.getByLabel(/^Note/)).toHaveValue('');
+    expect(requests).toBe(2);
+  });
+}
 
 test('native no-JavaScript submission posts form data without a live request', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
@@ -267,10 +242,5 @@ test('keyboard labels and narrow dark/light layouts remain usable', async ({ pag
     await page.getByLabel(/Name/).focus();
     await expect(page.getByLabel(/Name/)).toBeFocused();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
-    await page.screenshot({ path: `/tmp/guestbook-${colorScheme}-mobile.png`, fullPage: true });
   }
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/guestbook/');
-  await page.screenshot({ path: '/tmp/guestbook-desktop.png', fullPage: true });
 });
