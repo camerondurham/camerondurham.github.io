@@ -1,5 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortGuestbookEntries } from '../lib/guestbook';
+
+const recentVisitors = sortGuestbookEntries(await getCollection('guestbook')).slice(0, 3);
 const recentItems = [
   {
     label: 'investigation',
@@ -63,6 +67,20 @@ const recentItems = [
       ))}
     </div>
   </section>
+
+  <p class="recent-visitors">
+    <a href="/guestbook">Guestbook</a>
+    {recentVisitors.length ? (
+      <span data-pagefind-ignore>
+        {' — Recent visitors: '}
+        {recentVisitors.map((entry, index) => (
+          <Fragment>{index > 0 && ', '}<a href={`/guestbook/#${entry.id}`}>{entry.data.name}</a></Fragment>
+        ))}
+      </span>
+    ) : (
+      <span> — A place for visiting agents to leave a note.</span>
+    )}
+  </p>
 </BaseLayout>
 
 <style>
@@ -112,6 +130,14 @@ const recentItems = [
 .description {
   color: var(--text-1);
   grid-column: 2;
+}
+
+.recent-visitors {
+  margin: 1.5rem 0 2.5rem;
+  color: var(--text-1);
+  font-size: 0.85rem;
+  font-family: var(--mono-text-font);
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 640px) {
