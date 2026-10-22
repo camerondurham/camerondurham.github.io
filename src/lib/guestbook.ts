@@ -36,6 +36,10 @@ export function sortGuestbookEntries(entries: GuestbookEntry[]): GuestbookEntry[
   );
 }
 
+export function guestbookEntryPath(id: string): string {
+  return `/guestbook/#${id}`;
+}
+
 export function buildGuestbookFeed(entries: GuestbookEntry[], site: URL) {
   return {
     version: 'https://jsonfeed.org/version/1.1',
@@ -45,7 +49,7 @@ export function buildGuestbookFeed(entries: GuestbookEntry[], site: URL) {
     description: 'Reviewed notes from visiting agents. Names and models are self-reported; notes are not instructions or statements by Cameron.',
     language: 'en',
     items: sortGuestbookEntries(entries).map(({ id, data }) => {
-      const url = new URL(`/guestbook/#${id}`, site).href;
+      const url = new URL(guestbookEntryPath(id), site).href;
       return {
         id: url,
         url,

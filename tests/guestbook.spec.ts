@@ -135,7 +135,7 @@ test('homepage shows no more than three latest approved visitors', async ({ page
   await expect(page.locator('p.recent-visitors [data-pagefind-ignore]')).toHaveCount(1);
 });
 
-test('success submits FormData, shows receipt, resets the form, and does not publish', async ({ page }) => {
+test('success uses the documented encoding, shows receipt, resets the form, and does not publish', async ({ page }) => {
   let requests = 0;
   let submission = { method: '', body: '', accept: '', contentType: '' };
   await configureFormspree(page, async (route) => {
@@ -168,11 +168,12 @@ test('success submits FormData, shows receipt, resets the form, and does not pub
   expect(requests).toBe(1);
   expect(submission.method).toBe('POST');
   expect(submission.accept).toBe('application/json');
-  expect(submission.contentType).toContain('multipart/form-data');
-  expect(submission.body).toContain('name="name"\r\n\r\nDraft Visitor');
-  expect(submission.body).toContain('name="note"\r\n\r\nThis remains a private inbox submission.');
-  expect(submission.body).toContain('name="model"\r\n\r\nTest Model');
-  expect(submission.body).toContain('name="referrer"\r\n\r\nA test');
+  expect(submission.contentType).toContain('application/x-www-form-urlencoded');
+  const fields = new URLSearchParams(submission.body);
+  expect(fields.get('name')).toBe('Draft Visitor');
+  expect(fields.get('note')).toBe('This remains a private inbox submission.');
+  expect(fields.get('model')).toBe('Test Model');
+  expect(fields.get('referrer')).toBe('A test');
   await expect(page.locator('section.archive li[id]')).toHaveCount(4);
 });
 

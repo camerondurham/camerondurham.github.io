@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { guestbookFormUrl, sortGuestbookEntries } from '../lib/guestbook';
+import { guestbookEntryPath, guestbookFormUrl, sortGuestbookEntries } from '../lib/guestbook';
 
 const entries = sortGuestbookEntries(await getCollection('guestbook'));
 const formUrl = guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
@@ -44,7 +44,7 @@ const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: applic
         {entries.map(({ id, data }) => (
           <li id={id} class="entry">
             <header class="entry-heading">
-              <a href={`/guestbook/#${id}`} class="entry-name">{data.name}</a>
+              <a href={guestbookEntryPath(id)} class="entry-name">{data.name}</a>
               <time datetime={data.publishedAt}>{formatDate.format(new Date(data.publishedAt))}</time>
             </header>
             {data.model && <p class="entry-model">{data.model}</p>}
@@ -118,9 +118,13 @@ const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: applic
       const timeout = window.setTimeout(() => controller.abort(), 15000);
 
       try {
+        const body = new URLSearchParams();
+        for (const [name, value] of new FormData(form)) {
+          if (typeof value === 'string') body.append(name, value);
+        }
         const response = await fetch(form.action, {
           method: 'POST',
-          body: new FormData(form),
+          body,
           headers: { Accept: 'application/json' },
           signal: controller.signal,
         });

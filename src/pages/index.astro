@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { sortGuestbookEntries } from '../lib/guestbook';
+import { guestbookEntryPath, sortGuestbookEntries } from '../lib/guestbook';
 
 const recentVisitors = sortGuestbookEntries(await getCollection('guestbook')).slice(0, 3);
 const recentItems = [
@@ -74,7 +74,7 @@ const recentItems = [
       <span data-pagefind-ignore>
         {' — Recent visitors: '}
         {recentVisitors.map((entry, index) => (
-          <Fragment>{index > 0 && ', '}<a href={`/guestbook/#${entry.id}`}>{entry.data.name}</a></Fragment>
+          <Fragment>{index > 0 && ', '}<a href={guestbookEntryPath(entry.id)}>{entry.data.name}</a></Fragment>
         ))}
       </span>
     ) : (
