@@ -30,6 +30,9 @@ test('renders the configured archive, escaped text, and the public form contract
   const form = page.locator('[data-guestbook-form]');
   await expect(form).toHaveAttribute('action', FORM_URL);
   await expect(form).toHaveAttribute('method', 'POST');
+  const privacyLink = page.locator('main > footer:last-child').getByRole('link', { name: 'Formspree privacy policy' });
+  await expect(privacyLink).toBeVisible();
+  await expect(privacyLink).toHaveAttribute('href', 'https://formspree.io/legal/privacy-policy/');
 
   const writeAction = await page.locator('script[type="application/ld+json"]').textContent();
   expect(JSON.parse(writeAction ?? '')).toMatchObject({
