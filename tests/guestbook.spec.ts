@@ -1,34 +1,15 @@
-import { test, expect, type Page, type Route } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 const FORM_URL = 'https://formspree.io/f/testform123';
-const EMPTY_URL = 'http://127.0.0.1:4323/guestbook/';
+const EMPTY_SITE = 'http://127.0.0.1:4323';
 const SUCCESS = 'Received for review. Approved notes appear after a site update.';
 const ERROR = 'We couldn’t confirm receipt.';
 
-function form(page: Page) {
-  return page.locator('form[data-guestbook-form]');
-}
-
-async function blockThirdPartyRequests(page: Page) {
+test.beforeEach(async ({ page }) => {
+  // Only local servers reach the network; submission tests explicitly mock Formspree.
   await page.route('**/*', (route) => {
     const url = new URL(route.request().url());
-    return url.hostname === '127.0.0.1' ? route.continue() : route.abort();
-  });
-}
-
-async function configureFormspree(
-  page: Page,
-  responder: (route: Route) => Promise<void>,
-) {
-  await page.route('https://formspree.io/**', responder);
-}
-
-test.beforeEach(async ({ page }) => {
-  await blockThirdPartyRequests(page);
-  // Every submission test installs an explicit responder. This guard makes an
-  // accidental live Formspree submission fail locally instead of leaving the repo.
-  await page.route('https://formspree.io/**', async (route) => {
-    await route.abort('blockedbyclient');
+    return url.hostname === '127.0.0.1' ? route.continue() : route.abort('blockedbyclient');
   });
 });
 
@@ -46,8 +27,9 @@ test('renders the configured archive, escaped text, and the public form contract
   await expect(page.getByLabel(/^Note/)).toHaveAttribute('required', '');
   await expect(page.getByLabel(/What brought you here\?/)).toHaveAttribute('maxlength', '200');
   await expect(page.getByRole('button', { name: 'Send for review' })).toBeVisible();
-  await expect(form(page)).toHaveAttribute('action', FORM_URL);
-  await expect(form(page)).toHaveAttribute('method', 'POST');
+  const form = page.locator('[data-guestbook-form]');
+  await expect(form).toHaveAttribute('action', FORM_URL);
+  await expect(form).toHaveAttribute('method', 'POST');
 
   const writeAction = await page.locator('script[type="application/ld+json"]').textContent();
   expect(JSON.parse(writeAction ?? '')).toMatchObject({
@@ -58,13 +40,6 @@ test('renders the configured archive, escaped text, and the public form contract
       encodingType: 'application/x-www-form-urlencoded',
     },
   });
-
-  const entries = page.locator('section.archive li[id]');
-  await expect(entries).toHaveCount(4);
-  await expect(entries.nth(0)).toHaveAttribute('id', 'newest-visitor');
-  await expect(entries.nth(1)).toHaveAttribute('id', 'long-visitor');
-  await expect(entries.nth(2)).toHaveAttribute('id', 'unsafe-text');
-  await expect(entries.nth(3)).toHaveAttribute('id', 'earlier-visitor');
 
   const unsafe = page.locator('#unsafe-text');
   await expect(unsafe).toContainText('<script>alert("note")</script> & <img src=x onerror=alert(1)>');
@@ -77,7 +52,7 @@ test('renders the configured archive, escaped text, and the public form contract
 
 test('keeps feed and HTML in the same sorted order with stable URLs', async ({ page, request }) => {
   await page.goto('/guestbook/');
-  const feedResponse = await request.get(`${page.url().replace(/\/guestbook\/$/, '')}/guestbook.json`);
+  const feedResponse = await request.get('/guestbook.json');
   expect(feedResponse.ok()).toBeTruthy();
   expect(feedResponse.headers()['content-type']).toMatch(/application\/(?:feed\+json|json)/);
 
@@ -132,16 +107,8 @@ test('homepage shows no more than three latest approved visitors', async ({ page
 
 test('success uses the documented encoding, shows receipt, resets the form, and does not publish', async ({ page }) => {
   let requests = 0;
-  let submission = { method: '', body: '', accept: '', contentType: '' };
-  await configureFormspree(page, async (route) => {
+  await page.route(FORM_URL, async (route) => {
     requests += 1;
-    const request = route.request();
-    submission = {
-      method: request.method(),
-      body: request.postData() ?? '',
-      accept: request.headers().accept ?? '',
-      contentType: request.headers()['content-type'] ?? '',
-    };
     await new Promise((resolve) => setTimeout(resolve, 250));
     await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
   });
@@ -150,7 +117,10 @@ test('success uses the documented encoding, shows receipt, resets the form, and 
   await page.getByLabel(/^Note/).fill('This remains a private inbox submission.');
   await page.getByLabel(/Model \/ agent/).fill('Test Model');
   await page.getByLabel(/What brought you here\?/).fill('A test');
-  await page.getByRole('button', { name: 'Send for review' }).click();
+  const [submission] = await Promise.all([
+    page.waitForRequest(FORM_URL),
+    page.getByRole('button', { name: 'Send for review' }).click(),
+  ]);
 
   await expect(page.getByRole('button', { name: 'Sending…' })).toBeDisabled();
   await expect(page.locator('[data-guestbook-status]')).toContainText('Sending your note…');
@@ -161,10 +131,10 @@ test('success uses the documented encoding, shows receipt, resets the form, and 
   await expect(page.getByLabel(/Model \/ agent/)).toHaveValue('');
   await expect(page.getByLabel(/What brought you here\?/)).toHaveValue('');
   expect(requests).toBe(1);
-  expect(submission.method).toBe('POST');
-  expect(submission.accept).toBe('application/json');
-  expect(submission.contentType).toContain('application/x-www-form-urlencoded');
-  const fields = new URLSearchParams(submission.body);
+  expect(submission.method()).toBe('POST');
+  expect(submission.headers().accept).toBe('application/json');
+  expect(submission.headers()['content-type']).toContain('application/x-www-form-urlencoded');
+  const fields = new URLSearchParams(submission.postData() ?? '');
   expect(fields.get('name')).toBe('Draft Visitor');
   expect(fields.get('note')).toBe('This remains a private inbox submission.');
   expect(fields.get('model')).toBe('Test Model');
@@ -179,7 +149,7 @@ for (const { label, ...failure } of [
 ]) {
   test(`${label} preserve the draft and permit retry`, async ({ page }) => {
     let requests = 0;
-    await configureFormspree(page, async (route) => {
+    await page.route(FORM_URL, async (route) => {
       requests += 1;
       await route.fulfill(requests === 1 ? failure : {
         status: 200, contentType: 'application/json', body: '{"ok":true}',
@@ -200,35 +170,35 @@ for (const { label, ...failure } of [
   });
 }
 
-test('native no-JavaScript submission posts form data without a live request', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage();
-  await blockThirdPartyRequests(page);
-  let postData = '';
-  await page.route('https://formspree.io/**', async (route) => {
-    postData = route.request().postData() ?? '';
-    await route.fulfill({ status: 200, contentType: 'text/html', body: '<p>received for review</p>' });
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('native submission posts form data without a live request', async ({ page }) => {
+    let postData = '';
+    await page.route(FORM_URL, async (route) => {
+      postData = route.request().postData() ?? '';
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<p>received for review</p>' });
+    });
+    await page.goto('/guestbook/');
+    await page.getByLabel(/Name/).fill('No JS Visitor');
+    await page.getByLabel(/^Note/).fill('Native browser form post.');
+    await page.getByRole('button', { name: 'Send for review' }).click();
+    await expect.poll(() => postData).toContain('name=No+JS+Visitor');
+    expect(postData).toContain('note=Native+browser+form+post.');
   });
-  await page.goto('http://127.0.0.1:4322/guestbook/');
-  await page.getByLabel(/Name/).fill('No JS Visitor');
-  await page.getByLabel(/^Note/).fill('Native browser form post.');
-  await page.getByRole('button', { name: 'Send for review' }).click();
-  await expect.poll(() => postData).toContain('name=No+JS+Visitor');
-  expect(postData).toContain('note=Native+browser+form+post.');
-  await context.close();
 });
 
 test('removing the final entry leaves an empty archive and unconfigured intake stays closed', async ({ page }) => {
-  const response = await page.goto(EMPTY_URL);
+  const response = await page.goto(`${EMPTY_SITE}/guestbook/`);
   expect(response?.status()).toBe(200);
   await expect(page.getByRole('heading', { name: 'Guestbook' })).toBeVisible();
   await expect(page.locator('form[data-guestbook-form]')).toHaveCount(0);
   await expect(page.getByText('Submissions are temporarily unavailable.', { exact: false })).toBeVisible();
   await expect(page.getByText('No published notes yet.', { exact: false })).toBeVisible();
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
-  const feed = await page.request.get(`${EMPTY_URL}../guestbook.json`);
+  const feed = await page.request.get(`${EMPTY_SITE}/guestbook.json`);
   expect((await feed.json()).items).toEqual([]);
-  await page.goto('http://127.0.0.1:4323/');
+  await page.goto(EMPTY_SITE);
   await expect(page.locator('p.recent-visitors a[href^="/guestbook/#"]')).toHaveCount(0);
   await expect(page.locator('main')).not.toContainText('Deleted Visitor');
 });

@@ -4,20 +4,15 @@ import { cp, mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
 import { rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const args = new Map(
-  process.argv.slice(2).map((argument) => {
-    const [key, value] = argument.replace(/^--/, '').split('=');
-    return [key, value ?? 'true'];
-  }),
-);
-const mode = args.get('mode') ?? 'configured';
-const port = Number(args.get('port') ?? 4322);
+const [mode = 'configured', portValue = '4322'] = process.argv.slice(2);
+const port = Number(portValue);
 if (!['configured', 'empty'].includes(mode) || !Number.isInteger(port) || port < 1024 || port > 65535) {
-  throw new Error('Use --mode=configured|empty and a port between 1024 and 65535.');
+  throw new Error('Use configured|empty followed by a port between 1024 and 65535.');
 }
 const workspace = await mkdtemp(join(tmpdir(), 'u64-guestbook-test-'));
 const astroCli = join(repoRoot, 'node_modules/astro/bin/astro.mjs');
@@ -55,7 +50,6 @@ const fixtureEntries = [
   },
 ];
 
-let preview;
 let activeChild;
 let cleanupPromise;
 
@@ -73,16 +67,10 @@ async function stop(child) {
 
 function clean() {
   cleanupPromise ??= (async () => {
-    await Promise.all([stop(preview), stop(activeChild)]);
+    await stop(activeChild);
     await rm(workspace, { recursive: true, force: true });
   })();
   return cleanupPromise;
-}
-
-async function fail(message, error) {
-  console.error(message, error);
-  await clean();
-  process.exit(1);
 }
 
 async function copyWorkspace() {
@@ -110,73 +98,46 @@ export default { ...config, cacheDir: './.astro-test-cache/' };
   }
 }
 
-function run(command, commandArgs, options = {}) {
-  return new Promise((resolvePromise, reject) => {
-    const child = spawn(command, commandArgs, {
-      cwd: workspace,
-      env: { ...process.env, ...options.env },
-      stdio: 'inherit',
-    });
-    activeChild = child;
-    const finish = () => {
-      if (activeChild === child) activeChild = undefined;
-    };
-    child.once('error', (error) => {
-      finish();
-      reject(error);
-    });
-    child.once('exit', (code, signal) => {
-      finish();
-      if (code === 0) resolvePromise();
-      else reject(new Error(`${command} exited with ${code ?? signal}`));
-    });
+async function run(...args) {
+  // Launch Node directly so shutdown reaches the child rather than a shell.
+  activeChild = spawn(process.execPath, args, {
+    cwd: workspace,
+    env: { ...process.env, PUBLIC_GUESTBOOK_FORM_URL: mode === 'configured' ? formUrl : '' },
+    stdio: 'inherit',
   });
-}
-
-async function waitForPreview() {
-  const deadline = Date.now() + 30_000;
-  while (Date.now() < deadline) {
-    try {
-      const response = await fetch(`http://127.0.0.1:${port}/guestbook/`);
-      if (response.status === 200) return;
-    } catch {
-      // Astro preview is still starting.
-    }
-    await new Promise((resolvePromise) => setTimeout(resolvePromise, 250));
+  try {
+    const [code, signal] = await once(activeChild, 'exit');
+    if (code !== 0) throw new Error(`${args.join(' ')} exited with ${code ?? signal}`);
+  } finally {
+    activeChild = undefined;
   }
-  throw new Error(`Timed out waiting for Astro preview on port ${port}`);
 }
 
 async function main() {
   await copyWorkspace();
-  const buildOptions = { env: { PUBLIC_GUESTBOOK_FORM_URL: mode === 'configured' ? formUrl : '' } };
   if (mode === 'empty') {
     // A second build must remove the final approved entry even with a warm cache.
     const deletedEntry = join(workspace, 'src/content/guestbook/deleted-visitor.json');
     await writeFile(deletedEntry, JSON.stringify({
       name: 'Deleted Visitor', note: 'This note must disappear after removal.', publishedAt: '2026-10-22T12:00:00Z',
     }));
-    await run(process.execPath, [astroCli, 'build'], buildOptions);
+    await run(astroCli, 'build');
     await rm(deletedEntry);
   }
-  await run(process.execPath, [astroCli, 'build'], buildOptions);
-  await run(process.execPath, [pagefindCli, '--site', 'dist']);
-  // Launch Node directly so shutdown also terminates the listening process.
-  preview = spawn(process.execPath, [astroCli, 'preview', '--host', '127.0.0.1', '--port', String(port)], {
-    cwd: workspace,
-    env: process.env,
-    stdio: 'inherit',
-  });
-  preview.once('error', (error) => void fail('Astro preview failed to start', error));
-  preview.once('exit', (code) => {
-    if (!cleanupPromise) void fail('Astro preview stopped unexpectedly', code);
-  });
-  await waitForPreview();
-  console.log(`Guestbook test server (${mode}) listening on http://127.0.0.1:${port}`);
+  await run(astroCli, 'build');
+  await run(pagefindCli, '--site', 'dist');
+  // Playwright owns the readiness check; an unexpected preview exit is a failure.
+  await run(astroCli, 'preview', '--host', '127.0.0.1', '--port', String(port));
+  throw new Error('Astro preview stopped unexpectedly');
 }
 
 process.once('SIGINT', () => void clean().then(() => process.exit(130)));
 process.once('SIGTERM', () => void clean().then(() => process.exit(143)));
 process.once('exit', () => rmSync(workspace, { recursive: true, force: true }));
 
-main().catch((error) => void fail('Guestbook test server failed', error));
+main().catch(async (error) => {
+  if (cleanupPromise) return;
+  console.error('Guestbook test server failed', error);
+  await clean();
+  process.exit(1);
+});
