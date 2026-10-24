@@ -18,15 +18,25 @@ test('renders the configured archive, escaped text, and the public form contract
   expect(response?.status()).toBe(200);
 
   await expect(page.getByRole('heading', { name: 'Guestbook' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'The public archive' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Visitor notes/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Leave a note' })).toBeVisible();
+  await expect(page.locator('main > section').first()).toHaveAttribute('id', 'sign');
+  const preamble = await page.locator('main').evaluate((main) => {
+    const form = main.querySelector('form');
+    if (!form) throw new Error('Missing guestbook form');
+    const range = document.createRange();
+    range.setStart(main, 0);
+    range.setEndBefore(form);
+    return range.toString().trim().split(/\s+/).length;
+  });
+  expect(preamble).toBeLessThanOrEqual(25);
   await expect(page.getByLabel(/Name/)).toHaveAttribute('maxlength', '80');
   await expect(page.getByLabel(/Name/)).toHaveAttribute('required', '');
   await expect(page.getByLabel(/Model \/ agent/)).toHaveAttribute('maxlength', '80');
   await expect(page.getByLabel(/^Note/)).toHaveAttribute('maxlength', '2000');
   await expect(page.getByLabel(/^Note/)).toHaveAttribute('required', '');
   await expect(page.getByLabel(/What brought you here\?/)).toHaveAttribute('maxlength', '200');
-  await expect(page.getByRole('button', { name: 'Send for review' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Send note' })).toBeVisible();
   const form = page.locator('[data-guestbook-form]');
   await expect(form).toHaveAttribute('action', FORM_URL);
   await expect(form).toHaveAttribute('method', 'POST');
@@ -122,13 +132,13 @@ test('success uses the documented encoding, shows receipt, resets the form, and 
   await page.getByLabel(/What brought you here\?/).fill('A test');
   const [submission] = await Promise.all([
     page.waitForRequest(FORM_URL),
-    page.getByRole('button', { name: 'Send for review' }).click(),
+    page.getByRole('button', { name: 'Send note' }).click(),
   ]);
 
   await expect(page.getByRole('button', { name: 'Sending…' })).toBeDisabled();
   await expect(page.locator('[data-guestbook-status]')).toContainText('Sending your note…');
   await expect(page.locator('[data-guestbook-status]')).toHaveText(SUCCESS);
-  await expect(page.getByRole('button', { name: 'Send for review' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Send note' })).toBeEnabled();
   await expect(page.getByLabel(/Name/)).toHaveValue('');
   await expect(page.getByLabel(/^Note/)).toHaveValue('');
   await expect(page.getByLabel(/Model \/ agent/)).toHaveValue('');
@@ -161,11 +171,11 @@ for (const { label, ...failure } of [
     await page.goto('/guestbook/');
     await page.getByLabel(/Name/).fill('Retry Visitor');
     await page.getByLabel(/^Note/).fill('Please retain this draft.');
-    await page.getByRole('button', { name: 'Send for review' }).click();
+    await page.getByRole('button', { name: 'Send note' }).click();
     await expect(page.locator('[data-guestbook-status]')).toContainText(ERROR);
     await expect(page.getByLabel(/Name/)).toHaveValue('Retry Visitor');
     await expect(page.getByLabel(/^Note/)).toHaveValue('Please retain this draft.');
-    await page.getByRole('button', { name: 'Send for review' }).click();
+    await page.getByRole('button', { name: 'Send note' }).click();
     await expect(page.locator('[data-guestbook-status]')).toHaveText(SUCCESS);
     await expect(page.getByLabel(/Name/)).toHaveValue('');
     await expect(page.getByLabel(/^Note/)).toHaveValue('');
@@ -185,7 +195,7 @@ test.describe('without JavaScript', () => {
     await page.goto('/guestbook/');
     await page.getByLabel(/Name/).fill('No JS Visitor');
     await page.getByLabel(/^Note/).fill('Native browser form post.');
-    await page.getByRole('button', { name: 'Send for review' }).click();
+    await page.getByRole('button', { name: 'Send note' }).click();
     await expect.poll(() => postData).toContain('name=No+JS+Visitor');
     expect(postData).toContain('note=Native+browser+form+post.');
   });
@@ -212,6 +222,7 @@ test('keyboard labels and narrow dark/light layouts remain usable', async ({ pag
     await page.emulateMedia({ colorScheme });
     await page.goto('/guestbook/');
     await expect(page.getByLabel(/Name/)).toBeVisible();
+    await expect(page.getByLabel(/^Note/)).toBeInViewport();
     await page.getByLabel(/Name/).focus();
     await expect(page.getByLabel(/Name/)).toBeFocused();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
