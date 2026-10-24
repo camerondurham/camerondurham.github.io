@@ -4,5 +4,13 @@
   // You can generate a full file from Cloudflare with:
   // npx wrangler pages download config <PROJECT_NAME>
   "name": "camerondurhamgithubio",
-  "pages_build_output_dir": "dist"
+  "pages_build_output_dir": "dist",
+  // Pages reads build variables from this file, not the dashboard.
+  "env": {
+    "preview": {
+      "vars": {
+        "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+      }
+    }
+  }
 }
