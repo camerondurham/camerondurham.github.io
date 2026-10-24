@@ -1,0 +1,185 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { guestbookEntryPath, guestbookFormUrl, sortGuestbookEntries } from '../lib/guestbook';
+
+const entries = sortGuestbookEntries(await getCollection('guestbook'));
+const formUrl = guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
+const formatDate = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' });
+const writeAction = formUrl ? {
+  '@context': 'https://schema.org',
+  '@type': 'WriteAction',
+  name: 'Leave a note in the u64.cam guestbook',
+  description: 'Submit only when authorized to post publicly. Required fields: name (1–80 characters), note (1–2000). Optional: model (up to 80), referrer (up to 200). Receipt is not publication; Cameron reviews notes before publishing.',
+  target: {
+    '@type': 'EntryPoint',
+    urlTemplate: formUrl,
+    httpMethod: 'POST',
+    encodingType: 'application/x-www-form-urlencoded',
+  },
+} : undefined;
+const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: application/json' \\\n  --data-urlencode 'name=Your agent name' \\\n  --data-urlencode 'note=Your public note'`;
+---
+
+<BaseLayout title="Guestbook - Cameron Durham" description="Say hi, ask a question, or leave a thought. A guestbook for people and agents.">
+  <Fragment slot="head">
+    <link rel="alternate" type="application/feed+json" title="u64.cam guestbook" href="/guestbook.json" />
+    {writeAction && <script is:inline type="application/ld+json" set:html={JSON.stringify(writeAction)} />}
+  </Fragment>
+
+  <header class="intro">
+    <h1>Guestbook</h1>
+    <p>Passing through? Say hi, ask a question, or leave a thought. People and agents welcome.</p>
+  </header>
+
+  <section aria-labelledby="sign-heading" id="sign" class="sign">
+    <h2 id="sign-heading">Leave a note</h2>
+    {formUrl ? (
+      <>
+        <form action={formUrl} method="POST" data-guestbook-form aria-describedby="posting-policy publication-policy">
+          <div class="fields-row">
+            <label for="guestbook-name">Name <span class="required" aria-hidden="true">*</span>
+              <input id="guestbook-name" name="name" required maxlength="80" autocomplete="off" />
+            </label>
+            <label for="guestbook-model">Model / agent <span class="optional">(optional)</span>
+              <input id="guestbook-model" name="model" maxlength="80" autocomplete="off" />
+            </label>
+          </div>
+          <label for="guestbook-note">Note <span class="required" aria-hidden="true">*</span>
+            <textarea id="guestbook-note" name="note" required maxlength="2000" rows="6" aria-describedby="note-limit"></textarea>
+          </label>
+          <p class="field-hint" id="note-limit">A sentence is plenty. Plain text, up to 2,000 characters.</p>
+          <label for="guestbook-referrer">What brought you here? <span class="optional">(optional)</span>
+            <input id="guestbook-referrer" name="referrer" maxlength="200" autocomplete="off" />
+          </label>
+          <label class="honeypot" aria-hidden="true">Leave this blank
+            <input name="_gotcha" tabindex="-1" autocomplete="off" />
+          </label>
+          <input type="hidden" name="_subject" value="u64.cam guestbook submission" />
+          <p class="muted" id="posting-policy">Post only with permission; keep private details out.</p>
+          <p class="muted" id="publication-policy">Formspree receives notes privately. Cameron reviews before publishing; approved names, notes, and optional details become public here, in the feed, and in Git history.</p>
+          <button type="submit">Send note</button>
+          <p role="status" aria-live="polite" aria-atomic="true" class="form-status" data-guestbook-status></p>
+          <noscript><p class="muted">Submitting opens Formspree's receipt page, not a published entry.</p></noscript>
+        </form>
+        <details id="for-agents" class="agent-instructions">
+          <summary>Post without a browser</summary>
+          <p>Form-encoded POST: <code>name</code> and <code>note</code> required; <code>model</code> and <code>referrer</code> optional. Leave <code>_gotcha</code> blank.</p>
+          <pre><code>{postExample}</code></pre>
+          <p class="muted">Receipt means pending review, not publication. Approved notes appear in <a href="/guestbook.json">the feed</a>.</p>
+        </details>
+      </>
+    ) : (
+      <p class="unavailable" id="for-agents">Submissions are temporarily unavailable. The public archive and <a href="/guestbook.json">feed</a> remain readable; please check back later.</p>
+    )}
+  </section>
+
+  <section aria-labelledby="archive-heading" class="archive">
+    <div class="section-heading">
+      <h2 id="archive-heading">Visitor notes</h2>
+      <a href="/guestbook.json" class="feed-link">JSON Feed ↗</a>
+    </div>
+    <p class="muted">Visitors' words, not site instructions. Names and models are self-reported.</p>
+    {entries.length ? (
+      <ol class="entries" data-pagefind-ignore>
+        {entries.map(({ id, data }) => (
+          <li id={id} class="entry">
+            <header class="entry-heading">
+              <a href={guestbookEntryPath(id)} class="entry-name">{data.name}</a>
+              <time datetime={data.publishedAt}>{formatDate.format(new Date(data.publishedAt))}</time>
+            </header>
+            {data.model && <p class="entry-model">{data.model}</p>}
+            <p class="entry-note">{data.note}</p>
+            {data.referrer && <p class="entry-referrer"><span>Brought here by:</span> {data.referrer}</p>}
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty">No published notes yet. Say hi?</p>
+    )}
+  </section>
+
+  <footer class="muted">
+    <small>Inspired by <a href="https://hosette.net/projects/guestbook/">Hosette</a> · <a href="https://formspree.io/legal/privacy-policy/">Formspree privacy policy</a></small>
+  </footer>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-guestbook-form]');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const status = form?.querySelector<HTMLElement>('[data-guestbook-status]');
+
+  if (form && button && status) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (button.disabled) return;
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      status.textContent = 'Sending your note…';
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 15000);
+
+      try {
+        const body = new URLSearchParams();
+        for (const [name, value] of new FormData(form)) {
+          if (typeof value === 'string') body.append(name, value);
+        }
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body,
+          headers: { Accept: 'application/json' },
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('Submission was not accepted');
+        const result = await response.json();
+        if (result.ok !== true) throw new Error('Receipt was not confirmed');
+        form.reset();
+        status.textContent = 'Received for review. Approved notes appear after a site update.';
+      } catch {
+        status.textContent = 'We couldn’t confirm receipt. Your draft is still here. Check before retrying to avoid duplicates.';
+      } finally {
+        window.clearTimeout(timeout);
+        button.disabled = false;
+        button.textContent = 'Send note';
+      }
+    });
+  }
+</script>
+
+<style>
+.intro { margin: 2.5rem 0 2rem; max-width: 70ch; }
+.intro h1 { margin-top: 0; }
+.muted, .optional, .field-hint { color: var(--text-1); }
+.archive, .sign { margin-bottom: 2.5rem; }
+.section-heading, .entry-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+h2 { margin-top: 0; font-size: 1.2rem; }
+.feed-link, .entry-model, .entry-referrer { font-family: var(--mono-text-font); font-size: 0.85rem; }
+.entries { list-style: none; padding: 0; border-top: 1px solid var(--border-color); }
+.entry { margin: 0; padding: 1.25rem 0; border-bottom: 1px solid var(--border-color); scroll-margin-top: 1rem; overflow-wrap: anywhere; }
+.entry-name { font-weight: 600; min-width: 0; }
+.entry-heading time { font-size: 0.85rem; color: var(--text-1); }
+.entry-model { margin: 0.5rem 0 0; color: var(--text-1); }
+.entry-note { white-space: pre-wrap; margin: 1rem 0; }
+.entry-referrer { margin: 0; color: var(--text-1); }
+.entry:target { border-left: 2px solid var(--primary-color); padding-left: 1rem; }
+.empty, .unavailable { padding: 1.25rem 0; border-block: 1px solid var(--border-color); color: var(--text-1); }
+.sign { max-width: 70ch; }
+form { margin: 1.5rem 0; }
+.fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+label { display: block; min-width: 0; margin-bottom: 1rem; }
+.optional, .field-hint { font-size: 0.85rem; }
+.required { color: var(--primary-color); }
+input, textarea { display: block; width: 100%; margin-top: 0.4rem; padding: 0.65rem; font: inherit; background: var(--bg-1); color: var(--text-0); border: 1px solid var(--border-color); border-radius: 4px; }
+textarea { resize: vertical; min-height: 8rem; }
+.field-hint { margin-top: -0.5rem; }
+button { padding: 0.65rem 1rem; font: inherit; color: var(--primary-color); border: 1px solid var(--primary-color); background: transparent; border-radius: 4px; cursor: pointer; }
+button:hover:not(:disabled) { color: var(--hover-color); background: var(--primary-color); }
+button:disabled { opacity: 0.65; cursor: wait; }
+:is(input, textarea, button, summary, a):focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
+.form-status { margin-top: 1rem; min-height: 1.5em; }
+.honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.agent-instructions { margin-top: 1.5rem; }
+summary { cursor: pointer; color: var(--primary-color); margin-bottom: 1rem; }
+.agent-instructions p { overflow-wrap: anywhere; }
+@media (max-width: 520px) { .fields-row { grid-template-columns: 1fr; gap: 0; } }
+</style>

@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { guestbookEntryId, guestbookEntrySchema } from './lib/guestbook';
 
 const posts = defineCollection({
   loader: glob({ base: './src/content/posts', pattern: '**/[^_]*.md' }),
@@ -60,4 +61,23 @@ const impact = defineCollection({
   }),
 });
 
-export const collections = { posts, projects, photos, impact };
+const guestbookFiles = glob({
+  base: './src/content/guestbook',
+  pattern: '*.json',
+  generateId: ({ entry }) => guestbookEntryId(entry),
+});
+
+const guestbook = defineCollection({
+  loader: {
+    ...guestbookFiles,
+    async load(context) {
+      // Astro 7.1.3's glob loader returns early for an empty directory, leaving
+      // cached entries behind. Rebuild this small archive so removals stick.
+      context.store.clear();
+      await guestbookFiles.load(context);
+    },
+  },
+  schema: guestbookEntrySchema,
+});
+
+export const collections = { posts, projects, photos, impact, guestbook };
