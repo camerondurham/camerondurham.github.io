@@ -147,8 +147,9 @@ Formspree collects private submissions. Only approved JSON files publish to
    (a public URL, not a credential). Leave production unset while testing.
 3. Verify the intended form using the browser, no-JS form, and the page's curl
    example. Confirm all three reach the private Inbox; leave test notes unapproved.
-4. Set the same build-time variable in Cloudflare Pages and rebuild. Production
-   and preview are separate; verify the deployed form uses the tested endpoint.
+4. For Pages builds, set the URL in `wrangler.jsonc` under `env.preview.vars`
+   (preview) or `vars` (production), then rebuild. This file overrides dashboard
+   variables; production stays closed until explicitly configured.
 
 Blank configuration hides intake, not the archive. Monitor inbox and quota usage.
 To shut down, stop acceptance at Formspree **first**, then clear the variable and
