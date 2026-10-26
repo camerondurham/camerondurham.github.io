@@ -5,6 +5,10 @@
   // npx wrangler pages download config <PROJECT_NAME>
   "name": "camerondurhamgithubio",
   "pages_build_output_dir": "dist",
+  // Production build variables. Remove the URL to close intake.
+  "vars": {
+    "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+  },
   // Pages reads build variables from this file, not the dashboard.
   "env": {
     "preview": {
