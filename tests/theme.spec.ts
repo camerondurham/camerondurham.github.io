@@ -42,3 +42,34 @@ test('theme works when storage is unavailable', async ({ browser }) => {
   await expect(page.locator('#theme-icon')).toHaveText('☾');
   await context.close();
 });
+
+for (const width of [375, 600, 768, 920, 1280]) {
+  test(`header geometry stays stable while toggling at ${width}px`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width, height: 800 }, colorScheme: 'light' });
+    const page = await context.newPage();
+    await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+    const geometry = () => page.evaluate(() => Object.fromEntries(
+      ['.nav-container', '.nav-header', '.nav-links', '.nav-socials', '.theme-toggle', 'main'].map((selector) => {
+        const rect = document.querySelector(selector)!.getBoundingClientRect();
+        return [selector, [rect.x, rect.y, rect.width, rect.height]];
+      }),
+    ));
+    const initial = await geometry();
+    const toggle = page.getByRole('button', { name: 'Toggle dark mode' });
+    for (let i = 0; i < 3; i++) {
+      await toggle.click();
+      const current = await geometry();
+      for (const selector of Object.keys(initial)) {
+        current[selector].forEach((value, index) => expect(Math.abs(value - initial[selector][index])).toBeLessThan(0.1));
+      }
+    }
+    await page.reload();
+    await page.evaluate(() => document.fonts.ready);
+    const reloaded = await geometry();
+    for (const selector of Object.keys(initial)) {
+      reloaded[selector].forEach((value, index) => expect(Math.abs(value - initial[selector][index])).toBeLessThan(0.1));
+    }
+    await context.close();
+  });
+}
