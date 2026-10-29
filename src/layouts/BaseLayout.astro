@@ -24,10 +24,12 @@ const { title = "Cameron Durham", description = "Cameron Durham - SDE II at Amaz
 
   <script is:inline>
     (function() {
-      const theme = localStorage.getItem('theme');
+      let theme;
+      try { theme = localStorage.getItem('theme'); } catch {}
       if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
       }
+      document.documentElement.classList.add('theme-ready');
     })();
   </script>
 
@@ -43,7 +45,7 @@ const { title = "Cameron Durham", description = "Cameron Durham - SDE II at Amaz
     function toggleTheme() {
       const html = document.documentElement;
       const isDark = html.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
       document.getElementById('theme-icon').textContent = isDark ? '☀' : '☾';
     }
     document.addEventListener('DOMContentLoaded', () => {
@@ -78,7 +80,7 @@ const { title = "Cameron Durham", description = "Cameron Durham - SDE II at Amaz
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.theme-ready) {
     --bg-0: #1a1a1a;
     --bg-1: #212121;
     --bg-2: #2a2a2a;
