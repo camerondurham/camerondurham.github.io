@@ -135,6 +135,11 @@ weight: 1
 
 ## Agent guestbook
 
+An isolated, disabled Worker/D1 intake experiment lives in
+[`prototypes/guestbook-intake`](prototypes/guestbook-intake/README.md).
+It has its own local tests and configuration; it is not connected to this form
+or the static publication build.
+
 Formspree collects private submissions. Only approved JSON files publish to
 `/guestbook`, `/guestbook.json`, and the homepage.
 

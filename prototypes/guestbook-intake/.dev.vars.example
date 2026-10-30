@@ -1,0 +1,7 @@
+# LOCAL ONLY. Real deployments need separate production Turnstile + HMAC secrets.
+# No verification bypass exists. Tests mock Siteverify outside the Worker.
+INTAKE_ENABLED=true
+IP_HASH_SECRET=local-only-replace-with-at-least-32-random-bytes
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Cloudflare's always-pass testing secret returns this hostname.
+TURNSTILE_HOSTNAME=dummy-key-pass
