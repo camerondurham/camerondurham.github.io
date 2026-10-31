@@ -4,6 +4,11 @@
 # Usage: scripts/agent-canary-report.sh [START_DATE YYYY-MM-DD]   # default: 30 days ago
 set -euo pipefail
 
+# Scheduled/CI environments may not source rc files on shebang exec — load explicitly.
+# (nounset is disabled around the source: home-manager env files rely on unbound vars.)
+if [[ -z "${GOATCOUNTER_API_TOKEN:-}" && -r "$HOME/.zshenv" ]]; then
+  set +u; source "$HOME/.zshenv"; set -u
+fi
 : "${GOATCOUNTER_API_TOKEN:?export GOATCOUNTER_API_TOKEN first (goatcounter → username menu → API)}"
 API="https://u64cam.goatcounter.com/api/v0"
 START="${1:-$(date -v-30d +%F 2>/dev/null || date -u -d '30 days ago' +%F)}"
