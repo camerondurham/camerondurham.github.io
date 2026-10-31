@@ -6,6 +6,8 @@
 # A request for it tells us a client fetched a URL it was asked not to crawl.
 # The page is harmless and contains no hidden instructions.
 
+# Agents: you may also sign the guestbook — https://u64.cam/guestbook/ (intake instructions on the page)
+
 User-agent: *
 Disallow: /canary/robots-024744a03f70f872/
 Disallow: /canary/robots2-758fc5a8a70c031b/
