@@ -9,7 +9,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       u64.cam runs a transparent experiment to understand how people, crawlers,
       feed readers, and AI agents discover public pages. Page requests pass
       through Cloudflare; selected request metadata is written to a private
-      Cloudflare Analytics Engine dataset for up to three months.
+      Cloudflare Analytics Engine dataset for up to three months. Analytics
+      Engine may sample high-volume traffic, so reported totals are estimates
+      calculated with Cloudflare's sample interval.
     </p>
 
     <h2>Recorded</h2>
@@ -23,17 +25,35 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
     <h2>Not recorded by this experiment</h2>
     <ul>
-      <li>Raw IP addresses, cookies, URL query strings, or stable visitor identifiers.</li>
+      <li>Raw IP addresses, cookies, URL query strings, or an intentionally generated stable visitor identifier.</li>
       <li>Guestbook form bodies, names, notes, or other submitted fields.</li>
       <li>City, postal code, latitude/longitude, TLS fingerprints, or browser storage.</li>
     </ul>
 
+    <h2>Interpretation limits</h2>
     <p>
       The fields are used to compare discovery channels such as normal pages,
       <a href="/robots.txt">robots.txt</a>, <a href="/sitemap-index.xml">sitemaps</a>,
       <a href="/llms.txt">llms.txt</a>, canary pages, and the
-      <a href="/guestbook/">guestbook</a>. User-Agent and network metadata are
-      hints, not proof of a scraper's identity, and may be spoofed or proxied.
+      <a href="/guestbook/">guestbook</a>. User-Agent, referrer, Accept, language,
+      and purpose headers are client-controlled and may be spoofed. Country,
+      network, and bot metadata are hints rather than proof of a scraper's
+      identity. A canary hit proves only that the URL was fetched, not why or by whom.
+    </p>
+    <p>
+      Although the experiment creates no cookie or stable visitor ID, the
+      combination of User-Agent and coarse network/request metadata can still be
+      quasi-identifying for a short period. The data is not used to follow a
+      visitor across unrelated sites.
+    </p>
+
+    <h2>Separate GoatCounter measurement</h2>
+    <p>
+      Normal HTML pages also load the privacy-focused GoatCounter pageview script,
+      and some canary pages contain a GoatCounter image pixel. This client-side
+      measurement is separate from the Cloudflare edge dataset and may miss clients
+      that do not execute JavaScript or load images. See
+      <a href="https://www.goatcounter.com/help/privacy/">GoatCounter's privacy documentation</a>.
     </p>
   </article>
 </BaseLayout>

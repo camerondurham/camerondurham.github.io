@@ -9,9 +9,7 @@ import { parse } from 'jsonc-parser';
 const repoRoot = resolve(import.meta.dirname, '..');
 
 export function buildVariables(config, environment) {
-  const vars = environment === 'preview'
-    ? config.env?.preview?.vars
-    : config.vars;
+  const vars = config.env?.[environment]?.vars ?? config.vars;
   if (!vars || typeof vars !== 'object' || Array.isArray(vars)) return {};
 
   return Object.fromEntries(Object.entries(vars).map(([name, value]) => {

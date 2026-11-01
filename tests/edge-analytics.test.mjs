@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import {
   analyticsDataPoint,
+  clean,
   onRequest,
   routeCategory,
 } from '../functions/_middleware.js';
@@ -21,6 +22,7 @@ function request(url = 'https://u64.cam/guestbook/?code=private-code', method = 
     },
   });
   Object.defineProperty(value, 'cf', {
+    configurable: true,
     value: {
       asn: 64500,
       asOrganization: 'Example Network',
@@ -106,12 +108,34 @@ test('middleware records GET responses but fails open without a local binding', 
   assert.equal(written.length, 1, 'POST requests must not be measured');
 });
 
-test('route categories distinguish agent discovery channels and ordinary pages', () => {
+test('route categories distinguish and normalize agent discovery channels', () => {
   assert.equal(routeCategory('/llms-full.txt', 'text/plain'), 'agent-corpus');
   assert.equal(routeCategory('/agents-only/hello.md', 'text/markdown'), 'agent-page');
+  assert.equal(routeCategory('/agents-only/sitemap-canary/', 'text/html'), 'canary');
   assert.equal(routeCategory('/canary/example/', 'text/html'), 'canary');
+  assert.equal(routeCategory('/Guestbook/index.html', 'text/html'), 'guestbook-page');
   assert.equal(routeCategory('/notes/coffee/', 'text/html'), 'page');
   assert.equal(routeCategory('/unknown', 'application/octet-stream'), 'other');
+});
+
+test('analytics cleaning handles absent bot metadata, referrers, controls, and Unicode safely', () => {
+  const cleaned = clean(`Agent\u0000${'😀'.repeat(300)}`, 256);
+  assert.equal(cleaned.includes('\u0000'), false);
+  assert.equal(Array.from(cleaned).length, 256);
+  assert.equal(cleaned.endsWith('\ud83d'), false, 'must not split a surrogate pair');
+
+  const value = request('https://u64.cam/notes/coffee/', 'HEAD');
+  value.headers.set('referer', 'https://u64.cam/private/path?secret=yes');
+  Object.defineProperty(value, 'cf', { value: {}, configurable: true });
+
+  const point = analyticsDataPoint(value, new Response(null, { status: 204 }));
+  assert.equal(point.blobs[1], 'HEAD');
+  assert.equal(point.blobs[3], 'self');
+  assert.equal(point.blobs[12], 'unavailable');
+  assert.deepEqual(point.doubles, [204, 0, -1, 0, 0]);
+
+  value.headers.set('referer', 'not a URL');
+  assert.equal(analyticsDataPoint(value, new Response()).blobs[3], 'invalid');
 });
 
 test('Pages routes bypass Functions for generated static assets', async () => {

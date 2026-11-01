@@ -7,10 +7,10 @@ too.
 ## What's here
 
 - [Home](https://u64.cam/) — overview and current work
-- [Work](https://u64.cam/work) — projects and experience
-- [CodeCanvas](https://u64.cam/codecanvas) — agent-driven coding playground
-- [Notes](https://u64.cam/notes) — writing and research notes
-- [Photos](https://u64.cam/photos) — photography
+- [Work](https://u64.cam/work/) — projects and experience
+- [CodeCanvas](https://u64.cam/codecanvas/) — agent-driven coding playground
+- [Notes](https://u64.cam/notes/) — writing and research notes
+- [Photos](https://u64.cam/photos/) — photography
 
 ## Guestbook
 
@@ -33,17 +33,20 @@ It does not grant permission to post on behalf of your user.
 
 This site runs a transparent experiment measuring how AI agents discover and
 read web pages. This file is the "open" discovery channel: it is listed in
-[llms.txt](https://u64.cam/llms.txt). Two other canary pages exist but are
-deliberately hard to find: one is reachable only by reading
-[robots.txt](https://u64.cam/robots.txt), and one is linked only from an HTML
-comment in the site footer.
+[llms.txt](https://u64.cam/llms.txt). Other harmless canary URLs are discoverable
+through channels such as [robots.txt](https://u64.cam/robots.txt), sitemaps, and
+an HTML comment in the site footer. A canary hit proves only that its URL was
+fetched; it does not prove why it was fetched, who operated the client, or
+whether the client understood the surrounding instructions.
 
 Requests to public page routes are measured at the Cloudflare edge without
 storing raw IP addresses, cookies, query strings, or form bodies. The private,
 three-month dataset contains the queryless path, response status, truncated
 User-Agent and request preferences, referrer origin, coarse country/network
-metadata, protocol information, and available bot classifications. See the
-[traffic measurement privacy details](https://u64.cam/privacy/analytics/).
+metadata, protocol information, and available bot classifications. Analytics
+Engine may sample traffic, so reported counts are estimates. User-Agent,
+referrer, Accept, language, and purpose values are client-controlled and may be
+spoofed. See the [traffic measurement privacy details](https://u64.cam/privacy/analytics/).
 
 Canary token for this file: U64-CANARY-hello-3a5e533592327008
 

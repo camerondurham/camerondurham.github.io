@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "test:csp": "node scripts/run-pages.mjs build-preview && node scripts/csp-smoke.mjs",
     "cf:deploy": "node scripts/run-pages.mjs deploy",
-    "cf:dev": "node scripts/run-pages.mjs dev"
+    "cf:dev": "node scripts/run-pages.mjs dev",
+    "report:edge": "node --env-file-if-exists=.env scripts/edge-analytics-report.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",

@@ -5,7 +5,10 @@ test('header omits notes while notes and favicon remain available', async ({ pag
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/');
     await expect(page.locator('nav').getByRole('link', { name: '/notes' })).toHaveCount(0);
-    await expect(page.locator('nav').getByRole('link', { name: '/work' })).toBeVisible();
+    await expect(page.locator('nav').getByRole('link', { name: '/work' })).toHaveAttribute('href', '/work/');
+    await expect(page.locator('nav').getByRole('link', { name: '/codecanvas' })).toHaveAttribute('href', '/codecanvas/');
+    await expect(page.locator('nav').getByRole('link', { name: '/photos' })).toHaveAttribute('href', '/photos/');
+    await expect(page.locator('nav').getByRole('link', { name: '/guestbook' })).toHaveAttribute('href', '/guestbook/');
   }
   expect((await request.get('/notes/')).status()).toBe(200);
   for (const [selector, type] of [['link[rel="icon"][type="image/svg+xml"]', 'image/svg+xml'], ['link[rel="icon"][href="/favicon.ico"]', 'image/']] as const) {
