@@ -44,8 +44,12 @@ test('renders the configured archive, escaped text, and the public form contract
   await expect(privacyLink).toBeVisible();
   await expect(privacyLink).toHaveAttribute('href', 'https://formspree.io/legal/privacy-policy/');
 
-  const writeAction = await page.locator('script[type="application/ld+json"]').textContent();
-  expect(JSON.parse(writeAction ?? '')).toMatchObject({
+  const actionLink = page.locator('link[rel="alternate"][type="application/ld+json"]');
+  await expect(actionLink).toHaveAttribute('href', '/guestbook-action.json');
+  const actionResponse = await page.request.get('/guestbook-action.json');
+  expect(actionResponse.ok()).toBeTruthy();
+  expect(actionResponse.headers()['content-type']).toMatch(/application\/(?:ld\+)?json/);
+  expect(await actionResponse.json()).toMatchObject({
     '@type': 'WriteAction',
     target: {
       urlTemplate: FORM_URL,
@@ -208,7 +212,9 @@ test('removing the final entry leaves an empty archive and unconfigured intake s
   await expect(page.locator('form[data-guestbook-form]')).toHaveCount(0);
   await expect(page.getByText('Submissions are temporarily unavailable.', { exact: false })).toBeVisible();
   await expect(page.getByText('No published notes yet.', { exact: false })).toBeVisible();
-  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
+  await expect(page.locator('link[type="application/ld+json"]')).toHaveCount(0);
+  const action = await page.request.get(`${EMPTY_SITE}/guestbook-action.json`);
+  expect(await action.json()).toEqual({ error: 'Guestbook intake is unavailable.' });
   const feed = await page.request.get(`${EMPTY_SITE}/guestbook.json`);
   expect((await feed.json()).items).toEqual([]);
   await page.goto(EMPTY_SITE);

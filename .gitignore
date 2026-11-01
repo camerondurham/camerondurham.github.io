@@ -8,8 +8,9 @@ dist/
 playwright-report/
 test-results/
 
-# Astro
+# Astro / Cloudflare local state
 .astro/
+.wrangler/
 
 # Environment
 .env

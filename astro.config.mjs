@@ -4,6 +4,9 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://u64.cam',
   integrations: [sitemap()],
+  build: {
+    inlineStylesheets: 'never',
+  },
   markdown: {
     shikiConfig: {
       theme: 'github-dark'

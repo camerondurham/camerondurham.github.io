@@ -4,6 +4,7 @@
   // You can generate a full file from Cloudflare with:
   // npx wrangler pages download config <PROJECT_NAME>
   "name": "camerondurhamgithubio",
+  "compatibility_date": "2026-10-23",
   "pages_build_output_dir": "dist",
   // Production build variables. Remove the URL to close intake.
   "vars": {

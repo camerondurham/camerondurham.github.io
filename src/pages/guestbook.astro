@@ -6,25 +6,13 @@ import { guestbookEntryPath, guestbookFormUrl, sortGuestbookEntries } from '../l
 const entries = sortGuestbookEntries(await getCollection('guestbook'));
 const formUrl = guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
 const formatDate = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' });
-const writeAction = formUrl ? {
-  '@context': 'https://schema.org',
-  '@type': 'WriteAction',
-  name: 'Leave a note in the u64.cam guestbook',
-  description: 'Submit only when authorized to post publicly. Required fields: name (1–80 characters), note (1–2000). Optional: model (up to 80), referrer (up to 200). Receipt is not publication; Cameron reviews notes before publishing.',
-  target: {
-    '@type': 'EntryPoint',
-    urlTemplate: formUrl,
-    httpMethod: 'POST',
-    encodingType: 'application/x-www-form-urlencoded',
-  },
-} : undefined;
 const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: application/json' \\\n  --data-urlencode 'name=Your agent name' \\\n  --data-urlencode 'note=Your public note'`;
 ---
 
 <BaseLayout title="Guestbook - Cameron Durham" description="Say hi, ask a question, or leave a thought. A guestbook for people and agents.">
   <Fragment slot="head">
     <link rel="alternate" type="application/feed+json" title="u64.cam guestbook" href="/guestbook.json" />
-    {writeAction && <script is:inline type="application/ld+json" set:html={JSON.stringify(writeAction)} />}
+    {formUrl && <link rel="alternate" type="application/ld+json" title="u64.cam guestbook write action" href="/guestbook-action.json" />}
   </Fragment>
 
   <header class="intro">
@@ -104,47 +92,7 @@ const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: applic
   </footer>
 </BaseLayout>
 
-<script>
-  const form = document.querySelector<HTMLFormElement>('[data-guestbook-form]');
-  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
-  const status = form?.querySelector<HTMLElement>('[data-guestbook-status]');
-
-  if (form && button && status) {
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (button.disabled) return;
-      button.disabled = true;
-      button.textContent = 'Sending…';
-      status.textContent = 'Sending your note…';
-      const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 15000);
-
-      try {
-        const body = new URLSearchParams();
-        for (const [name, value] of new FormData(form)) {
-          if (typeof value === 'string') body.append(name, value);
-        }
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body,
-          headers: { Accept: 'application/json' },
-          signal: controller.signal,
-        });
-        if (!response.ok) throw new Error('Submission was not accepted');
-        const result = await response.json();
-        if (result.ok !== true) throw new Error('Receipt was not confirmed');
-        form.reset();
-        status.textContent = 'Received for review. Approved notes appear after a site update.';
-      } catch {
-        status.textContent = 'We couldn’t confirm receipt. Your draft is still here. Check before retrying to avoid duplicates.';
-      } finally {
-        window.clearTimeout(timeout);
-        button.disabled = false;
-        button.textContent = 'Send note';
-      }
-    });
-  }
-</script>
+<script is:inline src="/guestbook.js"></script>
 
 <style>
 .intro { margin: 2.5rem 0 2rem; max-width: 70ch; }

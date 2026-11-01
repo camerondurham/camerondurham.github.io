@@ -33,7 +33,7 @@ npm run preview
 2. Create a project → Connect to Git
 3. Select this repository
 4. Configure build settings:
-   - **Build command:** `npm run build`
+   - **Build command:** `npm run build:pages`
    - **Build output directory:** `dist`
    - **Node.js version:** 22.12+ (or a newer supported LTS)
 5. Deploy
@@ -42,10 +42,18 @@ npm run preview
 
 If you deploy with Wrangler, use current Pages commands and config:
 
-1. Authenticate: `npx wrangler login`
-2. Sync config from Cloudflare (recommended): `npx wrangler pages download config <PROJECT_NAME>`
+Wrangler is pinned in `devDependencies`; install from the lockfile before deploying.
+The `build:pages` and `cf:*` scripts read the matching `vars` from
+`wrangler.jsonc` and pass them into Astro's static build before starting
+Wrangler, so build-time public settings such as guestbook intake match the
+Pages environment. Git builds choose production variables on `main` and preview
+variables on other branches; set `CF_PAGES_PRODUCTION_BRANCH` if that branch
+name changes.
+
+1. Authenticate: `npx --no-install wrangler login`
+2. Sync config from Cloudflare (recommended): `npx --no-install wrangler pages download config <PROJECT_NAME>`
 3. Ensure `wrangler.jsonc` includes `"pages_build_output_dir": "dist"`
-4. Deploy: `npx wrangler pages deploy dist --project-name <PROJECT_NAME>`
+4. Deploy: `npm run cf:deploy`
 
 Useful scripts:
 

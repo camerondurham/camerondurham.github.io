@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
   buildGuestbookFeed,
+  buildGuestbookWriteAction,
   guestbookEntrySchema,
   guestbookEntryId,
   guestbookFormUrl,
@@ -49,6 +50,17 @@ test('the public feed has stable URLs, newest-first entries, and plain text only
   assert.equal('_model' in feed.items[1], false);
   assert.equal(entries[0].id, 'older', 'sorting must not mutate callers');
   assert.deepEqual(buildGuestbookFeed([], new URL('https://u64.cam')).items, []);
+});
+
+test('the machine-readable write action preserves the moderated form contract', () => {
+  const action = buildGuestbookWriteAction('https://formspree.io/f/abc123');
+  assert.equal(action['@type'], 'WriteAction');
+  assert.deepEqual(action.target, {
+    '@type': 'EntryPoint',
+    urlTemplate: 'https://formspree.io/f/abc123',
+    httpMethod: 'POST',
+    encodingType: 'application/x-www-form-urlencoded',
+  });
 });
 
 test('entry filenames are stable fragment identifiers, not mutable titles', () => {

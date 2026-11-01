@@ -5,24 +5,28 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist",
+    "build:pages": "node scripts/run-pages.mjs build-auto",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:e2e && npm run test:csp",
     "test:unit": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:e2e": "playwright test",
-    "cf:deploy": "npm run build && npx wrangler pages deploy dist",
-    "cf:dev": "npm run build && npx wrangler pages dev dist"
+    "test:csp": "node scripts/run-pages.mjs build-preview && node scripts/csp-smoke.mjs",
+    "cf:deploy": "node scripts/run-pages.mjs deploy",
+    "cf:dev": "node scripts/run-pages.mjs dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/rss": "^4.0.18",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.2",
     "astro": "^7.3.3",
     "pagefind": "^1.4.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.64.1"
+    "@playwright/test": "^1.64.1",
+    "jsonc-parser": "3.3.1",
+    "wrangler": "4.156.0"
   }
 }
