@@ -13,7 +13,7 @@ const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort();
       <a href={`/notes/tags/${tag}`} class="tag-link">{tag}</a>
     ))}
   </div>
-  <a href="/notes" class="back-link">← All notes</a>
+  <a href="/notes/" class="back-link">← All notes</a>
 </BaseLayout>
 
 <style>

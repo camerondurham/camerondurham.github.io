@@ -10,6 +10,9 @@ const config = parseWranglerConfig(`{
   // JSONC comments are allowed.
   "vars": { "PUBLIC_VALUE": "production", "COUNT": 2 },
   "env": {
+    "production": {
+      "vars": { "PUBLIC_VALUE": "production-override", "COUNT": 3 }
+    },
     "preview": {
       "vars": { "PUBLIC_VALUE": "preview", "ENABLED": true }
     }
@@ -18,12 +21,15 @@ const config = parseWranglerConfig(`{
 
 test('Pages builds receive the variables from their matching Wrangler environment', () => {
   assert.deepEqual(buildVariables(config, 'production'), {
-    PUBLIC_VALUE: 'production',
-    COUNT: '2',
+    PUBLIC_VALUE: 'production-override',
+    COUNT: '3',
   });
   assert.deepEqual(buildVariables(config, 'preview'), {
     PUBLIC_VALUE: 'preview',
     ENABLED: 'true',
+  });
+  assert.deepEqual(buildVariables({ vars: { FALLBACK: 'top-level' } }, 'production'), {
+    FALLBACK: 'top-level',
   });
 });
 

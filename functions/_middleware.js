@@ -1,12 +1,12 @@
 const MAX_PATH_LENGTH = 512;
 const MAX_HEADER_LENGTH = 256;
 
-function clean(value, limit = MAX_HEADER_LENGTH, fallback = 'unknown') {
+export function clean(value, limit = MAX_HEADER_LENGTH, fallback = 'unknown') {
   if (value === undefined || value === null || value === '') return fallback;
-  return String(value)
+  const normalized = String(value)
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
-    .trim()
-    .slice(0, limit) || fallback;
+    .trim();
+  return Array.from(normalized).slice(0, limit).join('') || fallback;
 }
 
 function referrerOrigin(value, siteOrigin) {
@@ -20,15 +20,16 @@ function referrerOrigin(value, siteOrigin) {
 }
 
 export function routeCategory(pathname, contentType = '') {
-  if (pathname === '/guestbook' || pathname === '/guestbook/') return 'guestbook-page';
-  if (pathname === '/guestbook.json') return 'guestbook-feed';
-  if (pathname === '/guestbook-action.json') return 'guestbook-action';
-  if (pathname === '/llms.txt' || pathname === '/llms-full.txt') return 'agent-corpus';
-  if (pathname.startsWith('/agents-only/')) return 'agent-page';
-  if (pathname.startsWith('/canary/')) return 'canary';
-  if (pathname === '/robots.txt') return 'robots';
-  if (pathname.startsWith('/sitemap') && pathname.endsWith('.xml')) return 'sitemap';
-  if (pathname === '/rss.xml') return 'feed';
+  const normalizedPath = pathname.toLowerCase().replace(/\/index\.html$/, '/');
+  if (normalizedPath === '/guestbook' || normalizedPath === '/guestbook/') return 'guestbook-page';
+  if (normalizedPath === '/guestbook.json') return 'guestbook-feed';
+  if (normalizedPath === '/guestbook-action.json') return 'guestbook-action';
+  if (normalizedPath === '/llms.txt' || normalizedPath === '/llms-full.txt') return 'agent-corpus';
+  if (normalizedPath === '/agents-only/sitemap-canary/' || normalizedPath.startsWith('/canary/')) return 'canary';
+  if (normalizedPath.startsWith('/agents-only/')) return 'agent-page';
+  if (normalizedPath === '/robots.txt') return 'robots';
+  if (normalizedPath.startsWith('/sitemap') && normalizedPath.endsWith('.xml')) return 'sitemap';
+  if (normalizedPath === '/rss.xml') return 'feed';
   if (contentType.includes('text/html')) return 'page';
   if (contentType.includes('json')) return 'json';
   if (contentType.startsWith('text/')) return 'text';

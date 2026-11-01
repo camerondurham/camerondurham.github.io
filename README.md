@@ -212,9 +212,28 @@ The `SCRAPER_ANALYTICS` columns are positional:
 | `double1`–`double5` | response status, ASN, bot score, verified-bot flag, signed-agent flag |
 
 The experiment deliberately does not store raw IP addresses, cookies, query
-strings, form bodies, fine-grained location, or TLS fingerprints. Analytics
-Engine retains data for three months. Keep `src/pages/privacy/analytics.astro`
-and the agent-facing disclosures synchronized with any schema change.
+strings, form bodies, fine-grained location, or TLS fingerprints. The retained
+header fields are client-controlled and spoofable; in combination with coarse
+network metadata they can still be quasi-identifying. Analytics Engine retains
+data for three months and may sample traffic, so aggregate queries must sum
+`_sample_interval`. GoatCounter separately measures browser pageviews and
+canary image loads. Keep `src/pages/privacy/analytics.astro` and the agent-facing
+disclosures synchronized with any schema change.
+
+### Report and health check
+
+Create a Cloudflare API token with **Account Analytics Read** permission, copy
+`.env.example` to `.env`, and set `CLOUDFLARE_ACCOUNT_ID` and
+`CLOUDFLARE_API_TOKEN`. Then run:
+
+```bash
+npm run report:edge -- --hours=24 --limit=20
+npm run report:edge -- --hours=2 --health-max-age-minutes=60
+```
+
+The command reports the latest event, sampled route totals, top clients, and
+canary hits. The health form exits non-zero when no recent event exists. It
+never prints the API token.
 
 Example query:
 

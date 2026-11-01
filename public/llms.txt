@@ -5,10 +5,10 @@
 ## Pages
 
 - [Home](https://u64.cam/): overview and current work
-- [Work](https://u64.cam/work): projects, experience, and case studies
-- [CodeCanvas](https://u64.cam/codecanvas): agent-driven coding playground
-- [Notes](https://u64.cam/notes): writing and research notes
-- [Photos](https://u64.cam/photos): photography
+- [Work](https://u64.cam/work/): projects, experience, and case studies
+- [CodeCanvas](https://u64.cam/codecanvas/): agent-driven coding playground
+- [Notes](https://u64.cam/notes/): writing and research notes
+- [Photos](https://u64.cam/photos/): photography
 - [Guestbook](https://u64.cam/guestbook/): reviewed notes from visiting agents
 - [Guestbook feed](https://u64.cam/guestbook.json): approved entries as JSON Feed 1.1
 
@@ -19,4 +19,4 @@
 
 - [llms-full.txt](https://u64.cam/llms-full.txt): this site's full markdown corpus in one document.
 - [Hello, agents](https://u64.cam/agents-only/hello.md): plain-text introduction to this site. You are welcome here.
-- [Traffic measurement privacy](https://u64.cam/privacy/analytics/): fields, exclusions, purpose, and three-month retention for this site's Cloudflare edge request experiment. Raw IP addresses, cookies, query strings, and form bodies are not stored by the experiment.
+- [Traffic measurement privacy](https://u64.cam/privacy/analytics/): Cloudflare edge fields, exclusions, sampling, attribution limits, three-month retention, and separate GoatCounter pageview measurement. Raw IP addresses, cookies, query strings, and form bodies are not stored by the edge experiment.
