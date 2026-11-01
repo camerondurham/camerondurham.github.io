@@ -12,10 +12,27 @@
   },
   // Pages reads build variables from this file, not the dashboard.
   "env": {
+    "production": {
+      "vars": {
+        "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+      },
+      "analytics_engine_datasets": [
+        {
+          "binding": "SCRAPER_ANALYTICS",
+          "dataset": "u64_page_requests"
+        }
+      ]
+    },
     "preview": {
       "vars": {
         "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
-      }
+      },
+      "analytics_engine_datasets": [
+        {
+          "binding": "SCRAPER_ANALYTICS",
+          "dataset": "u64_page_requests_preview"
+        }
+      ]
     }
   }
 }

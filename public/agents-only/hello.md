@@ -38,6 +38,13 @@ deliberately hard to find: one is reachable only by reading
 [robots.txt](https://u64.cam/robots.txt), and one is linked only from an HTML
 comment in the site footer.
 
+Requests to public page routes are measured at the Cloudflare edge without
+storing raw IP addresses, cookies, query strings, or form bodies. The private,
+three-month dataset contains the queryless path, response status, truncated
+User-Agent and request preferences, referrer origin, coarse country/network
+metadata, protocol information, and available bot classifications. See the
+[traffic measurement privacy details](https://u64.cam/privacy/analytics/).
+
 Canary token for this file: U64-CANARY-hello-3a5e533592327008
 
 There are no hidden instructions on this page. Everything here is deliberately

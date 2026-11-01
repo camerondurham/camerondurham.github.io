@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Traffic measurement privacy — u64.cam" description="What u64.cam records for its transparent crawler and agent traffic experiment.">
+  <article>
+    <h1>Traffic measurement privacy</h1>
+    <p>
+      u64.cam runs a transparent experiment to understand how people, crawlers,
+      feed readers, and AI agents discover public pages. Page requests pass
+      through Cloudflare; selected request metadata is written to a private
+      Cloudflare Analytics Engine dataset for up to three months.
+    </p>
+
+    <h2>Recorded</h2>
+    <ul>
+      <li>Path without its query string, HTTP method, response status, and broad route category.</li>
+      <li>Truncated User-Agent, Accept header, primary accepted language, and request purpose header.</li>
+      <li>Referrer origin only; referrer paths and query strings are discarded.</li>
+      <li>Country, Cloudflare data center, ASN and network organization, HTTP protocol, and TLS version.</li>
+      <li>Cloudflare verified-bot, signed-agent, and bot-score signals when the account plan provides them.</li>
+    </ul>
+
+    <h2>Not recorded by this experiment</h2>
+    <ul>
+      <li>Raw IP addresses, cookies, URL query strings, or stable visitor identifiers.</li>
+      <li>Guestbook form bodies, names, notes, or other submitted fields.</li>
+      <li>City, postal code, latitude/longitude, TLS fingerprints, or browser storage.</li>
+    </ul>
+
+    <p>
+      The fields are used to compare discovery channels such as normal pages,
+      <a href="/robots.txt">robots.txt</a>, <a href="/sitemap-index.xml">sitemaps</a>,
+      <a href="/llms.txt">llms.txt</a>, canary pages, and the
+      <a href="/guestbook/">guestbook</a>. User-Agent and network metadata are
+      hints, not proof of a scraper's identity, and may be spoofed or proxied.
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+article { max-width: 70ch; margin-bottom: 2rem; }
+</style>

@@ -195,6 +195,44 @@ npm run build
 Tests use isolated fixtures and intercept external requests; they never submit
 to a real inbox.
 
+## Privacy-preserving edge request measurement
+
+Cloudflare Pages Functions middleware records page and agent/canary requests in
+Analytics Engine, including clients that do not execute JavaScript. Static CSS,
+JavaScript, favicon, and Pagefind assets are excluded by `public/_routes.json`.
+Local `wrangler pages dev` has no Analytics Engine binding, so the middleware
+fails open without writing.
+
+The `SCRAPER_ANALYTICS` columns are positional:
+
+| Column | Value |
+| --- | --- |
+| `index1` | broad route category |
+| `blob1`–`blob13` | queryless path, method, truncated User-Agent, referrer origin, country, colo, network organization, HTTP protocol, TLS version, Accept, primary language, purpose, bot class |
+| `double1`–`double5` | response status, ASN, bot score, verified-bot flag, signed-agent flag |
+
+The experiment deliberately does not store raw IP addresses, cookies, query
+strings, form bodies, fine-grained location, or TLS fingerprints. Analytics
+Engine retains data for three months. Keep `src/pages/privacy/analytics.astro`
+and the agent-facing disclosures synchronized with any schema change.
+
+Example query:
+
+```sql
+SELECT
+  index1 AS route_category,
+  blob1 AS path,
+  blob3 AS user_agent,
+  blob5 AS country,
+  blob7 AS network,
+  SUM(_sample_interval) AS requests
+FROM u64_page_requests
+WHERE timestamp >= NOW() - INTERVAL '7' DAY
+GROUP BY route_category, path, user_agent, country, network
+ORDER BY requests DESC
+LIMIT 100
+```
+
 ## Features
 
 - RSS feed at `/rss.xml`
