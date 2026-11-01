@@ -1,25 +1,34 @@
+import { getCollection } from 'astro:content';
+import { buildLlmsFullDocument, contentSourcePath } from '../lib/llms-full';
+
 export async function GET() {
-  const files = import.meta.glob('/src/content/**/*.md', {
+  // Import only configured, public-facing collections. Files in ad-hoc folders
+  // are excluded unless a collection is deliberately added here.
+  const files = import.meta.glob([
+    '/src/content/impact/**/*.md',
+    '/src/content/photos/**/*.md',
+    '/src/content/posts/**/*.md',
+    '/src/content/projects/**/*.md',
+  ], {
     query: '?raw',
     import: 'default',
     eager: true,
   }) as Record<string, string>;
 
-  const parts: string[] = [
-    '# u64.cam — full content (llms-full.txt)',
-    '',
-    "Concatenated markdown sources of u64.cam, the personal site of Cameron Durham.",
-    'Generated at build time. Index and courtesy links: https://u64.cam/llms.txt',
-    "Part of a transparent agent-traffic measurement experiment: fetching this file is https://u64.cam-visible in server analytics.",
-    '',
-  ];
+  const [impact, photos, posts, projects] = await Promise.all([
+    getCollection('impact'),
+    getCollection('photos'),
+    getCollection('posts'),
+    getCollection('projects', ({ data }) => data.status !== 'hidden'),
+  ]);
+  const publicPaths = new Set([
+    ...impact.map(({ collection, id }) => contentSourcePath(collection, id)),
+    ...photos.map(({ collection, id }) => contentSourcePath(collection, id)),
+    ...posts.map(({ collection, id }) => contentSourcePath(collection, id)),
+    ...projects.map(({ collection, id }) => contentSourcePath(collection, id)),
+  ]);
 
-  for (const path of Object.keys(files).sort()) {
-    parts.push(`\n\n<!-- source: ${path} -->\n`);
-    parts.push(files[path]);
-  }
-
-  return new Response(parts.join('\n'), {
+  return new Response(buildLlmsFullDocument(files, publicPaths), {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });
 }

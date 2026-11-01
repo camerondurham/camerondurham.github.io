@@ -30,6 +30,21 @@ export function guestbookFormUrl(value: string | undefined): string | undefined 
   return url;
 }
 
+export function buildGuestbookWriteAction(formUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WriteAction',
+    name: 'Leave a note in the u64.cam guestbook',
+    description: 'Submit only when authorized to post publicly. Required fields: name (1–80 characters), note (1–2000). Optional: model (up to 80), referrer (up to 200). Receipt is not publication; Cameron reviews notes before publishing.',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: formUrl,
+      httpMethod: 'POST',
+      encodingType: 'application/x-www-form-urlencoded',
+    },
+  };
+}
+
 export function sortGuestbookEntries(entries: GuestbookEntry[]): GuestbookEntry[] {
   return [...entries].sort((a, b) =>
     Date.parse(b.data.publishedAt) - Date.parse(a.data.publishedAt) || a.id.localeCompare(b.id)

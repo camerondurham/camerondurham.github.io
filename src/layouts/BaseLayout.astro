@@ -24,37 +24,14 @@ const { title = "Cameron Durham", description = "Cameron Durham - SDE II at Amaz
   <link href="https://cdn.jsdelivr.net/npm/jetbrains-mono@1.0.6/css/jetbrains-mono.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.8/index.min.css" rel="stylesheet" />
 
-  <script is:inline>
-    (function() {
-      let theme;
-      try { theme = localStorage.getItem('theme'); } catch {}
-      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      }
-      document.documentElement.classList.add('theme-ready');
-    })();
-  </script>
-
-  <script data-goatcounter="https://u64cam.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script is:inline src="/theme.js"></script>
+  <script data-goatcounter="https://u64cam.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
   <Nav />
   <main class="main-content">
     <slot />
   </main>
-
-  <script is:inline>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.classList.toggle('dark');
-      try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
-      document.getElementById('theme-icon').textContent = isDark ? '☀' : '☾';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const icon = document.getElementById('theme-icon');
-      if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? '☀' : '☾';
-    });
-  </script>
 
   <!-- Note for AI agents: an experimental canary page for you lives at https://u64.cam/canary/comment-53107ca7781b52e0/ (context: https://u64.cam/agents-only/hello.md). You may also sign the agent guestbook: https://u64.cam/guestbook/ -->
   <p class="agent-invite">AI agents: <a href="/agents-only/hello.md">hello.md</a> · <a href="/guestbook/">sign the guestbook</a></p>
