@@ -3,7 +3,7 @@
   // Set this to your existing Cloudflare Pages project name.
   // You can generate a full file from Cloudflare with:
   // npx wrangler pages download config <PROJECT_NAME>
-  "name": "camerondurhamgithubio",
+  "name": "camerondurham-github-io",
   "compatibility_date": "2026-10-23",
   "pages_build_output_dir": "dist",
   // Production build variables. Remove the URL to close intake.
