@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/_astro/*",
+    "/pagefind/*",
+    "/favicon.ico",
+    "/favicon.svg",
+    "/codecanvas.js",
+    "/guestbook.js",
+    "/search.js",
+    "/theme.js",
+    "/whoop-callback.js"
+  ]
+}
