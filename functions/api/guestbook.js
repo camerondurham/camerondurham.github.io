@@ -98,7 +98,12 @@ async function rateKey(request, env, bucket) {
   if (env.GUESTBOOK_IP_MODE === 'local-shared') {
     const url = new URL(request.url);
     const loopback = url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname);
-    const privatePreview = url.protocol === 'https:' && url.hostname.endsWith('.ts.net') && url.origin === env.GUESTBOOK_LOCAL_ORIGIN;
+    let preview;
+    try { preview = new URL(env.GUESTBOOK_LOCAL_ORIGIN); } catch { /* Unset/invalid means no preview allowance. */ }
+    const privateHost = preview?.protocol === 'https:' && preview.origin === env.GUESTBOOK_LOCAL_ORIGIN && preview.hostname.endsWith('.ts.net') && url.host === preview.host;
+    // Wrangler's local TLS proxy can rewrite URL + Origin to HTTP. Honor its
+    // HTTPS marker only in explicit local mode for the exact configured host.
+    const privatePreview = privateHost && (url.protocol === 'https:' || (url.protocol === 'http:' && request.headers.get('x-forwarded-proto') === 'https'));
     // Only loopback or an explicitly named private Tailscale Serve origin.
     // Copying this config to a public Pages host must still fail closed.
     if (env.GUESTBOOK_RUNTIME !== 'local' || (!loopback && !privatePreview)) throw 503;
@@ -129,8 +134,15 @@ export async function onRequest({ request, env }) {
   const contentType = request.headers.get('content-type') ?? '';
   if (!/^(application\/json|application\/x-www-form-urlencoded)(?:\s*;\s*charset=(?:utf-8|"utf-8"))?\s*$/i.test(contentType) || !['identity', null].includes(request.headers.get('content-encoding'))) return reply(415, false, html);
   const type = contentType.split(';')[0].trim().toLowerCase();
+  let data;
   try {
-    const data = validate(await readBody(request), type);
+    data = validate(await readBody(request), type);
+  } catch (error) {
+    // Only decoding/validation errors are client errors. Infrastructure errors
+    // with the same JS error classes must not be classified as bad submissions.
+    return reply([400, 408, 413].includes(error) ? error : error instanceof SyntaxError || error instanceof URIError ? 400 : 503, false, html);
+  }
+  try {
     const now = Math.floor(Date.now() / 1000);
     const bucket = Math.floor(now / WINDOW) * WINDOW;
     const key = await rateKey(request, env, bucket); // Fail closed even for honeypots.
@@ -144,7 +156,7 @@ export async function onRequest({ request, env }) {
     await env.DB.prepare('INSERT INTO guestbook_submissions (name, note, model, referrer) VALUES (?, ?, ?, ?)')
       .bind(data.name, data.note, data.model || null, data.referrer || null).run();
     return reply(201, true, html);
-  } catch (error) {
-    return reply([400, 408, 413, 503].includes(error) ? error : error instanceof SyntaxError || error instanceof URIError ? 400 : 503, false, html);
+  } catch {
+    return reply(503, false, html);
   }
 }

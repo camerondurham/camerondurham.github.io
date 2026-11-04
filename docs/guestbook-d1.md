@@ -59,7 +59,10 @@ It ignores caller IP headers and uses one shared local bucket. Copying this
 configuration to a public Pages URL fails closed. Set `GUESTBOOK_LOCAL_ORIGIN`
 when starting the local helper behind the already approved private proxy; it does not create or reconfigure that proxy. Keep Serve
 private, never enable Funnel for this prototype. This mode is not protection per
-private-preview visitor and is never a production client limiter.
+private-preview visitor and is never a production client limiter. Wrangler can
+rewrite the local URL and Origin to HTTP after TLS termination; that case also
+requires the exact configured host/port and `X-Forwarded-Proto: https`. This
+forwarded header grants no allowance to public hosts or production mode.
 
 Production requires `GUESTBOOK_IP_MODE=trusted-cf`, platform `request.cf`, and a
 private `GUESTBOOK_IP_SALT` with at least 32 nonblank characters. Use a randomly
