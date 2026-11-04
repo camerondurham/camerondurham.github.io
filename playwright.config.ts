@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const servers = { configured: 4322, empty: 4323 };
+const servers = { configured: Number(process.env.GUESTBOOK_TEST_PORT || 4322), empty: Number(process.env.GUESTBOOK_EMPTY_TEST_PORT || 4323) };
 
 export default defineConfig({
   testDir: './tests',

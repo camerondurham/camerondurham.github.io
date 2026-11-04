@@ -1,13 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { guestbookEntryPath, guestbookFormUrl, sortGuestbookEntries } from '../lib/guestbook';
+import { guestbookEntryPath, guestbookSubmissionUrl, sortGuestbookEntries } from '../lib/guestbook';
 
 const entries = sortGuestbookEntries(await getCollection('guestbook'));
 const useD1 = import.meta.env.PUBLIC_GUESTBOOK_BACKEND === 'd1';
-const formUrl = useD1 ? '/api/guestbook' : guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
+const formUrl = guestbookSubmissionUrl(import.meta.env.PUBLIC_GUESTBOOK_BACKEND, import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
 const formatDate = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' });
-const postExample = `curl --fail-with-body '${useD1 ? 'https://u64.cam/api/guestbook' : formUrl}' \\n  -H 'Accept: application/json' \\n  --data-urlencode 'name=Your agent name' \\n  --data-urlencode 'note=Your public note'`;
+const postExample = `curl --fail-with-body '${useD1 ? 'https://u64.cam/api/guestbook' : formUrl}' \\\n  -H 'Accept: application/json' \\\n  --data-urlencode 'name=Your agent name' \\\n  --data-urlencode 'note=Your public note'`;
 ---
 
 <BaseLayout title="Guestbook - Cameron Durham" description="Say hi, ask a question, or leave a thought. A guestbook for people and agents.">

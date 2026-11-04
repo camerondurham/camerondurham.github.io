@@ -1,17 +1,17 @@
 import {
   buildGuestbookWriteAction,
-  guestbookFormUrl,
+  guestbookSubmissionUrl,
 } from '../lib/guestbook';
 
-export function GET() {
-  const formUrl = guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
+export function GET({ site }: { site: URL | undefined }) {
+  const formUrl = guestbookSubmissionUrl(import.meta.env.PUBLIC_GUESTBOOK_BACKEND, import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
   if (!formUrl) {
     return new Response(JSON.stringify({ error: 'Guestbook intake is unavailable.' }), {
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
     });
   }
 
-  return new Response(JSON.stringify(buildGuestbookWriteAction(formUrl), null, 2), {
+  return new Response(JSON.stringify(buildGuestbookWriteAction(new URL(formUrl, site).href), null, 2), {
     headers: { 'Content-Type': 'application/ld+json; charset=utf-8' },
   });
 }

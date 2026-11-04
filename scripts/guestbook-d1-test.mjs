@@ -2,13 +2,19 @@ import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { createServer } from 'node:net';
+import { readFile, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 import { prepareLocalRuntime } from './guestbook-local-runtime.mjs';
 import { onRequest } from '../functions/api/guestbook.js';
 
 const state = await mkdtemp(join('/tmp', 'u64-d1-'));
 const env = { ...process.env, GUESTBOOK_STATE_DIR: state, WRANGLER_LOG_PATH: resolve('.wrangler/logs'), WRANGLER_SEND_METRICS: 'false' };
-const base = 'http://127.0.0.1:8094';
+const probe = createServer();
+await new Promise((resolve, reject) => { probe.once('error', reject); probe.listen(0, '127.0.0.1', resolve); });
+const port = probe.address().port;
+await new Promise(resolve => probe.close(resolve));
+const base = `http://127.0.0.1:${port}`;
 const cli = process.env.WRANGLER_BIN || resolve('node_modules/.bin/wrangler');
 const runtimeDirectory = resolve(`.wrangler/guestbook-test-${process.pid}`);
 let server;
@@ -24,9 +30,13 @@ function sql(command) {
 }
 const count = () => sql('SELECT count(*) AS n FROM guestbook_submissions')[0].n;
 const post = (body, headers = {}) => fetch(`${base}/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json', ...headers }, body });
-async function start() {
+async function start(overrides = {}) {
   const runtime = prepareLocalRuntime(runtimeDirectory);
-  server = spawn(cli, ['pages', 'dev', '--cwd', runtime, '--local', '--ip', '127.0.0.1', '--port', '8094', '--inspector-port', '0', '--persist-to', state], { env, cwd: runtime, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+  const configPath = join(runtime, 'wrangler.jsonc');
+  const config = JSON.parse(await readFile(configPath, 'utf8'));
+  Object.assign(config.vars, overrides);
+  await writeFile(configPath, JSON.stringify(config));
+  server = spawn(cli, ['pages', 'dev', '--cwd', runtime, '--local', '--ip', '127.0.0.1', '--port', String(port), '--inspector-port', '0', '--persist-to', state], { env, cwd: runtime, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = '';
   server.stdout.on('data', chunk => { log += chunk; });
   server.stderr.on('data', chunk => { log += chunk; });
@@ -44,9 +54,6 @@ async function stop() {
   server = undefined;
 }
 try {
-  // Do not attach to or kill an existing service on this port.
-  const net = await import('node:net');
-  await new Promise((resolve, reject) => { const probe = net.createServer(); probe.once('error', reject); probe.listen(8094, '127.0.0.1', () => probe.close(resolve)); });
   run('migrate');
   await start();
   for (const method of ['GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']) {
@@ -62,7 +69,8 @@ try {
   for (const body of ['{', '[]', '{"name":12,"note":"x"}', '{"name":"x","note":"x","note":"y"}', '{"name":"x","note":"x","extra":"y"}', '{"name":"x","note":null}', '{"name":"x","note":"x","na\\u006de":"y"}']) {
     assert.equal((await post(body, { 'Content-Type': 'application/json' })).status, 400, body);
   }
-  assert.equal((await post('name=x&note=x', { 'Content-Type': 'text/plain' })).status, 415);
+  for (const contentType of ['text/plain', 'multipart/form-data; boundary=abc', 'application/json; charset=iso-8859-1', 'application/json; extra=1']) assert.equal((await post('name=x&note=x', { 'Content-Type': contentType })).status, 415);
+  assert.equal((await post('name=x&note=x', { 'Content-Encoding': 'gzip' })).status, 415);
   for (const headers of [{ Origin: 'https://evil.test' }, { Origin: 'null' }, { 'Sec-Fetch-Site': 'cross-site' }, { 'Sec-Fetch-Site': 'same-site' }]) {
     const response = await post('name=x&note=x', headers);
     assert.equal(response.status, 403);
@@ -93,7 +101,12 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.route('**/*', route => new URL(route.request().url()).origin === base ? route.continue() : route.abort());
+  const violations = [];
+  page.on('pageerror', error => violations.push(String(error)));
+  page.on('console', message => { if (message.type() === 'error' && /Content Security Policy|Refused to|violat/i.test(message.text())) violations.push(message.text()); });
   await page.goto(`${base}/guestbook/`);
+  assert.match((await fetch(`${base}/guestbook/`)).headers.get('content-security-policy'), /form-action 'self'/);
+  assert.equal((await (await fetch(`${base}/guestbook-action.json`)).json()).target.urlTemplate, 'https://u64.cam/api/guestbook');
   assert.equal(await page.locator('[data-guestbook-form]').getAttribute('action'), '/api/guestbook');
   assert.equal((await page.locator('main').textContent()).includes('Formspree'), false);
   await page.getByLabel(/Name/).fill('Browser visitor');
@@ -114,7 +127,8 @@ try {
   await native.close();
   assert.ok(html.includes('Received for review.'));
   assert.ok(!html.includes('<script>'));
-  for (const path of ['/guestbook/', '/guestbook.json', '/']) assert.ok(!(await (await fetch(base + path)).text()).includes(privateNote.slice(0, 20)), path);
+  sql("UPDATE guestbook_submissions SET status = 'published' WHERE id = 1");
+  for (const path of ['/guestbook/', '/guestbook.json', '/', '/api/guestbook?status=pending', '/api/guestbook/inbox']) assert.ok(!(await (await fetch(base + path)).text()).includes(privateNote.slice(0, 20)), path);
 
   // The quota must survive a runtime restart and resist concurrent admission.
   await stop(); await start();
@@ -129,16 +143,59 @@ try {
   await page.getByRole('status').filter({ hasText: 'We couldn’t confirm receipt.' }).waitFor();
   assert.equal(await page.getByLabel(/^Note/).inputValue(), 'Keep my draft');
 
+  // A native failed POST must not echo submitted text; Back recovers the form.
+  const failedNative = await browser.newContext({ javaScriptEnabled: false });
+  const failedPage = await failedNative.newPage();
+  await failedPage.route('**/*', route => new URL(route.request().url()).origin === base ? route.continue() : route.abort());
+  await failedPage.goto(`${base}/guestbook/`);
+  await failedPage.getByLabel(/Name/).fill('Recover native draft');
+  await failedPage.getByLabel(/^Note/).fill('Native failure draft');
+  const [failedReceipt] = await Promise.all([failedPage.waitForNavigation(), failedPage.getByRole('button', { name: 'Send note' }).click()]);
+  assert.equal(failedReceipt.status(), 429);
+  assert.ok(!(await failedPage.content()).includes('Native failure draft'));
+  await failedPage.goBack();
+  assert.equal(await failedPage.getByLabel(/^Note/).inputValue(), 'Native failure draft');
+  await failedNative.close();
+  assert.deepEqual(violations, [], 'D1 form works under the current strict CSP');
+
   // Failure paths cannot be activated through the public local config.
   for (const config of [{}, { PUBLIC_GUESTBOOK_BACKEND: 'd1' }, { PUBLIC_GUESTBOOK_BACKEND: 'd1', DB: { prepare() { throw new Error('must not insert'); } } }]) {
     const failed = await onRequest({ request: new Request(`${base}/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"name":"x","note":"x"}' }), env: config });
     assert.equal(failed.status, 503);
     assert.ok(!(await failed.text()).includes('must not insert'));
   }
+  // Production mode uses real local D1 but synthetic trusted-CF headers.
+  sql('DELETE FROM guestbook_rate_limits');
+  await stop();
+  await start({ GUESTBOOK_IP_MODE: 'trusted-cf', GUESTBOOK_IP_SALT: 'synthetic-test-salt-32-characters-long' });
+  const trusted = await Promise.all(Array.from({ length: 9 }, () => post('name=Trusted&note=Synthetic', { 'CF-Connecting-IP': '192.0.2.90' })));
+  assert.equal(trusted.filter(r => r.status === 201).length, 5);
+  assert.equal(trusted.filter(r => r.status === 429).length, 4);
+  assert.equal((await post('name=Other&note=Synthetic', { 'CF-Connecting-IP': '192.0.2.91' })).status, 201);
+  // Receipt loss/retry is intentionally not deduplicated; document this contract.
+  assert.equal((await post('name=Other&note=Synthetic', { 'CF-Connecting-IP': '192.0.2.91' })).status, 201);
+  assert.equal(sql("SELECT count(*) AS n FROM guestbook_submissions WHERE name = 'Other'")[0].n, 2);
+  assert.equal((await post('name=Other&note=Synthetic', { 'CF-Connecting-IP': 'not-an-ip' })).status, 503);
+  const keys = sql('SELECT key FROM guestbook_rate_limits').map(row => row.key);
+  assert.equal(keys.length, 2);
+  assert.ok(keys.every(key => /^[a-f0-9]{64}$/.test(key)));
+  await stop(); await start({ GUESTBOOK_IP_MODE: 'trusted-cf', GUESTBOOK_IP_SALT: 'short' });
+  const beforeFailure = count();
+  assert.equal((await post('name=NoSalt&note=must fail closed', { 'CF-Connecting-IP': '192.0.2.90' })).status, 503);
+  assert.equal(count(), beforeFailure);
+  await stop(); await start({ PUBLIC_GUESTBOOK_BACKEND: '' });
+  await page.reload();
+  await page.getByLabel(/Name/).fill('Disabled runtime');
+  await page.getByLabel(/^Note/).fill('Keep disabled draft');
+  await page.getByRole('button', { name: 'Send note' }).click();
+  await page.getByRole('status').filter({ hasText: 'We couldn’t confirm receipt.' }).waitFor();
+  assert.equal(await page.getByLabel(/^Note/).inputValue(), 'Keep disabled draft');
+  assert.equal(count(), beforeFailure);
+  await stop(); await start();
   sql('DROP TABLE guestbook_rate_limits');
   assert.equal((await post('name=SchemaMissing&note=must fail closed')).status, 503);
-  assert.equal(count(), 5);
-  console.log('PASS: actual local D1 persistence/readback, browser success/failure, static receipt, validation, chunked limit, origins/methods, honeypot, private feed, restart + atomic concurrent quota, fail closed.');
+  assert.equal(count(), beforeFailure);
+  console.log(`PASS (local port ${port}): D1 readback/pending status, JS/no-JS receipt + draft recovery, strict CSP, validation/encoding/stream cap, methods/origins/honeypot, private feed despite status change, persistence/restart + atomic shared and trusted-CF quotas, hashed identifiers, retries, salt/runtime/schema fail closed.`);
 } finally {
   await browser?.close();
   await stop();

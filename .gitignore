@@ -33,5 +33,4 @@ npm-debug.log*
 target/
 
 # Local D1 state, inbox, and Wrangler logs (never publish)
-.wrangler/
 .dev.vars*

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const FORM_URL = 'https://formspree.io/f/testform123';
-const EMPTY_SITE = 'http://127.0.0.1:4323';
+const EMPTY_SITE = `http://127.0.0.1:${process.env.GUESTBOOK_EMPTY_TEST_PORT || 4323}`;
 const SUCCESS = 'Received for review. Approved notes appear after a site update.';
 const ERROR = 'We couldn’t confirm receipt.';
 

@@ -4,6 +4,7 @@
   "pages_build_output_dir": "dist",
   "vars": {
     "PUBLIC_GUESTBOOK_BACKEND": "d1",
+    "GUESTBOOK_RUNTIME": "local",
     "GUESTBOOK_IP_MODE": "local-shared"
   },
   "d1_databases": [{

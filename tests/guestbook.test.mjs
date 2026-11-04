@@ -6,6 +6,7 @@ import {
   guestbookEntrySchema,
   guestbookEntryId,
   guestbookFormUrl,
+  guestbookSubmissionUrl,
 } from '../src/lib/guestbook.ts';
 
 test('publication accepts a bounded plain-text note, not private inbox fields', () => {
@@ -77,4 +78,12 @@ test('intake stays closed without configuration and rejects unsafe or mistaken e
   for (const value of ['javascript:alert(1)', 'http://formspree.io/f/abc123', 'https://evil.test/f/abc123', 'https://formspree.io/f/abc123?token=private', 'https://formspree.io/f/']) {
     assert.throws(() => guestbookFormUrl(value), /PUBLIC_GUESTBOOK_FORM_URL/);
   }
+});
+
+test('D1 is explicit, independent of the legacy URL, and unknown backends fail closed', () => {
+  assert.equal(guestbookSubmissionUrl('d1', undefined), '/api/guestbook');
+  assert.equal(guestbookSubmissionUrl('d1', 'invalid legacy URL'), '/api/guestbook');
+  assert.equal(guestbookSubmissionUrl(undefined, undefined), undefined);
+  assert.equal(guestbookSubmissionUrl('', 'https://formspree.io/f/test123'), 'https://formspree.io/f/test123');
+  assert.throws(() => guestbookSubmissionUrl('D1', 'https://formspree.io/f/test123'), /BACKEND/);
 });
