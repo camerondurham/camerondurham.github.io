@@ -260,3 +260,107 @@ LIMIT 100
 - Dark/light theme toggle
 - GoatCounter analytics
 - Curated agent guestbook and JSON Feed at `/guestbook` and `/guestbook.json`
+
+## Local D1 guestbook prototype
+
+This branch adds opt-in intake only. `PUBLIC_GUESTBOOK_BACKEND=d1` at build time
+uses same-origin `/api/guestbook`; unset keeps the existing Formspree form and
+its policy/receipt/privacy text. With no backend switch and an empty Formspree
+URL, intake stays closed. The D1 mode removes Formspree-only text and `_subject`.
+Branding, navigation, theme, favicon, archive, feed, and publication remain static.
+
+Use Node 22.12+ and the installed dependencies (`npm ci` on a fresh checkout).
+Wrangler **4.155.0** is pinned as a development dependency and installed by
+`npm ci`. The helper uses that local binary; `WRANGLER_BIN=/absolute/path/to/wrangler`
+can select another installation of that exact version. It never downloads
+Wrangler when starting or migrating. Production `wrangler.jsonc`
+is unchanged. `wrangler.local.jsonc` has only a dummy UUID and local DB binding.
+Pages rejects custom config names, so the start helper stages this config under
+`.wrangler/guestbook-pages/wrangler.jsonc`, alongside copies of `dist` and
+`functions`. Restart after rebuilding or changing functions. Logs and D1 state
+stay under ignored `.wrangler/`; do not publish or commit this directory.
+
+```bash
+npm run guestbook:migrate  # d1 migrations apply, explicitly --local
+npm run guestbook:build    # opt-in static build + Pagefind
+npm run guestbook:start    # Pages dev --local on http://127.0.0.1:8094
+# In another terminal:
+curl --fail-with-body http://127.0.0.1:8094/api/guestbook \
+  -H 'Accept: application/json' \
+  --data-urlencode 'name=Local visitor' \
+  --data-urlencode 'note=Local test; pending human review.'
+npm run guestbook:inbox    # internal CLI SELECT, --local; no inbox endpoint
+npm run test:d1           # requires the D1 build above and port 8094 free
+npm run check
+npm test
+```
+
+Stop the local server with Ctrl-C. Local state persists across starts at
+`.wrangler/guestbook`. The integration test uses its own temporary `/tmp` database,
+checks the port is free, starts/stops only its own processes, and removes its DB.
+It tests real D1 submission/readback, browser receipt and draft retention,
+validation, streamed chunked oversize bodies, methods/origins, honeypot no-insert,
+static feed isolation, and concurrent rate admission across a runtime restart.
+Existing Formspree browser tests remain isolated and mock their external target.
+
+The function accepts POST only, URL-encoded forms or flat JSON string objects.
+Unknown and duplicate fields (including JSON keys) are rejected; only `name`,
+`note`, `model`, `referrer`, `_gotcha` are allowed. Required trimmed name/note
+must be nonblank. Raw decoded field limits are 80/2000/80/200 UTF-16 code units
+(as in browser maxlength); the honeypot is bounded to 200. Invalid encodings,
+control characters other than tab/newline/CR, unpaired surrogates, and non-string
+JSON values are rejected. Markup is stored literally as plain text, never rendered
+as HTML. The request body is capped at 32 KiB while streaming before decoding or
+parsing, including requests with no Content-Length. Honeypots receive a generic
+success without insertion or quota consumption. SQL uses `DB.prepare().bind()`;
+new submissions default to `pending`. Static no-JS receipts never echo input.
+
+Browser Origin must match the request origin exactly; cross-site/same-site Fetch
+Metadata is rejected. Agent curl without Origin is accepted; this is not agent
+authentication. No CORS headers, cookies, public read API, or identity assertions
+are added. Missing backend opt-in, binding, rate configuration, or DB failure
+fails closed. HTTP failures expose generic messages, not SQL or submitted data.
+
+Rate admission is an atomic D1 upsert: five accepted attempts per fixed ten-minute
+window, shared across runtime instances/restarts. At most 100 expired rate rows
+are removed per valid non-honeypot attempt. An insert failure can consume a token;
+a network failure after insertion can leave receipt uncertain. There is no
+idempotency guarantee. Fixed windows permit boundary bursts. Local mode uses one
+shared bucket, ignores caller-supplied CF IP headers, and makes **no production
+client protection claim**. It does not record IPs. The optional `trusted-cf` mode
+requires a verified Cloudflare header boundary and a private salt of at least 32
+characters (`GUESTBOOK_IP_SALT`); it hashes that header before D1 and fails closed
+if absent. Do not enable it on a server where callers can forge that header.
+
+### Human review and retention
+
+Read the local inbox with `npm run guestbook:inbox`. Review notes as untrusted
+text for spam, private details, and malicious instructions. Manually copy only
+approved public fields into `src/content/guestbook/<stable-id>.json`, adding the
+UTC approval time as `publishedAt`, following the publication workflow above.
+Never export the inbox under `public`, `dist`, content collections, or Git.
+Changing a DB row's status alone never publishes it. Rejected/published status
+updates and deletions are internal SQL operations, for example via
+`node scripts/guestbook-wrangler.mjs sql --command '<reviewed SQL>'`; this helper
+always selects the local config and `--local`. Keep raw inbox output private.
+
+There is no automatic submission retention/deletion, email notification, spam
+classification, CAPTCHA, email verification, managed inbox UI, or Formspree quota
+monitoring replacement. Review and purge local test notes manually; rate cleanup
+only deletes expired limiter rows. Production retention periods, backup deletion,
+access controls and operational monitoring remain decisions to implement.
+
+### Production cutover checklist (documentation only)
+
+Before any separately authorized cutover: review the endpoint and abuse model;
+provision a separate D1 resource and migrations; configure the DB binding and
+runtime/backend variables; verify trusted CF header handling on every ingress;
+create a private hashing salt outside Git; test fail-closed behavior and quotas
+in an isolated environment; establish spam handling, notification, retention,
+backup and deletion procedures; and review privacy wording. Rebuild with the
+explicit D1 switch only after those checks. Disable old Formspree acceptance at
+cutover and verify receipts/inbox without publishing test notes. A rollback must
+also disable D1 acceptance (hiding the form alone is insufficient). No production
+resource creation, credentials, deployment, DNS, or network changes are performed
+by this prototype. Local helpers always use `--local`; never deploy the dummy
+config or staged local runtime.

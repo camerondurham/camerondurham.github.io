@@ -1,0 +1,15 @@
+{
+  "compatibility_date": "2026-10-23",
+  "name": "u64-guestbook-local",
+  "pages_build_output_dir": "dist",
+  "vars": {
+    "PUBLIC_GUESTBOOK_BACKEND": "d1",
+    "GUESTBOOK_IP_MODE": "local-shared"
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "guestbook-local",
+    "database_id": "00000000-0000-0000-0000-000000000000",
+    "migrations_dir": "migrations"
+  }]
+}
