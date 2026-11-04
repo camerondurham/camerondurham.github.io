@@ -20,6 +20,8 @@ test('runtime opt-in, binding, local boundary, trusted metadata/header and salt 
     [{}, {}], [{ ...local, PUBLIC_GUESTBOOK_BACKEND: '' }, {}],
     [{ ...local, GUESTBOOK_RUNTIME: undefined }, {}],
     [local, { url: 'https://u64.cam/api/guestbook' }],
+    [{ ...local, GUESTBOOK_LOCAL_ORIGIN: 'https://u64.cam' }, { url: 'https://u64.cam/api/guestbook' }],
+    [{ ...local, GUESTBOOK_LOCAL_ORIGIN: 'https://preview.example.ts.net:11443' }, { url: 'https://another.example.ts.net:11443/api/guestbook' }],
     [local, { url: 'http://public.example/api/guestbook' }],
     [{ ...trusted, GUESTBOOK_IP_SALT: '' }, {}],
     [{ ...trusted, GUESTBOOK_IP_SALT: ' '.repeat(40) }, {}],
@@ -34,6 +36,14 @@ test('runtime opt-in, binding, local boundary, trusted metadata/header and salt 
     assert.equal(response.headers.get('cache-control'), 'no-store');
   }
   assert.equal((await onRequest({ request: request(), env: local })).status, 503);
+});
+
+test('local shared mode permits only its explicitly configured private preview origin', async () => {
+  const origin = 'https://preview.example.ts.net:11443';
+  const db = database();
+  const value = request({ url: `${origin}/api/guestbook`, headers: { Origin: origin } });
+  assert.equal((await onRequest({ request: value, env: { ...local, GUESTBOOK_LOCAL_ORIGIN: origin, DB: db } })).status, 201);
+  assert.equal(db.calls.find(call => call.sql.includes('ON CONFLICT')).values[0], 'local-shared');
 });
 
 test('HMAC identifiers normalize IPv6 and rotate by window and salt without persisting raw IPs', async t => {

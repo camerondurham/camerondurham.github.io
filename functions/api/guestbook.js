@@ -97,9 +97,11 @@ function validate(text, type) {
 async function rateKey(request, env, bucket) {
   if (env.GUESTBOOK_IP_MODE === 'local-shared') {
     const url = new URL(request.url);
-    // Both an explicit local runtime and a loopback URL are required. Copying
-    // the local config to Pages must never enable a shared production bucket.
-    if (env.GUESTBOOK_RUNTIME !== 'local' || url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw 503;
+    const loopback = url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname);
+    const privatePreview = url.protocol === 'https:' && url.hostname.endsWith('.ts.net') && url.origin === env.GUESTBOOK_LOCAL_ORIGIN;
+    // Only loopback or an explicitly named private Tailscale Serve origin.
+    // Copying this config to a public Pages host must still fail closed.
+    if (env.GUESTBOOK_RUNTIME !== 'local' || (!loopback && !privatePreview)) throw 503;
     return 'local-shared';
   }
   // Only enable behind a verified Cloudflare proxy that overwrites this header.

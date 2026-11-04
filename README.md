@@ -279,7 +279,10 @@ npm run guestbook:inbox
 Use `GUESTBOOK_PORT=8095 npm run guestbook:start` for another port. State persists
 at `.wrangler/guestbook` (`GUESTBOOK_STATE_DIR` overrides it). The helper stages
 copies of build output/functions under `.wrangler/guestbook-pages`; restart
-after rebuilding. Stop with Ctrl-C. No credentials are needed. Wrangler is pinned
+after rebuilding. For an existing private Tailscale Serve proxy, start with
+`GUESTBOOK_LOCAL_ORIGIN=https://<your-machine>.<your-tailnet>.ts.net:<port>`
+set to its exact approved HTTPS origin; this only configures the app, not the
+proxy or network. Stop with Ctrl-C. No credentials are needed. Wrangler is pinned
 to **4.156.0**, matching main and its unchanged lockfile. The helpers use the
 installed binary and never download it, deploy, or access remote D1.
 

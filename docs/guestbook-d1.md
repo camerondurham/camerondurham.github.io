@@ -52,11 +52,14 @@ rows are deleted per valid non-honeypot attempt, with an expiry index. Cleanup i
 opportunistic; an idle DB can retain expired rows until later traffic or manual
 purging. It is not a strict deletion deadline.
 
-`local-shared` requires `GUESTBOOK_RUNTIME=local` **and an HTTP loopback request
-URL**. It ignores caller IP headers and uses one shared local bucket. Copying
-this configuration to a public Pages URL fails closed. A proxy must preserve a
-loopback upstream URL for this mode; it is not protection per private-preview
-visitor and is never a production client limiter.
+`local-shared` requires `GUESTBOOK_RUNTIME=local` and either an HTTP loopback
+request URL or an explicitly configured private HTTPS Tailscale Serve origin
+(`GUESTBOOK_LOCAL_ORIGIN`, exact origin including port, `.ts.net` host only).
+It ignores caller IP headers and uses one shared local bucket. Copying this
+configuration to a public Pages URL fails closed. Set `GUESTBOOK_LOCAL_ORIGIN`
+when starting the local helper behind the already approved private proxy; it does not create or reconfigure that proxy. Keep Serve
+private, never enable Funnel for this prototype. This mode is not protection per
+private-preview visitor and is never a production client limiter.
 
 Production requires `GUESTBOOK_IP_MODE=trusted-cf`, platform `request.cf`, and a
 private `GUESTBOOK_IP_SALT` with at least 32 nonblank characters. Use a randomly

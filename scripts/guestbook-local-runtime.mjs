@@ -8,6 +8,7 @@ export function prepareLocalRuntime(directory = '.wrangler/guestbook-pages') {
   mkdirSync(root, { recursive: true });
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'u64-guestbook-local', private: true, type: 'module' }));
   const config = JSON.parse(readFileSync('wrangler.local.jsonc', 'utf8'));
+  if (process.env.GUESTBOOK_LOCAL_ORIGIN) config.vars.GUESTBOOK_LOCAL_ORIGIN = process.env.GUESTBOOK_LOCAL_ORIGIN;
   config.pages_build_output_dir = './dist';
   config.d1_databases[0].migrations_dir = resolve('migrations');
   writeFileSync(join(root, 'wrangler.jsonc'), JSON.stringify(config, null, 2));
