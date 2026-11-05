@@ -272,8 +272,9 @@ npm ci
 npm run guestbook:migrate  # always --local; dummy DB UUID
 npm run guestbook:build    # D1 opt-in + current Pages build + Pagefind
 npm run guestbook:start    # 127.0.0.1:8094; refuses an occupied port
-# Another terminal: private local readback, never a public API
-npm run guestbook:inbox
+# Another terminal: bounded private pending list, never a public API
+npm run guestbook:review -- list
+npm run guestbook:review -- --help
 ```
 
 Use `GUESTBOOK_PORT=8095 npm run guestbook:start` for another port. State persists
@@ -293,6 +294,7 @@ GUESTBOOK_TEST_PORT=14322 GUESTBOOK_EMPTY_TEST_PORT=14323 npm run test:e2e
 npm run test:csp
 npm run guestbook:build
 npm run test:d1
+npm run test:moderation
 ```
 
 The D1 integration suite selects a free loopback port, uses a temporary local DB,

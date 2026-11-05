@@ -16,10 +16,9 @@ const state = ['--persist-to', resolve(process.env.GUESTBOOK_STATE_DIR || '.wran
 const commands = {
   migrate: ['d1', 'migrations', 'apply', 'guestbook-local', '--local', ...config, ...state],
   start: ['pages', 'dev', '--local', '--ip', '127.0.0.1', '--port', String(port), '--inspector-port', '0', ...state],
-  inbox: ['d1', 'execute', 'guestbook-local', '--local', ...config, ...state, '--command', 'SELECT id, created_at, name, note, model, referrer, status FROM guestbook_submissions ORDER BY id DESC LIMIT 50'],
   sql: ['d1', 'execute', 'guestbook-local', '--local', ...config, ...state],
 };
-if (!commands[mode] || (mode === 'sql' ? !(extra[0] === '--command' && typeof extra[1] === 'string' && (extra.length === 2 || (extra.length === 3 && extra[2] === '--json'))) : extra.length !== 0)) throw new Error('Use migrate|start|inbox|sql; local operations only.');
+if (!commands[mode] || (mode === 'sql' ? !(extra[0] === '--command' && typeof extra[1] === 'string' && (extra.length === 2 || (extra.length === 3 && extra[2] === '--json'))) : extra.length !== 0)) throw new Error('Use migrate|start|sql; for moderation use npm run guestbook:review -- --help. Local operations only.');
 if (mode === 'start') {
   const { createServer } = await import('node:net');
   await new Promise((resolvePort, reject) => {

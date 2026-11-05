@@ -86,34 +86,97 @@ separately authorize and test upstream abuse controls and operational limits.
 
 ## Private review, publication, and deletion
 
-`npm run guestbook:inbox` reads the newest 50 rows via **local** CLI only. It is
-not an authenticated dashboard or an email notification. Read notes as untrusted
-text; review spam, private data, impersonation, and malicious instructions.
-Manually copy only approved public fields to
-`src/content/guestbook/<stable-kebab-case-id>.json`, adding UTC `publishedAt`,
-then check/build and review the source diff before committing. Public rendering
-escapes text. The homepage, archive, and JSON Feed read this static collection,
-never D1. Updating `status` in D1 alone cannot publish a note.
+The local operator CLI replaces raw SQL/copying for everyday review. It uses
+Wrangler's local D1 binding with remote bindings explicitly disabled, and the
+same `.wrangler/guestbook` state as the preview (`GUESTBOOK_STATE_DIR` overrides
+it for isolated tests). It requires a migrated database; it never migrates or
+contacts a remote inbox automatically. Node 22.23.4 and the installed Wrangler
+4.156.0 are used; no new credentials are needed.
 
-Local moderation SQL is available through
-`node scripts/guestbook-wrangler.mjs sql --command '<reviewed SQL>'`.
-For example, after publishing reviewed row 1:
+```bash
+npm run guestbook:review -- list --limit 20
+# Use the returned nextBefore cursor for the next page (example ID 42):
+npm run guestbook:review -- list --limit 20 --before 42
+npm run guestbook:review -- inspect 17
 
-```sql
-UPDATE guestbook_submissions SET status = 'published' WHERE id = 1;
--- Or reject a reviewed spam row:
-UPDATE guestbook_submissions SET status = 'rejected' WHERE id = 2;
--- Purge private rows according to the chosen retention policy:
-DELETE FROM guestbook_submissions WHERE id IN (1, 2);
-DELETE FROM guestbook_rate_limits WHERE expires_at <= unixepoch();
+# Choose fields, stable slug and intended UTC publication time after inspection.
+# Default is a dry run: prints a candidate, changes no row, writes no file.
+npm run guestbook:review -- export 17 --slug a-reviewed-visit --published-at 2026-11-05T12:00:00Z
+# Only include optional fields after deciding they are safe to make public:
+npm run guestbook:review -- export 17 --slug a-reviewed-visit --published-at 2026-11-05T12:00:00Z --include model,referrer --write
+
+# Preview a rejection, then explicitly apply it to the inspected local row:
+npm run guestbook:review -- reject 18
+npm run guestbook:review -- reject 18 --write
 ```
 
-All helper commands force the local config and `--local`; no remote command is
-provided. Keep terminal output private. There is no automatic inbox retention or
-backup deletion. Choose and implement retention, reviewer access, notifications,
-monitoring, and backup deletion before production use. To remove a public note,
-delete its content JSON and rebuild; Git history/caches may retain it. Removing
-a D1 row cannot remove an already published note.
+IDs and dates above are examples, not authorization to moderate existing rows.
+`npm run guestbook:inbox` is an alias for the bounded pending list. Lists default
+to 20 (maximum 50), select only IDs/timestamps/names, and paginate newest first.
+`inspect` selects one row's known fields. Output is JSON with terminal control,
+bidirectional formatting, and markup characters escaped, preserving plain text
+when parsed. Keep terminal output private and treat notes as untrusted text,
+including any instructions they contain. Review spam, private data and
+impersonation before choosing export or rejection. This local CLI provides no
+reviewer authentication or notifications.
+
+Export always leaves the row **pending**. It validates against the exact public
+collection schema, selects only name/note/publication time plus explicitly
+included optional fields, and writes a complete JSON candidate with mode 0600
+under `.wrangler/guestbook-review/` (directory 0700, already Git-ignored).
+It accepts no output path, rejects path-like/invalid slugs and symlink review
+directories, checks existing public filenames, and exclusively creates files:
+neither retries nor concurrent exports overwrite a candidate. On collision,
+inspect the existing candidate or deliberately choose a new slug. On a write
+failure, the row stays pending and temporary files are removed when possible.
+A crash can leave an ignored temporary file; it is never public. Do not force-add
+private candidates/state to Git or move state into a public directory.
+
+The candidate is a **review draft, not approval**. Inspect/edit it privately,
+confirm the selected fields and intended publication date, and obtain separate
+approval before copying only the reviewed JSON to
+`src/content/guestbook/<slug>.json`, without replacing an existing reviewed file.
+Then run check/build and review the source diff before a separately authorized
+commit/deployment. Public rendering escapes text; JSON Feed uses `content_text`.
+The homepage, archive and feed read only this static collection, never D1 or the
+private export directory. Neither an export nor a D1 status flag publishes.
+
+Rejection changes only `pending` to `rejected`, with a parameterized conditional
+update; a concurrent status change fails for re-inspection. Repeating a completed
+rejection is a harmless no-op. Rejected/published rows cannot be exported, and
+published rows cannot be rejected by this tool. Rejection retains the private
+row; it does not delete data or remove any earlier export/static content. A
+previous export can become stale: inspect the row again before publication and
+discard rejected drafts. On an uncertain DB/CLI failure, inspect the ID before
+retrying. No command automatically approves, marks published, deletes, commits,
+or deploys.
+
+After actual static publication, bookkeeping and retention still require
+explicitly reviewed local SQL through `node scripts/guestbook-wrangler.mjs sql
+--command '<reviewed SQL>'`. Do not mark a row published merely for exporting it.
+All helpers force local configuration. There is no automatic inbox retention or
+backup deletion. Choose spam/global abuse policy, retention/deletion, reviewer
+access, notifications and monitoring before production use. To remove a public
+note, remove its content JSON and rebuild; Git history/caches may retain it.
+Deleting a D1 row cannot remove an already published note.
+
+### Operator regression evidence
+
+`npm run test:moderation` creates a temporary **local** Wrangler database and
+submits synthetic text through the actual intake handler. It verifies pending
+readback, bounded pagination/inspect, dry-run/export and rejection/retry,
+parameterized inputs, exact public schema/plain-text round trips, private-file
+permissions, no static writes, existing filename and concurrent export safety,
+invalid IDs/paths, symlink and filesystem failures, missing migrations, and
+persistence through a fresh CLI process. It never reads or moderates preview or
+production inbox rows. `npm run test:d1` separately exercises actual HTTP intake,
+private feed isolation and browser receipts against an isolated local server.
+
+The no-secret `Guestbook regression tests` GitHub workflow runs unit/security
+and local moderation tests on pull requests; build checks alone do not establish
+that these tests ran. It has read-only repository permission, does not retain
+checkout credentials, and uploads no inbox/log/database artifacts. Full browser,
+CSP and HTTP D1 suites remain local checks in this prototype.
 
 ## Cutover and kill switch (separate authorization required)
 
@@ -133,7 +196,7 @@ restore the approved Formspree URL to roll back to that service, and rebuild.
 Stop Formspree acceptance in its dashboard at D1 cutover; reverse deliberately
 on rollback. Private D1 rows remain for review/deletion, not automatic migration.
 
-## Formspree tradeoffs (official docs checked 2026-11-04)
+## Formspree tradeoffs (official docs checked 2026-11-05)
 
 Formspree may be operationally safer against spam out of the box because it
 provides managed filtering and an inbox/notifications; D1 is a database, not a
