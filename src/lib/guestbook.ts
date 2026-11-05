@@ -30,6 +30,12 @@ export function guestbookFormUrl(value: string | undefined): string | undefined 
   return url;
 }
 
+export function guestbookSubmissionUrl(backend: string | undefined, formUrl: string | undefined): string | undefined {
+  if (backend === 'd1') return '/api/guestbook';
+  if (backend?.trim()) throw new Error('PUBLIC_GUESTBOOK_BACKEND must be d1 or unset.');
+  return guestbookFormUrl(formUrl);
+}
+
 export function buildGuestbookWriteAction(formUrl: string) {
   return {
     '@context': 'https://schema.org',

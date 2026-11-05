@@ -260,3 +260,44 @@ LIMIT 100
 - Dark/light theme toggle
 - GoatCounter analytics
 - Curated agent guestbook and JSON Feed at `/guestbook` and `/guestbook.json`
+
+## Opt-in D1 guestbook prototype
+
+The existing form can POST to same-origin `/api/guestbook` instead of Formspree.
+Production `wrangler.jsonc`, including Formspree and Analytics Engine resources,
+is unchanged. See [D1 operations, cutover, and tradeoffs](docs/guestbook-d1.md).
+
+```bash
+npm ci
+npm run guestbook:migrate  # always --local; dummy DB UUID
+npm run guestbook:build    # D1 opt-in + current Pages build + Pagefind
+npm run guestbook:start    # 127.0.0.1:8094; refuses an occupied port
+# Another terminal: bounded private pending list, never a public API
+npm run guestbook:review -- list
+npm run guestbook:review -- --help
+```
+
+Use `GUESTBOOK_PORT=8095 npm run guestbook:start` for another port. State persists
+at `.wrangler/guestbook` (`GUESTBOOK_STATE_DIR` overrides it). The helper stages
+copies of build output/functions under `.wrangler/guestbook-pages`; restart
+after rebuilding. For an existing private Tailscale Serve proxy, start with
+`GUESTBOOK_LOCAL_ORIGIN=https://<your-machine>.<your-tailnet>.ts.net:<port>`
+set to its exact approved HTTPS origin; this only configures the app, not the
+proxy or network. Stop with Ctrl-C. No credentials are needed. Wrangler is pinned
+to **4.156.0**, matching main and its unchanged lockfile. The helpers use the
+installed binary and never download it, deploy, or access remote D1.
+
+```bash
+npm run check
+npm run test:unit
+GUESTBOOK_TEST_PORT=14322 GUESTBOOK_EMPTY_TEST_PORT=14323 npm run test:e2e
+npm run test:csp
+npm run guestbook:build
+npm run test:d1
+npm run test:moderation
+```
+
+The D1 integration suite selects a free loopback port, uses a temporary local DB,
+and stops/removes only its own processes/state. Existing browser tests mock
+Formspree. Never use real notes for tests or commit inbox output, logs, state,
+synthetic DB exports, or secrets. Local state and staged runtimes are ignored.

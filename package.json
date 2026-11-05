@@ -15,7 +15,14 @@
     "test:csp": "node scripts/run-pages.mjs build-preview && node scripts/csp-smoke.mjs",
     "cf:deploy": "node scripts/run-pages.mjs deploy",
     "cf:dev": "node scripts/run-pages.mjs dev",
-    "report:edge": "node --env-file-if-exists=.env scripts/edge-analytics-report.mjs"
+    "report:edge": "node --env-file-if-exists=.env scripts/edge-analytics-report.mjs",
+    "guestbook:migrate": "node scripts/guestbook-wrangler.mjs migrate",
+    "guestbook:build": "PUBLIC_GUESTBOOK_BACKEND=d1 npm run build:pages",
+    "guestbook:start": "node scripts/guestbook-wrangler.mjs start",
+    "guestbook:inbox": "npm run guestbook:review -- list",
+    "test:d1": "node scripts/guestbook-d1-test.mjs",
+    "guestbook:review": "node --experimental-strip-types scripts/guestbook-review.mjs",
+    "test:moderation": "node --experimental-strip-types --test tests/guestbook-review.integration.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
