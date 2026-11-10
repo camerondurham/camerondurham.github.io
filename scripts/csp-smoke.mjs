@@ -99,7 +99,7 @@ try {
     contentType: 'application/json',
     body: JSON.stringify({ languages: ['bash'] }),
   }));
-  await page.route('https://formspree.io/f/**', (route) => {
+  await page.route('**/api/guestbook', (route) => {
     guestbookSubmissions += 1;
     return route.fulfill({
       status: 200,
@@ -117,7 +117,7 @@ try {
   await form.waitFor();
   const actionResponse = await fetch(`${baseUrl}/guestbook-action.json`);
   const action = await actionResponse.json();
-  assert.match(action.target?.urlTemplate ?? '', /^https:\/\/formspree\.io\/f\//);
+  assert.equal(action.target?.urlTemplate, 'https://u64.cam/api/guestbook');
   await page.getByLabel(/Name/).fill('CSP smoke test');
   await page.getByLabel(/^Note/).fill('This request is intercepted locally.');
   await page.getByRole('button', { name: 'Send note' }).click();

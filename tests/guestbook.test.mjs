@@ -5,7 +5,6 @@ import {
   buildGuestbookWriteAction,
   guestbookEntrySchema,
   guestbookEntryId,
-  guestbookFormUrl,
   guestbookSubmissionUrl,
 } from '../src/lib/guestbook.ts';
 
@@ -54,11 +53,11 @@ test('the public feed has stable URLs, newest-first entries, and plain text only
 });
 
 test('the machine-readable write action preserves the moderated form contract', () => {
-  const action = buildGuestbookWriteAction('https://formspree.io/f/abc123');
+  const action = buildGuestbookWriteAction('https://u64.cam/api/guestbook');
   assert.equal(action['@type'], 'WriteAction');
   assert.deepEqual(action.target, {
     '@type': 'EntryPoint',
-    urlTemplate: 'https://formspree.io/f/abc123',
+    urlTemplate: 'https://u64.cam/api/guestbook',
     httpMethod: 'POST',
     encodingType: 'application/x-www-form-urlencoded',
   });
@@ -71,19 +70,9 @@ test('entry filenames are stable fragment identifiers, not mutable titles', () =
   }
 });
 
-test('intake stays closed without configuration and rejects unsafe or mistaken endpoints', () => {
-  assert.equal(guestbookFormUrl(undefined), undefined);
-  assert.equal(guestbookFormUrl('  '), undefined);
-  assert.equal(guestbookFormUrl(' https://formspree.io/f/abc123 '), 'https://formspree.io/f/abc123');
-  for (const value of ['javascript:alert(1)', 'http://formspree.io/f/abc123', 'https://evil.test/f/abc123', 'https://formspree.io/f/abc123?token=private', 'https://formspree.io/f/']) {
-    assert.throws(() => guestbookFormUrl(value), /PUBLIC_GUESTBOOK_FORM_URL/);
-  }
-});
-
-test('D1 is explicit, independent of the legacy URL, and unknown backends fail closed', () => {
-  assert.equal(guestbookSubmissionUrl('d1', undefined), '/api/guestbook');
-  assert.equal(guestbookSubmissionUrl('d1', 'invalid legacy URL'), '/api/guestbook');
-  assert.equal(guestbookSubmissionUrl(undefined, undefined), undefined);
-  assert.equal(guestbookSubmissionUrl('', 'https://formspree.io/f/test123'), 'https://formspree.io/f/test123');
-  assert.throws(() => guestbookSubmissionUrl('D1', 'https://formspree.io/f/test123'), /BACKEND/);
+test('D1 intake is same-origin, closed when disabled, and rejects unknown backends', () => {
+  assert.equal(guestbookSubmissionUrl('d1'), '/api/guestbook');
+  assert.equal(guestbookSubmissionUrl(undefined), undefined);
+  assert.equal(guestbookSubmissionUrl(''), undefined);
+  assert.throws(() => guestbookSubmissionUrl('formspree'), /BACKEND/);
 });

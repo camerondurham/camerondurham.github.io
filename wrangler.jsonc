@@ -6,15 +6,17 @@
   "name": "camerondurham-github-io",
   "compatibility_date": "2026-10-23",
   "pages_build_output_dir": "dist",
-  // Production build variables. Remove the URL to close intake.
+  // D1 intake. Binding and private salt must be configured before cutover.
   "vars": {
-    "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+    "PUBLIC_GUESTBOOK_BACKEND": "d1",
+    "GUESTBOOK_IP_MODE": "trusted-cf"
   },
   // Pages reads build variables from this file, not the dashboard.
   "env": {
     "production": {
       "vars": {
-        "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+        "PUBLIC_GUESTBOOK_BACKEND": "d1",
+        "GUESTBOOK_IP_MODE": "trusted-cf"
       },
       "analytics_engine_datasets": [
         {
@@ -25,7 +27,8 @@
     },
     "preview": {
       "vars": {
-        "PUBLIC_GUESTBOOK_FORM_URL": "https://formspree.io/f/xqppkzgj"
+        "PUBLIC_GUESTBOOK_BACKEND": "d1",
+        "GUESTBOOK_IP_MODE": "trusted-cf"
       },
       "analytics_engine_datasets": [
         {

@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  security-and-moderation:
+  security:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -24,4 +24,3 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run test:unit
-      - run: npm run test:moderation

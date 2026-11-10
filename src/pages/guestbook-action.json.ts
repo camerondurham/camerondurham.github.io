@@ -4,7 +4,7 @@ import {
 } from '../lib/guestbook';
 
 export function GET({ site }: { site: URL | undefined }) {
-  const formUrl = guestbookSubmissionUrl(import.meta.env.PUBLIC_GUESTBOOK_BACKEND, import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
+  const formUrl = guestbookSubmissionUrl(import.meta.env.PUBLIC_GUESTBOOK_BACKEND);
   if (!formUrl) {
     return new Response(JSON.stringify({ error: 'Guestbook intake is unavailable.' }), {
       headers: { 'Content-Type': 'application/json; charset=utf-8' },

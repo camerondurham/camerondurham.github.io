@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-const FORM_URL = 'https://formspree.io/f/testform123';
+const FORM_URL = `http://127.0.0.1:${process.env.GUESTBOOK_TEST_PORT || 4322}/api/guestbook`;
 const EMPTY_SITE = `http://127.0.0.1:${process.env.GUESTBOOK_EMPTY_TEST_PORT || 4323}`;
 const SUCCESS = 'Received for review. Approved notes appear after a site update.';
 const ERROR = 'We couldn’t confirm receipt.';
 
 test.beforeEach(async ({ page }) => {
-  // Only local servers reach the network; submission tests explicitly mock Formspree.
+  // Only local servers reach the network; submission tests explicitly mock D1 intake.
   await page.route('**/*', (route) => {
     const url = new URL(route.request().url());
     return url.hostname === '127.0.0.1' ? route.continue() : route.abort('blockedbyclient');
@@ -38,12 +38,8 @@ test('renders the configured archive, escaped text, and the public form contract
   await expect(page.getByLabel(/What brought you here\?/)).toHaveAttribute('maxlength', '200');
   await expect(page.getByRole('button', { name: 'Send note' })).toBeVisible();
   const form = page.locator('[data-guestbook-form]');
-  await expect(form).toHaveAttribute('action', FORM_URL);
+  await expect(form).toHaveAttribute('action', '/api/guestbook');
   await expect(form).toHaveAttribute('method', 'POST');
-  const privacyLink = page.locator('main > footer:last-child').getByRole('link', { name: 'Formspree privacy policy' });
-  await expect(privacyLink).toBeVisible();
-  await expect(privacyLink).toHaveAttribute('href', 'https://formspree.io/legal/privacy-policy/');
-
   const actionLink = page.locator('link[rel="alternate"][type="application/ld+json"]');
   await expect(actionLink).toHaveAttribute('href', '/guestbook-action.json');
   const actionResponse = await page.request.get('/guestbook-action.json');
@@ -52,7 +48,7 @@ test('renders the configured archive, escaped text, and the public form contract
   expect(await actionResponse.json()).toMatchObject({
     '@type': 'WriteAction',
     target: {
-      urlTemplate: FORM_URL,
+      urlTemplate: 'https://u64.cam/api/guestbook',
       httpMethod: 'POST',
       encodingType: 'application/x-www-form-urlencoded',
     },

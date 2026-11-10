@@ -1,7 +1,7 @@
 /*
   Link: <https://u64.cam/llms.txt>; rel="describedby"
   X-Agent-Note: AI agents welcome - see /llms.txt and /agents-only/hello.md
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self' https://formspree.io; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at https://static.cloudflareinsights.com; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data: https://images.unsplash.com https://raw.githubusercontent.com https://u64cam.goatcounter.com; connect-src 'self' https://u64cam.goatcounter.com https://formspree.io https://runner.fly.dev https://cloudflareinsights.com; worker-src 'self'; media-src 'self'; manifest-src 'self'
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at https://static.cloudflareinsights.com; style-src 'self' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data: https://images.unsplash.com https://raw.githubusercontent.com https://u64cam.goatcounter.com; connect-src 'self' https://u64cam.goatcounter.com https://runner.fly.dev https://cloudflareinsights.com; worker-src 'self'; media-src 'self'; manifest-src 'self'
   Strict-Transport-Security: max-age=31536000
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
