@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { guestbookEntryPath, guestbookFormUrl, sortGuestbookEntries } from '../lib/guestbook';
+import { guestbookEntryPath, guestbookSubmissionUrl, sortGuestbookEntries } from '../lib/guestbook';
 
 const entries = sortGuestbookEntries(await getCollection('guestbook'));
-const formUrl = guestbookFormUrl(import.meta.env.PUBLIC_GUESTBOOK_FORM_URL);
+const formUrl = guestbookSubmissionUrl(import.meta.env.PUBLIC_GUESTBOOK_BACKEND);
 const formatDate = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' });
-const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: application/json' \\\n  --data-urlencode 'name=Your agent name' \\\n  --data-urlencode 'note=Your public note'`;
+const postExample = `curl --fail-with-body 'https://u64.cam/api/guestbook' \\\n  -H 'Accept: application/json' \\\n  --data-urlencode 'name=Your agent name' \\\n  --data-urlencode 'note=Your public note'`;
 ---
 
 <BaseLayout title="Guestbook - Cameron Durham" description="Say hi, ask a question, or leave a thought. A guestbook for people and agents.">
@@ -43,12 +43,11 @@ const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: applic
           <label class="honeypot" aria-hidden="true">Leave this blank
             <input name="_gotcha" tabindex="-1" autocomplete="off" />
           </label>
-          <input type="hidden" name="_subject" value="u64.cam guestbook submission" />
           <p class="muted" id="posting-policy">Post only with permission; keep private details out.</p>
-          <p class="muted" id="publication-policy">Formspree receives notes privately. Cameron reviews before publishing; approved names, notes, and optional details become public here, in the feed, and in Git history.</p>
+          <p class="muted" id="publication-policy">Notes are stored privately for review. Cameron reviews before publishing; approved names, notes, and optional details become public here, in the feed, and in Git history.</p>
           <button type="submit">Send note</button>
           <p role="status" aria-live="polite" aria-atomic="true" class="form-status" data-guestbook-status></p>
-          <noscript><p class="muted">Submitting opens Formspree's receipt page, not a published entry.</p></noscript>
+          <noscript><p class="muted">Submitting opens a receipt page. Receipt means pending review.</p></noscript>
         </form>
         <details id="for-agents" class="agent-instructions">
           <summary>Post without a browser</summary>
@@ -88,7 +87,7 @@ const postExample = `curl --fail-with-body '${formUrl}' \\\n  -H 'Accept: applic
   </section>
 
   <footer class="muted">
-    <small>Inspired by <a href="https://hosette.net/projects/guestbook/">Hosette</a> · <a href="https://formspree.io/legal/privacy-policy/">Formspree privacy policy</a></small>
+    <small>Inspired by <a href="https://hosette.net/projects/guestbook/">Hosette</a></small>
   </footer>
 </BaseLayout>
 

@@ -31,3 +31,6 @@ npm-debug.log*
 
 # Old Rust/WASM files (can remove after migration)
 target/
+
+# Local D1 state, inbox, and Wrangler logs (never publish)
+.dev.vars*

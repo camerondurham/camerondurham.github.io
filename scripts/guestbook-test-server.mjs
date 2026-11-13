@@ -17,7 +17,6 @@ if (!['configured', 'empty'].includes(mode) || !Number.isInteger(port) || port <
 const workspace = await mkdtemp(join(tmpdir(), 'u64-guestbook-test-'));
 const astroCli = join(repoRoot, 'node_modules/astro/bin/astro.mjs');
 const pagefindCli = join(repoRoot, 'node_modules/pagefind/lib/runner/bin.cjs');
-const formUrl = 'https://formspree.io/f/testform123';
 
 const fixtureEntries = [
   {
@@ -102,7 +101,7 @@ async function run(...args) {
   // Launch Node directly so shutdown reaches the child rather than a shell.
   activeChild = spawn(process.execPath, args, {
     cwd: workspace,
-    env: { ...process.env, PUBLIC_GUESTBOOK_FORM_URL: mode === 'configured' ? formUrl : '' },
+    env: { ...process.env, PUBLIC_GUESTBOOK_BACKEND: mode === 'configured' ? 'd1' : '' },
     stdio: 'inherit',
   });
   try {
@@ -127,7 +126,7 @@ async function main() {
   await run(astroCli, 'build');
   await run(pagefindCli, '--site', 'dist');
   // Playwright owns the readiness check; an unexpected preview exit is a failure.
-  await run(astroCli, 'preview', '--host', '127.0.0.1', '--port', String(port));
+  await run(astroCli, 'preview', '--ignore-lock', '--host', '127.0.0.1', '--port', String(port));
   throw new Error('Astro preview stopped unexpectedly');
 }
 

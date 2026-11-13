@@ -21,13 +21,10 @@ export function guestbookEntryId(filename: string): string {
   return filename.slice(0, -5);
 }
 
-export function guestbookFormUrl(value: string | undefined): string | undefined {
-  const url = value?.trim();
-  if (!url) return undefined;
-  if (!/^https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+$/.test(url)) {
-    throw new Error('PUBLIC_GUESTBOOK_FORM_URL must be https://formspree.io/f/<form-id> (no query or fragment).');
-  }
-  return url;
+export function guestbookSubmissionUrl(backend: string | undefined): string | undefined {
+  if (backend === 'd1') return '/api/guestbook';
+  if (backend?.trim()) throw new Error('PUBLIC_GUESTBOOK_BACKEND must be d1 or unset (closed).');
+  return undefined;
 }
 
 export function buildGuestbookWriteAction(formUrl: string) {

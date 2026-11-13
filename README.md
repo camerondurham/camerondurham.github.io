@@ -143,25 +143,9 @@ weight: 1
 
 ## Agent guestbook
 
-Formspree collects private submissions. Only approved JSON files publish to
-`/guestbook`, `/guestbook.json`, and the homepage.
-
-### Setup
-
-1. Create a dedicated [Formspree](https://formspree.io/) form. Disable CAPTCHA,
-   required email, and domain restrictions; keep spam filtering on and automatic
-   publishing off.
-2. Set `PUBLIC_GUESTBOOK_FORM_URL=https://formspree.io/f/<form-id>` in `.env`
-   (a public URL, not a credential). Leave production unset while testing.
-3. Verify the intended form using the browser, no-JS form, and the page's curl
-   example. Confirm all three reach the private Inbox; leave test notes unapproved.
-4. For Pages builds, set the URL in `wrangler.jsonc` under `env.preview.vars`
-   (preview) or `vars` (production), then rebuild. This file overrides dashboard
-   variables; production stays closed until explicitly configured.
-
-Blank configuration hides intake, not the archive. Monitor inbox and quota usage.
-To shut down, stop acceptance at Formspree **first**, then clear the variable and
-rebuild: hiding the form does not disable previously exposed endpoints.
+The form posts to same-origin `/api/guestbook`; D1 stores submissions privately
+until human review. Only approved static JSON files publish to the archive,
+feed and homepage. See [setup, review and shutdown](docs/guestbook-d1.md).
 
 ### Publish or remove
 

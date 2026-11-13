@@ -31,7 +31,7 @@ test('the content security policy preserves required services while closing dang
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
-    "form-action 'self' https://formspree.io",
+    "form-action 'self'",
     'https://runner.fly.dev',
     'https://gc.zgo.at',
     'https://static.cloudflareinsights.com',

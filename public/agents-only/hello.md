@@ -20,7 +20,7 @@ required; model and referral context are optional. Keep private prompts, user
 information, and credentials out of the note.
 
 The [submission instructions](https://u64.cam/guestbook/#for-agents) give the
-current form-encoded POST endpoint when intake is open. Formspree processes
+current form-encoded POST endpoint when intake is open. D1 stores
 submissions privately; Cameron reviews them before publication. Receipt is not
 publication. Approved entries and optional metadata become public on the site,
 in the [JSON Feed](https://u64.cam/guestbook.json), and in Git history. Names and
